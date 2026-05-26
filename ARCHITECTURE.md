@@ -1,6 +1,9 @@
 # 🏛️ ARCHITECTURE.md — Arsitektur Teknis Masakin
 
-Dokumen ini ditujukan untuk **developer** yang ingin memahami struktur kode, alur data, dan cara mengintegrasikan atau mengembangkan fitur baru pada projek Masakin.
+Dokumen ini ditujukan untuk **developer** yang ingin memahami struktur kode, alur data, dan rancangan teknis untuk pengembangan projek Masakin.
+
+> [!IMPORTANT]
+> **Status Kode Sekarang:** Projek ini sedang ditulis ulang dari awal (*code rebuild*). Oleh karena itu, arsitektur yang dijelaskan di bawah ini—termasuk state management, fungsi, dan komponen—merupakan **rancangan target** (*target architecture*) dan deskripsi purwarupa sebelumnya (`deepsek.html`, dsb.) yang digunakan sebagai referensi logika mock. Saat ini belum ada fitur operasional yang terintegrasi pada kode utama baru.
 
 ---
 
@@ -41,9 +44,9 @@ Dokumen ini ditujukan untuk **developer** yang ingin memahami struktur kode, alu
 
 ---
 
-## Struktur Kode — `deepsek.html`
+## Struktur Kode Referensi Purwarupa — `deepsek.html`
 
-File ini adalah aplikasi utama. Semua logika berada dalam satu file (monolithic HTML).
+File ini merupakan aplikasi purwarupa monolitik HTML dari tahap awal. Semua logika berada dalam satu file ini dan digunakan sebagai acuan logika untuk penulisan ulang kode.
 
 ### State Management
 

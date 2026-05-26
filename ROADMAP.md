@@ -4,25 +4,24 @@ Dokumen ini mendefinisikan tahapan pengembangan Masakin dari purwarupa (*prototy
 
 ---
 
-## Status Saat Ini: Prototype (v0.5)
+## Status Saat Ini: Rebuild dari Awal (v0.0)
 
-Aplikasi saat ini berjalan sepenuhnya di sisi klien tanpa backend, database, atau autentikasi nyata. Fungsionalitas inti (katalog resep, meal planning, daftar belanja) sudah berjalan sebagai demo interaktif.
+Aplikasi sedang dibangun ulang dari awal (*code rebuild*). Purwarupa HTML statis sebelumnya (`deepsek.html`, `Home page.html`) saat ini dipertahankan hanya sebagai referensi visual dan alur logika mock. Seluruh fitur pada kode baru saat ini belum terimplementasi.
 
 ---
 
 ## Fase Pengembangan
 
-### ✅ Phase 0 — Prototype (Selesai)
-> **Target:** Validasi konsep & desain antarmuka
+### 🔄 Phase 0 — Rebuild Fondasi UI & Fitur Dasar
+> **Target:** Penulisan ulang struktur kode bersih (modular) dan antarmuka dasar dari nol
 
-- [x] Landing page komersial (`Home page.html`)
-- [x] UI prototype dengan Tailwind CSS
-- [x] Aplikasi fungsional client-side (`deepsek.html`)
-- [x] Mock authentication (login/register)
-- [x] Katalog resep dengan filter (bahan, waktu, harga)
-- [x] Weekly planner (tambah, hapus, regenerate)
-- [x] Auto shopping list dengan kategorisasi
-- [x] Estimasi biaya belanja
+- [ ] Landing page komersial yang bersih & konsisten
+- [ ] Struktur UI utama yang responsif
+- [ ] Kerangka modul autentikasi
+- [ ] Katalog resep dengan sistem pencarian & filter dasar
+- [ ] Weekly planner dasar (Senin–Minggu)
+- [ ] Auto shopping list (konversi menu ke bahan belanja)
+- [ ] Kalkulasi biaya belanja dasar
 
 ---
 

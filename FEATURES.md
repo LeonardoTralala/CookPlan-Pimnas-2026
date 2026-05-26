@@ -1,6 +1,9 @@
 # 📋 FEATURES.md — Dokumentasi Fitur Masakin
 
-Dokumen ini menjelaskan seluruh fitur aplikasi Masakin secara detail, mencakup spesifikasi yang **sudah diimplementasikan** dan fitur yang **direncanakan** untuk pengembangan berikutnya.
+Dokumen ini menjelaskan seluruh fitur aplikasi Masakin secara detail.
+
+> [!IMPORTANT]
+> **Status Proyek Saat Ini:** Karena proyek sedang ditulis ulang dari awal (*code rebuild*), saat ini **seluruh fitur berstatus 🔄 Planned**. Deskripsi spesifikasi teknis dan rujukan berkas (`deepsek.html`, dsb.) di bawah ini dipertahankan sebagai acuan fungsionalitas mock dari purwarupa lama untuk memandu penulisan ulang kode.
 
 ---
 
@@ -8,13 +11,13 @@ Dokumen ini menjelaskan seluruh fitur aplikasi Masakin secara detail, mencakup s
 
 | Badge | Arti |
 |-------|------|
-| ✅ **Implemented** | Sudah bisa digunakan di kode saat ini |
-| 🔄 **Planned** | Direncanakan, belum ada implementasi kode |
-| ⚠️ **Partial** | Ada implementasi dasar, belum lengkap |
+| 🔄 **Planned** | Direncanakan untuk diimplementasikan dalam penulisan ulang kode |
+| ⚠️ **Partial** | Mulai diimplementasikan secara parsial |
+| ✅ **Implemented** | Sudah selesai diimplementasikan penuh pada kode baru |
 
 ---
 
-## Fitur 1: Katalog Inspirasi Menu ✅ Implemented
+## Fitur 1: Katalog Inspirasi Menu 🔄 Planned
 
 **Berkas:** `deepsek.html` (tab Recipes)
 
@@ -58,9 +61,9 @@ Pengguna dapat menjelajahi koleksi resep masakan khas Indonesia yang tersedia di
 
 ---
 
-## Fitur 2: Perencanaan Menu Mingguan ✅ Implemented
+## Fitur 2: Perencanaan Menu Mingguan 🔄 Planned
 
-**Berkas:** `deepsek.html` (tab Planner)
+**Berkas Rujukan:** `deepsek.html` (tab Planner)
 
 ### Deskripsi
 Fitur untuk menyusun jadwal menu masakan untuk 7 hari ke depan (Senin–Minggu). Pengguna bisa menambahkan, menghapus, atau mengacak ulang rencana masakan kapan saja.
@@ -98,9 +101,9 @@ weeklyPlan = {
 
 ---
 
-## Fitur 3: Daftar Belanja Otomatis ✅ Implemented
+## Fitur 3: Daftar Belanja Otomatis 🔄 Planned
 
-**Berkas:** `deepsek.html` (tab Shopping)
+**Berkas Rujukan:** `deepsek.html` (tab Shopping)
 
 ### Deskripsi
 Sistem secara otomatis mengkonversi rencana menu mingguan menjadi daftar belanja yang terkategorisasi, disesuaikan dengan jumlah porsi.
@@ -218,17 +221,17 @@ Sistem notifikasi untuk mengingatkan pengguna tentang stok bahan yang tersisa da
 
 ---
 
-## Fitur Pendukung (Sudah Ada)
+## Fitur Pendukung
 
-### Autentikasi Mock ✅ Implemented
-- Login dengan username/password (validasi terhadap `mockUsers` array)
-- Register akun baru (disimpan di memory, hilang saat refresh)
-- User state management (tampilkan username di navbar)
+### Autentikasi Mock 🔄 Planned
+- Login dengan username/password (validasi terhadap `mockUsers` array pada prototype)
+- Register akun baru (disimpan di memory pada prototype)
+- User state management (tampilkan username di navbar pada prototype)
 - Logout
 
-> **Catatan:** Autentikasi ini hanya untuk demo. Untuk production, gunakan Supabase Auth / Firebase Auth.
+> **Catatan:** Autentikasi ini dirancang pada prototype hanya untuk demo. Untuk implementasi kode baru, direncanakan menggunakan backend nyata seperti Supabase Auth / Firebase Auth.
 
-### Landing Page ✅ Implemented
+### Landing Page 🔄 Planned
 - Hero section dengan simulasi drag-and-drop visual
 - FAQ accordion interaktif
 - Responsive design (mobile-friendly)
