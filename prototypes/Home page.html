@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masakin - Rencana Masak Mingguan & Belanja Otomatis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #4CAF50;
+            --secondary: #FF9800;
+            --accent: #FFC107;
+            --dark: #333333;
+            --light: #F5F5F5;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3e8e41;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e68a00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .testimonial-card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(255, 255, 255, 1));
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .drag-drop-area {
+            border: 2px dashed #ccc;
+            transition: all 0.3s ease;
+        }
+        
+        .drag-drop-area:hover {
+            border-color: var(--primary);
+            background-color: rgba(76, 175, 80, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Header/Navbar -->
+    <header class="sticky top-0 z-50 bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                        <i class="fas fa-utensils text-white text-xl"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-primary">Masakin</h1>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#features" class="nav-link text-gray-700">Fitur</a>
+                    <a href="#how-it-works" class="nav-link text-gray-700">Cara Kerja</a>
+                    <a href="#testimonials" class="nav-link text-gray-700">Testimoni</a>
+                    <a href="#faq" class="nav-link text-gray-700">FAQ</a>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="hidden md:block text-gray-700 hover:text-primary">Masuk</a>
+                    <a href="#" class="btn-primary text-white px-6 py-2 rounded-full font-medium">Daftar Gratis</a>
+                    <button class="md:hidden text-gray-700">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container mx-auto px-4 py-12 md:py-24">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <p class="text-primary font-medium mb-2">Bantu Kamu Masak Mudah, Belanja Otomatis Sesuai Perencanaan</p>
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Rencanakan Menu Masakan Mingguan Tanpa Stres!</h1>
+                    <p class="text-lg text-gray-600 mb-8">Masakin membantu kamu merencanakan masakan mingguan, memberikan inspirasi menu, dan belanja otomatis bahan sesuai kebutuhan. Fokus pada rasa, biarkan kami yang mengurus yang lainnya.</p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="2ndpage" class="btn-primary text-white px-8 py-3 rounded-full font-medium text-center">
+                            Mulai Rencanakan Sekarang
+                        </a>
+                        <a href="#" class="border-2 border-primary text-primary px-8 py-3 rounded-full font-medium text-center hover:bg-primary hover:text-white transition">
+                            <i class="fas fa-play-circle mr-2"></i> Lihat Demo
+                        </a>
+                    </div>
+                    <div class="mt-8 flex items-center">
+                        <div class="flex -space-x-2">
+                            <img src="https://randomuser.me/api/portraits/women/12.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="User">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="User">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="User">
+                        </div>
+                        <p class="ml-4 text-gray-600">
+                            <span class="font-medium text-primary">10.000+</span> pengguna puas
+                        </p>
+                    </div>
+                </div>
+                <div class="md:w-1/2 relative">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                             alt="Mahasiswa kos memasak" 
+                             class="rounded-xl shadow-xl w-full max-w-lg mx-auto">
+                        <div class="absolute -bottom-6 -right-6 md:-right-12 bg-white p-4 rounded-xl shadow-lg">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check-circle text-primary text-xl"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="font-bold">100+ Resep</p>
+                                    <p class="text-sm text-gray-500">Tersedia setiap minggu</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partner Logos -->
+    <section class="py-8 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <p class="text-center text-gray-500 mb-6">Dipercaya oleh:</p>
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1200px-Google_2015_logo.svg.png" class="h-8 opacity-60" alt="Google">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Microsoft_logo.svg/1200px-Microsoft_logo.svg.png" class="h-8 opacity-60" alt="Microsoft">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/1200px-Amazon_logo.svg.png" class="h-8 opacity-60" alt="Amazon">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1200px-Apple_logo_black.svg.png" class="h-8 opacity-60" alt="Apple">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1200px-Facebook_Logo_%282019%29.png" class="h-8 opacity-60" alt="Facebook">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Fitur Unggulan Masakin</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Solusi lengkap untuk merencanakan masakan mingguan dan belanja bahan otomatis</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card bg-white p-8 rounded-xl border border-gray-100">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-lightbulb text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Inspirasi Masakan</h3>
+                    <p class="text-gray-600 mb-4">Dapatkan ide menu masakan yang sesuai dengan waktu dan budget kamu. Filter berdasarkan bahan dan durasi memasak.</p>
+                    <div class="mt-6">
+                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80" 
+                             alt="Inspirasi masakan" 
+                             class="rounded-lg w-full h-40 object-cover">
+                    </div>
+                    <div class="mt-6">
+                        <a href="#" class="text-primary font-medium flex items-center">
+                            Lihat Resep <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="feature-card bg-white p-8 rounded-xl border border-gray-100">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-calendar-alt text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Perencanaan Mingguan</h3>
+                    <p class="text-gray-600 mb-4">Drag & drop resep ke kalender masakan mingguan. Sesuaikan jumlah porsi untuk keluarga atau teman-teman.</p>
+                    <div class="mt-6 drag-drop-area rounded-lg p-4 text-center">
+                        <i class="fas fa-calendar-day text-4xl text-gray-400 mb-3"></i>
+                        <p class="text-gray-500">Drag resep ke hari yang diinginkan</p>
+                        <div class="mt-4 flex justify-center">
+                            <div class="bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                                Senin
+                            </div>
+                            <div class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium ml-2">
+                                Selasa
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <a href="#" class="text-primary font-medium flex items-center">
+                            Coba Planner <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="feature-card bg-white p-8 rounded-xl border border-gray-100">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-shopping-basket text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Keranjang Belanja Otomatis</h3>
+                    <p class="text-gray-600 mb-4">Setelah perencanaan selesai, kami otomatis menghitung bahan yang diperlukan dan menyarankan tempat belanja.</p>
+                    <div class="mt-6">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <p class="font-medium">Daftar Belanja</p>
+                                <p class="text-sm text-primary">3 items</p>
+                            </div>
+                            <ul class="space-y-2">
+                                <li class="flex items-center">
+                                    <input type="checkbox" class="rounded text-primary mr-3">
+                                    <span>Telur (6 butir)</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <input type="checkbox" class="rounded text-primary mr-3">
+                                    <span>Wortel (500g)</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <input type="checkbox" class="rounded text-primary mr-3">
+                                    <span>Ayam (1kg)</span>
+                                </li>
+                            </ul>
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <p class="text-sm text-gray-500">Total perkiraan: <span class="font-bold text-gray-800">Rp 75.000</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <a href="#" class="text-primary font-medium flex items-center">
+                            Lihat Keranjang <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Cara Kerja Masakin</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Hanya perlu 3 langkah mudah untuk merencanakan masakan mingguanmu</p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                             alt="Pilih resep" 
+                             class="rounded-xl shadow-lg w-full max-w-md mx-auto">
+                        <div class="absolute -top-6 -left-6 bg-white p-3 rounded-xl shadow-lg">
+                            <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xl">
+                                1
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 md:pl-12">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Pilih Resep Favoritmu</h3>
+                    <p class="text-gray-600 mb-6">Temukan ribuan resep masakan yang bisa kamu filter berdasarkan bahan, waktu memasak, tingkat kesulitan, dan budget. Simpan resep favoritmu untuk digunakan nanti.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-700">Filter berdasarkan bahan yang kamu punya</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-700">Resep dengan waktu masak kurang dari 30 menit</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-700">Tingkat kesulitan dari pemula sampai ahli</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="btn-primary text-white px-6 py-3 rounded-full font-medium inline-flex items-center">
+                        Jelajahi Resep <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between mt-20">
+                <div class="md:w-1/2 md:pr-12 order-2 md:order-1">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Atur Jadwal Mingguan</h3>
+                    <p class="text-gray-600 mb-6">Seret dan lepas resep ke hari yang kamu inginkan. Atur jumlah porsi sesuai kebutuhanmu. Kamu bisa melihat nutrisi dan estimasi biaya untuk setiap hari.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-700">Drag & drop interface yang mudah digunakan</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-700">Sesuaikan porsi untuk 1 orang atau sekeluarga</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-700">Lihat nutrisi dan biaya per hari</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="btn-primary text-white px-6 py-3 rounded-full font-medium inline-flex items-center">
+                        Buat Rencana <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                <div class="md:w-1/2 mb-10 md:mb-0 order-1 md:order-2">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                             alt="Atur jadwal" 
+                             class="rounded-xl shadow-lg w-full max-w-md mx-auto">
+                        <div class="absolute -top-6 -right-6 bg-white p-3 rounded-xl shadow-lg">
+                            <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xl">
+                                2
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between mt-20">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1581349485608-9469926a8e5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1364&q=80" 
+                             alt="Belanja otomatis" 
+                             class="rounded-xl shadow-lg w-full max-w-md mx-auto">
+                        <div class="absolute -top-6 -left-6 bg-white p-3 rounded-xl shadow-lg">
+                            <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xl">
+                                3
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 md:pl-12">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Dapatkan Daftar Belanja Otomatis</h3>
+                    <p class="text-gray-600 mb-6">Masakin akan menghitung semua bahan yang kamu butuhkan berdasarkan rencana masak mingguanmu. Kamu bisa menyesuaikan jumlah dan melihat estimasi biaya total.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-700">Daftar belanja otomatis berdasarkan resep pilihanmu</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-700">Estimasi biaya belanja mingguan</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-700">Integrasi dengan toko online favoritmu</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="btn-primary text-white px-6 py-3 rounded-full font-medium inline-flex items-center">
+                        Coba Sekarang <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Keunggulan Masakin</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Mengapa ribuan orang memilih Masakin untuk merencanakan masakan mereka</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Benefit 1 -->
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-clock text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Hemat Waktu</h3>
+                    <p class="text-gray-600">Tidak perlu lagi bingung memilih menu atau belanja bahan. Semua sudah diatur otomatis sehingga kamu bisa fokus pada hal lain yang lebih penting.</p>
+                </div>
+                
+                <!-- Benefit 2 -->
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-thumbs-up text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Efisien dan Mudah</h3>
+                    <p class="text-gray-600">Atur jadwal masak mingguan dengan drag & drop. Sesuaikan dengan porsi yang kamu butuhkan tanpa ribet menghitung bahan.</p>
+                </div>
+                
+                <!-- Benefit 3 -->
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-wallet text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Harga Terjangkau</h3>
+                    <p class="text-gray-600">Belanja bahan sesuai dengan budget yang kamu tentukan. Kami akan menyarankan resep dan alternatif bahan yang lebih hemat.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Apa Kata Pengguna Kami</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Testimoni dari mahasiswa dan pekerja yang sudah menggunakan Masakin</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="testimonial-card bg-white p-8 rounded-xl">
+                    <div class="flex items-center mb-6">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" class="w-12 h-12 rounded-full mr-4" alt="Alya">
+                        <div>
+                            <h4 class="font-bold">Alya</h4>
+                            <p class="text-gray-500 text-sm">Mahasiswa Kos</p>
+                        </div>
+                    </div>
+                    <div class="flex mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-700 italic mb-6">"Masakin benar-benar menyelamatkan saya di tengah kesibukan! Menu masakan mingguan jadi lebih teratur, dan saya nggak pernah lupa bahan apa yang harus dibeli. Sekarang masak jadi lebih mudah dan hemat waktu."</p>
+                    <div class="flex justify-end">
+                        <i class="fas fa-quote-right text-gray-300 text-3xl"></i>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="testimonial-card bg-white p-8 rounded-xl">
+                    <div class="flex items-center mb-6">
+                        <img src="https://randomuser.me/api/portraits/men/54.jpg" class="w-12 h-12 rounded-full mr-4" alt="Rizky">
+                        <div>
+                            <h4 class="font-bold">Rizky</h4>
+                            <p class="text-gray-500 text-sm">Pekerja Kantoran</p>
+                        </div>
+                    </div>
+                    <div class="flex mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-700 italic mb-6">"Sebagai pekerja yang sibuk, saya sering bingung mau masak apa. Dengan Masakin, saya bisa merencanakan menu untuk seminggu dalam 10 menit. Fitur belanja otomatisnya sangat membantu, jadi nggak perlu mikir beli apa."</p>
+                    <div class="flex justify-end">
+                        <i class="fas fa-quote-right text-gray-300 text-3xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <a href="#" class="inline-flex items-center text-primary font-medium">
+                    Lihat lebih banyak testimoni <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-primary text-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-6">Mulai Rencanakan Masakan Mingguanmu Sekarang</h2>
+                <p class="text-lg mb-8 opacity-90">Daftar gratis dan nikmati kemudahan merencanakan menu masakan serta belanja bahan otomatis.</p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#" class="bg-white text-primary px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition">
+                        Daftar Sekarang
+                    </a>
+                    <a href="#" class="border-2 border-white text-white px-8 py-3 rounded-full font-medium hover:bg-white hover:bg-opacity-10 transition">
+                        Pelajari Lebih Lanjut
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Pertanyaan yang Sering Ditanyakan</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Temukan jawaban untuk pertanyaan umum tentang Masakin</p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto">
+                <!-- FAQ 1 -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex justify-between items-center w-full text-left font-medium text-gray-800 hover:text-primary focus:outline-none">
+                        <span>Bagaimana cara Masakin menghitung bahan yang dibutuhkan?</span>
+                        <i class="fas fa-chevron-down text-gray-500"></i>
+                    </button>
+                    <div class="mt-3 text-gray-600">
+                        <p>Masakin menggunakan algoritma khusus yang menganalisis semua resep yang kamu pilih untuk minggu tersebut. Kami menghitung total bahan yang dibutuhkan berdasarkan jumlah porsi yang kamu tentukan, lalu mengkonsolidasikan bahan-bahan yang sama sehingga kamu tidak perlu membeli bahan yang berlebihan.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ 2 -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex justify-between items-center w-full text-left font-medium text-gray-800 hover:text-primary focus:outline-none">
+                        <span>Apakah saya bisa menyesuaikan daftar belanja yang dihasilkan?</span>
+                        <i class="fas fa-chevron-down text-gray-500"></i>
+                    </button>
+                    <div class="mt-3 text-gray-600">
+                        <p>Tentu saja! Kamu bisa menambah, mengurangi, atau menghapus item dari daftar belanja yang kami hasilkan. Kami juga menyediakan opsi untuk menandai bahan yang sudah kamu punya di rumah, sehingga tidak termasuk dalam daftar belanja.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ 3 -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex justify-between items-center w-full text-left font-medium text-gray-800 hover:text-primary focus:outline-none">
+                        <span>Berapa biaya berlangganan Masakin?</span>
+                        <i class="fas fa-chevron-down text-gray-500"></i>
+                    </button>
+                    <div class="mt-3 text-gray-600">
+                        <p>Masakin saat ini tersedia secara gratis dengan fitur dasar yang lengkap. Kami berencana untuk meluncurkan versi premium dengan fitur tambahan seperti integrasi dengan toko online, analisis nutrisi lebih detail, dan resep eksklusif dari chef profesional.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ 4 -->
+                <div class="mb-6 border-b border-gray-200 pb-6">
+                    <button class="flex justify-between items-center w-full text-left font-medium text-gray-800 hover:text-primary focus:outline-none">
+                        <span>Apakah Masakin tersedia untuk platform iOS dan Android?</span>
+                        <i class="fas fa-chevron-down text-gray-500"></i>
+                    </button>
+                    <div class="mt-3 text-gray-600">
+                        <p>Ya, Masakin tersedia sebagai aplikasi mobile untuk iOS dan Android. Kamu juga bisa mengaksesnya melalui browser di komputer jika lebih nyaman untuk merencanakan menu mingguan.</p>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <a href="#" class="inline-flex items-center text-primary font-medium">
+                        Lihat FAQ lengkap <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <!-- Column 1 -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                            <i class="fas fa-utensils text-white text-xl"></i>
+                        </div>
+                        <h1 class="text-xl font-bold">Masakin</h1>
+                    </div>
+                    <p class="text-gray-400 mb-4">Bantu Kamu Masak Mudah, Belanja Otomatis Sesuai Perencanaan</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-tiktok text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Column 2 -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Perusahaan</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tentang Kami</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Karir</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Kontak</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Column 3 -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Produk</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Fitur</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Harga</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Testimoni</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Column 4 -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Hubungi Kami</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-gray-400"></i>
+                            <span class="text-gray-400">Jl. Sudirman No. 123, Jakarta</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-phone-alt mt-1 mr-3 text-gray-400"></i>
+                            <span class="text-gray-400">+62 812 3456 7890</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope mt-1 mr-3 text-gray-400"></i>
+                            <span class="text-gray-400">hello@masakin.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-800 text-center text-gray-400">
+                <p>Masakin © 2025 - All Rights Reserved</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('#faq button').forEach(button => {
+            button.addEventListener('click', () => {
+                const faqItem = button.parentElement;
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('i');
+                
+                // Toggle content
+                content.classList.toggle('hidden');
+                
+                // Toggle icon
+                if (content.classList.contains('hidden')) {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                } else {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                }
+            });
+        });
+        
+        // Mobile menu toggle (placeholder)
+        document.querySelector('.md\\:hidden').addEventListener('click', () => {
+            alert('Mobile menu would open here');
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Drag and drop simulation for planner
+        document.querySelectorAll('.drag-drop-area').forEach(area => {
+            area.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                area.classList.add('border-primary', 'bg-primary', 'bg-opacity-5');
+            });
+            
+            area.addEventListener('dragleave', () => {
+                area.classList.remove('border-primary', 'bg-primary', 'bg-opacity-5');
+            });
+            
+            area.addEventListener('drop', (e) => {
+                e.preventDefault();
+                area.classList.remove('border-primary', 'bg-primary', 'bg-opacity-5');
+                area.innerHTML = `
+                    <div class="bg-white p-2 rounded-lg shadow-sm">
+                        <div class="flex items-center">
+                            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" 
+                                 class="w-10 h-10 rounded-full object-cover mr-3">
+                            <div>
+                                <p class="font-medium text-sm">Avocado Toast</p>
+                                <p class="text-xs text-gray-500">Sarapan</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
