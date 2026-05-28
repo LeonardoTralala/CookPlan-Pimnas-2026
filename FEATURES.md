@@ -1,9 +1,9 @@
-# 📋 FEATURES.md — Dokumentasi Fitur Masakin
+# 📋 FEATURES.md — Dokumentasi Fitur CookPlan
 
-Dokumen ini menjelaskan seluruh fitur aplikasi Masakin secara detail.
+Dokumen ini menjelaskan seluruh fitur aplikasi CookPlan secara detail untuk skema PKM-K 2026.
 
 > [!IMPORTANT]
-> **Status Proyek Saat Ini:** Karena proyek sedang ditulis ulang dari awal (*code rebuild*), saat ini **seluruh fitur berstatus 🔄 Planned**. Deskripsi spesifikasi teknis dan rujukan berkas (`deepsek.html`, dsb.) di bawah ini dipertahankan sebagai acuan fungsionalitas mock dari purwarupa lama untuk memandu penulisan ulang kode.
+> **Status Proyek Saat Ini:** Proyek sedang dalam masa pembangunan ulang (*code rebuild*) dari purwarupa statis HTML lama ke arsitektur modern **React + Supabase**. Status fitur diatur ulang dan diperbarui mengikuti alur fungsional CookPlan versi PKM-K.
 
 ---
 
@@ -176,13 +176,13 @@ Shopping List → Pilih Supplier → Tentukan Alamat & Waktu → Konfirmasi → 
 - Real-time tracking status pengiriman
 - Notifikasi WhatsApp/SMS saat bahan tiba
 
-#### Tombol "Order Online" (Sudah Ada di UI)
-> Tombol **"Order Online"** sudah tersedia di halaman Shopping (`deepsek.html` baris ~264), namun belum terhubung ke backend. Ini adalah entry point yang perlu di-wire ke sistem order ketika fitur siap.
+#### Tombol "Checkout & WhatsApp Order Redirect"
+> Setelah pengguna meninjau belanjaan, tombol Checkout akan memicu penyimpanan detail transaksi ke database Supabase untuk memperoleh **ID Pesanan unik** (misal: `#CP-260527-004`). Aplikasi kemudian me-redirect pengguna ke nomor WhatsApp Admin CookPlan dengan teks pesanan yang terformat rapi (mencakup ID Pesanan tersebut untuk mempermudah pelacakan admin).
 
-### Kebutuhan Backend
-- Tabel: `orders`, `order_items`, `delivery_schedules`, `couriers`
-- Payment gateway integration (Midtrans / Xendit)
-- Webhook untuk status tracking dari kurir
+### Kebutuhan Backend (Supabase Integration)
+- Tabel: `orders` (menyimpan ID pesanan, ID user, total harga, alamat, dan metode pembayaran).
+- Tabel: `order_items` (menyimpan daftar bahan makanan spesifik yang dibeli per transaksi).
+- Integrasi Midtrans Sandbox untuk simulasi pembayaran profesional pada juri Monev.
 
 ---
 
@@ -223,13 +223,11 @@ Sistem notifikasi untuk mengingatkan pengguna tentang stok bahan yang tersisa da
 
 ## Fitur Pendukung
 
-### Autentikasi Mock 🔄 Planned
-- Login dengan username/password (validasi terhadap `mockUsers` array pada prototype)
-- Register akun baru (disimpan di memory pada prototype)
-- User state management (tampilkan username di navbar pada prototype)
-- Logout
-
-> **Catatan:** Autentikasi ini dirancang pada prototype hanya untuk demo. Untuk implementasi kode baru, direncanakan menggunakan backend nyata seperti Supabase Auth / Firebase Auth.
+### Autentikasi Supabase 🔄 Planned
+- Registrasi dan Login pengguna menggunakan **Supabase Auth** (email & password).
+- Penyimpanan data sesi pengguna secara persisten agar tidak ter-logout saat halaman di-refresh.
+- User State Management: Menampilkan profil pengguna dan riwayat transaksi belanja yang tersinkronisasi di server.
+- Fitur Logout.
 
 ### Landing Page 🔄 Planned
 - Hero section dengan simulasi drag-and-drop visual

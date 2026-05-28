@@ -1,6 +1,6 @@
-# 🏛️ ARCHITECTURE.md — Arsitektur Teknis Masakin
+# 🏛️ ARCHITECTURE.md — Arsitektur Teknis CookPlan
 
-Dokumen ini ditujukan untuk **developer** yang ingin memahami struktur kode, alur data, dan rancangan teknis untuk pengembangan projek Masakin.
+Dokumen ini ditujukan untuk **developer** yang ingin memahami struktur kode, alur data, dan rancangan teknis untuk pengembangan projek CookPlan.
 
 > [!IMPORTANT]
 > **Status Kode Sekarang:** Projek ini sedang ditulis ulang dari awal (*code rebuild*). Oleh karena itu, arsitektur yang dijelaskan di bawah ini—termasuk state management, fungsi, dan komponen—merupakan **rancangan target** (*target architecture*) dan deskripsi purwarupa sebelumnya (`deepsek.html`, dsb.) yang digunakan sebagai referensi logika mock. Saat ini belum ada fitur operasional yang terintegrasi pada kode utama baru.
@@ -11,7 +11,7 @@ Dokumen ini ditujukan untuk **developer** yang ingin memahami struktur kode, alu
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                  MASAKIN (Prototype)                    │
+│                  CookPlan (Prototype)                   │
 │                                                         │
 │  ┌──────────────┐     ┌──────────────────────────────┐  │
 │  │ Landing Page │     │      Main Application        │  │
@@ -257,6 +257,40 @@ CREATE TABLE meal_entries (
   day_of_week TEXT CHECK (day_of_week IN ('Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu')),
   servings INTEGER DEFAULT 2
 );
+
+-- Tabel subscriptions (untuk menyimpan data paket langganan bulanan)
+CREATE TABLE subscriptions (
+  id SERIAL PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id) UNIQUE,
+  tier TEXT CHECK (tier IN ('basic', 'monthly_pass')),
+  status TEXT CHECK (status IN ('active', 'expired')),
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Tabel orders (menyimpan riwayat transaksi checkout belanja)
+CREATE TABLE orders (
+  id TEXT PRIMARY KEY,          -- Format kustom: CP-YYYYMMDD-XXXX (ID Pesanan Unik)
+  user_id UUID REFERENCES profiles(id),
+  total_price INTEGER NOT NULL,
+  service_fee INTEGER DEFAULT 2000,
+  delivery_address TEXT NOT NULL,
+  payment_method TEXT CHECK (payment_method IN ('transfer_bank', 'qris')),
+  payment_status TEXT CHECK (payment_status IN ('pending', 'completed', 'failed')) DEFAULT 'pending',
+  order_status TEXT CHECK (order_status IN ('received', 'processed', 'shipped', 'delivered')) DEFAULT 'received',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Tabel order_items (menyimpan rincian bahan makanan per pesanan)
+CREATE TABLE order_items (
+  id SERIAL PRIMARY KEY,
+  order_id TEXT REFERENCES orders(id) ON DELETE CASCADE,
+  ingredient_name TEXT NOT NULL,
+  amount DECIMAL NOT NULL,
+  unit TEXT NOT NULL,
+  price_idr INTEGER NOT NULL
+);
 ```
 
 ### Langkah 3: Migrasi Mock Data
@@ -333,9 +367,9 @@ if (saved) Object.assign(weeklyPlan, JSON.parse(saved));
 
 ---
 
-### ⚠️ Warning #1 — Warna Tidak Konsisten
+### ✓ Warning #1 — Warna Terunifikasi
 
-Landing page (`Home page.html`) menggunakan palet hijau (`#4CAF50`), sedangkan aplikasi utama (`deepsek.html`) menggunakan palet merah-coral (`#FF6B6B`). Perlu unifikasi desain sebelum launch.
+Desain antarmuka Landing Page dan Aplikasi Utama telah disatukan mengikuti palet warna **Organic & Earthy Sage** (`#2C3A1E`, `#4E6B2F`, `#7A8C4A`, `#A6A96A`, `#D9DFB0`) sesuai ketetapan di `PRD_PKM.md`.
 
 ---
 

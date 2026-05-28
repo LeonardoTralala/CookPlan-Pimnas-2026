@@ -1,6 +1,6 @@
-# 🍳 Masakin — Rencana Masak Mingguan & Belanja Otomatis
+# 🍳 CookPlan — Rencana Masak Mingguan & Belanja Otomatis (PKM-K 2026)
 
-> **Cookplan** adalah aplikasi web yang membantu pengguna merencanakan menu masakan mingguan, menghasilkan daftar belanja otomatis, dan menghubungkan mereka dengan produsen bahan makanan lokal.
+> **CookPlan** adalah aplikasi web yang membantu pengguna merencanakan menu masakan mingguan, menghasilkan daftar belanja otomatis, dan menghubungkan mereka dengan produsen bahan makanan lokal.
 
 ---
 
@@ -20,10 +20,10 @@
 
 ## Tentang Projek
 
-**Masakin** (sebelumnya dikenal sebagai *Kukplen*) adalah aplikasi berbasis web yang dirancang untuk menyederhanakan proses perencanaan masakan dan belanja bahan makanan. Target utama pengguna adalah **mahasiswa kos** dan **pekerja kantoran** yang ingin memasak sendiri tanpa harus repot berpikir tiap hari.
+**CookPlan** adalah aplikasi berbasis web yang dirancang untuk menyederhanakan proses perencanaan masakan dan belanja bahan makanan bagi mahasiswa kos dan pekerja kantoran. Proyek ini dijalankan di bawah skema **PKM Kewirausahaan (PKM-K) 2026**.
 
 > [!NOTE]
-> **Status Kode Sekarang:** Projek ini sedang ditulis ulang dari awal (*code rebuild*). Oleh karena itu, belum ada fitur fungsional yang terimplementasi di kode utama baru. Berkas-berkas HTML yang ada (`Home page.html`, `deepsek.html`, `Untitled-2.html`, dan `Untitled-1.html`) adalah berkas purwarupa (*prototype reference*) dari tahap sebelumnya dan dipertahankan hanya sebagai acuan visual, fungsionalitas mock, dan alur antarmuka.
+> **Status Kode Sekarang:** Projek ini sedang ditulis ulang dari awal (*code rebuild*) ke arsitektur modern menggunakan **React (Vite) + Tailwind CSS v4 + Supabase**. Berkas-berkas purwarupa lama HTML statis (`Home page.html`, `deepsek.html`, dll.) sudah diarsipkan ke folder `/prototypes` dan dipertahankan hanya sebagai acuan logika mock dan referensi visual.
 
 ---
 
@@ -80,22 +80,23 @@ Aplikasi fungsional client-side berisi:
 
 | Layer | Teknologi |
 |-------|-----------|
-| Markup | HTML5 (Semantic) |
-| Styling | Tailwind CSS (via CDN) |
+| Frontend | React (Vite SPA) |
+| Styling | Tailwind CSS v4.0 |
 | Icons | Font Awesome v6.4.0 |
 | Typography | Google Fonts — Poppins |
-| Logic | Vanilla JavaScript (ES6+) |
-| Storage | In-memory state (no persistence) |
-| API | Mock data (no external API calls yet) |
+| Logic | React State Management |
+| Backend & DB | Supabase (PostgreSQL) |
+| Authentication | Supabase Auth (Email / OAuth) |
 
 **Color Palette:**
 
-| Variabel | Nilai | Digunakan di |
-|----------|-------|--------------|
-| `--primary` | `#4CAF50` (Green) | Landing Page |
-| `--primary` | `#FF6B6B` (Coral) | App (deepsek.html) |
-| `--secondary` | `#FF9800` (Orange) | Landing Page |
-| `--secondary` | `#4ECDC4` (Teal) | App (deepsek.html) |
+| Kode Hex | Kegunaan | Deskripsi Warna |
+|----------|----------|-----------------|
+| `#2C3A1E` | Background / Teks Primer | Dark Olive Green |
+| `#4E6B2F` | Warna Utama (Primary Brand) | Olive Green |
+| `#7A8C4A` | Warna Sekunder / Aksen Ringan | Medium Sage |
+| `#A6A96A` | Warna Aksen / Status / Border | Light Sage |
+| `#D9DFB0` | Background Card / Teks Sekunder | Cream Green |
 
 ---
 
@@ -143,6 +144,7 @@ graph TD
 
 | Dokumen | Deskripsi |
 |---------|-----------|
+| [`PRD_PKM.md`](./PRD_PKM.md) | Dokumen Kebutuhan Produk (PRD) versi penyelarasan PKM-K 2026 |
 | [`FEATURES.md`](./FEATURES.md) | Spesifikasi lengkap setiap fitur (implementasi & rencana) |
 | [`ROADMAP.md`](./ROADMAP.md) | Prioritas pengembangan dari prototype ke production |
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Struktur kode, state management, dan panduan integrasi |
@@ -163,4 +165,4 @@ Ringkasan singkat tahapan pengembangan selanjutnya:
 
 ---
 
-*Masakin © 2025 — Dibuat dengan ❤️ untuk para pejuang dapur kos dan kantoran.*
+*CookPlan © 2026 — Dibuat dengan ❤️ untuk para pejuang dapur kos dan kantoran.*

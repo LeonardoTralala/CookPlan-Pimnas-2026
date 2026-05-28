@@ -1,218 +1,114 @@
-# 🗺️ ROADMAP.md — Rencana Pengembangan Masakin
+# 🗺️ ROADMAP.md — Rencana Pengembangan CookPlan (PKM-K 2026)
 
-Dokumen ini mendefinisikan tahapan pengembangan Masakin dari purwarupa (*prototype*) menjadi produk siap produksi.
-
----
-
-## Status Saat Ini: Rebuild dari Awal (v0.0)
-
-Aplikasi sedang dibangun ulang dari awal (*code rebuild*). Purwarupa HTML statis sebelumnya (`deepsek.html`, `Home page.html`) saat ini dipertahankan hanya sebagai referensi visual dan alur logika mock. Seluruh fitur pada kode baru saat ini belum terimplementasi.
+Dokumen ini mendefinisikan tahapan pengembangan CookPlan dari validasi bisnis awal hingga menjadi produk digital siap pakai untuk monev PKM-K dan rencana jangka panjang pasca-PIMNAS.
 
 ---
 
-## Fase Pengembangan
+## Status Saat Ini: Rebuild dari Purwarupa (v0.0)
 
-### 🔄 Phase 0 — Rebuild Fondasi UI & Fitur Dasar
-> **Target:** Penulisan ulang struktur kode bersih (modular) dan antarmuka dasar dari nol
-
-- [ ] Landing page komersial yang bersih & konsisten
-- [ ] Struktur UI utama yang responsif
-- [ ] Kerangka modul autentikasi
-- [ ] Katalog resep dengan sistem pencarian & filter dasar
-- [ ] Weekly planner dasar (Senin–Minggu)
-- [ ] Auto shopping list (konversi menu ke bahan belanja)
-- [ ] Kalkulasi biaya belanja dasar
+Aplikasi sedang dalam tahap penulisan ulang kode (*code rebuild*) dari purwarupa statis HTML lama ke arsitektur modern berbasis **React SPA + Tailwind CSS v4 + Supabase**.
 
 ---
 
-### 🔧 Phase 1 — Foundation (v1.0)
-> **Target:** Aplikasi siap digunakan dengan data nyata dan persistence
-> **Estimasi:** 4–6 minggu
+## Garis Waktu Pengembangan PKM-K (4 Bulan)
 
-#### 1.1 Perbaikan Bug & Code Quality
-- [ ] Fix bug di fungsi `searchRecipes()` (missing closing parenthesis)
-- [ ] Refactor kode menjadi modular (pisahkan HTML, CSS, JS)
-- [ ] Tambahkan error handling dan validasi input yang lebih baik
-- [ ] Standardisasi penamaan variabel dan fungsi
-
-#### 1.2 Backend & Database
-- [ ] Setup Supabase project (atau Firebase)
-- [ ] Skema database:
-  - Tabel `users` — profil pengguna
-  - Tabel `recipes` — koleksi resep
-  - Tabel `weekly_plans` — rencana mingguan per user
-  - Tabel `shopping_lists` — daftar belanja tersimpan
-- [ ] Migrasi mock data resep ke database
-- [ ] Setup Row Level Security (RLS) di Supabase
-
-#### 1.3 Autentikasi Nyata
-- [ ] Integrasi Supabase Auth (email/password)
-- [ ] Login dengan Google OAuth
-- [ ] Persistent session (tidak logout saat refresh)
-- [ ] Reset password via email
-
-#### 1.4 Persistensi Data
-- [ ] Weekly plan tersimpan di database (tidak hilang saat refresh)
-- [ ] Shopping list bisa disimpan dan diakses kembali
-- [ ] Sinkronisasi antar perangkat
-
----
-
-### 📚 Phase 2 — Recipe Expansion (v1.1)
-> **Target:** Katalog resep yang kaya dan komprehensif
-> **Estimasi:** 3–4 minggu
-
-#### 2.1 Integrasi Recipe API
-- [ ] Evaluasi dan pilih API: Spoonacular vs. Edamam vs. custom database
-- [ ] Integrasi API untuk pencarian resep
-- [ ] Cache hasil API untuk mengurangi quota usage
-- [ ] Tampilkan informasi nutrisi (kalori, protein, karbohidrat, lemak)
-
-#### 2.2 Fitur Resep Lanjutan
-- [ ] Filter berdasarkan preferensi diet (vegetarian, vegan, bebas gluten, halal)
-- [ ] Filter berdasarkan tingkat kesulitan (Mudah / Sedang / Sulit)
-- [ ] Simpan resep ke favorit
-- [ ] Rating dan ulasan resep oleh pengguna
-- [ ] Halaman detail resep dengan langkah-langkah memasak
-
-#### 2.3 Personalisasi
-- [ ] Rekomendasi resep berdasarkan riwayat pilihan
-- [ ] Filter resep berdasarkan bahan yang sudah ada di rumah (pantry)
-- [ ] Preferensi masakan per pengguna (simpan di profil)
-
----
-
-### 🏪 Phase 3 — Local Supplier Integration (v1.2)
-> **Target:** Menghubungkan daftar belanja dengan mitra lokal
-> **Estimasi:** 6–8 minggu
-
-#### 3.1 Database Supplier
-- [ ] Tabel `suppliers` — profil mitra produsen/distributor
-- [ ] Tabel `supplier_categories` — kategori produk yang dijual
-- [ ] Tabel `supplier_products` — daftar produk + harga + stok
-- [ ] Panel admin untuk onboarding mitra baru
-
-#### 3.2 Tampilan Pengguna
-- [ ] Setiap item di shopping list menampilkan supplier yang tersedia
-- [ ] Filter supplier: jarak, harga, rating, ketersediaan stok
-- [ ] Halaman profil supplier dengan informasi lengkap
-- [ ] Badge "✓ Terverifikasi" untuk mitra resmi
-
-#### 3.3 Geolocation
-- [ ] Integrasi Google Maps API / Mapbox
-- [ ] Tampilkan supplier terdekat berdasarkan lokasi pengguna
-- [ ] Estimasi jarak dan waktu pengambilan
-
----
-
-### 🚚 Phase 4 — Delivery Service (v1.3)
-> **Target:** Pesan bahan masakan dan terima di rumah
-> **Estimasi:** 8–10 minggu
-
-#### 4.1 Sistem Order
-- [ ] Alur pemesanan: Shopping List → Supplier → Checkout → Konfirmasi
-- [ ] Multi-supplier order dalam satu transaksi
-- [ ] Penjadwalan pengiriman (same-day / next-day / pilih tanggal)
-- [ ] Manajemen alamat pengiriman pengguna
-
-#### 4.2 Pembayaran
-- [ ] Integrasi payment gateway (Midtrans atau Xendit)
-- [ ] Metode pembayaran: transfer bank, e-wallet (GoPay, OVO, Dana), kartu kredit
-- [ ] Invoice digital via email
-- [ ] Riwayat transaksi
-
-#### 4.3 Tracking & Notifikasi
-- [ ] Real-time status tracking pengiriman
-- [ ] Notifikasi WhatsApp / SMS (via Twilio atau Fonnte)
-- [ ] Push notification browser saat status berubah
-- [ ] Rating pengalaman pengiriman
-
----
-
-### 🔔 Phase 5 — Smart Pantry & Reminder (v2.0)
-> **Target:** Manajemen stok bahan cerdas dengan pengingat
-> **Estimasi:** 4–6 minggu
-
-#### 5.1 Digital Pantry
-- [ ] Fitur input stok bahan yang sudah dibeli (nama, jumlah, tanggal beli)
-- [ ] Database ketahanan bahan berdasarkan kondisi penyimpanan
-- [ ] Dashboard "Apa yang ada di kulkasmu?" — lihat stok saat ini
-
-#### 5.2 Pengingat & Notifikasi
-- [ ] Notifikasi H-2 sebelum bahan mendekati expired
-- [ ] Pengingat stok hampir habis
-- [ ] Notifikasi pagi hari "Menu hari ini: [resep]"
-- [ ] Alert jika ada rencana masak tapi belum belanja bahan
-
-#### 5.3 Integrasi dengan Planner
-- [ ] Shopping list otomatis dikurangi dengan stok yang sudah ada
-- [ ] Saran resep berdasarkan bahan yang hampir expired (supaya tidak terbuang)
-
-#### 5.4 Progressive Web App (PWA)
-- [ ] Service Worker untuk offline access
-- [ ] App manifest (installable di Android & iOS)
-- [ ] Push notification via Firebase Cloud Messaging (FCM)
-
----
-
-## Prioritas Berdasarkan Dampak
-
+```mermaid
+gantt
+    title Garis Waktu CookPlan PKM-K 2026
+    dateFormat  YYYY-MM-DD
+    section Bulan 1-2
+    Validasi Operasional Bisnis & Mitra   :active, 2026-06-01, 60d
+    section Bulan 3
+    Rebuild Web & Integrasi Supabase      : 2026-08-01, 30d
+    Alpha & Beta Testing (SUS)           : 2026-08-20, 10d
+    section Bulan 4
+    Uji Usabilitas Final & Monev         : 2026-09-01, 20d
+    Pendaftaran HKI & Laporan Akhir      : 2026-09-10, 20d
+    section Pasca-PIMNAS
+    Integrasi API Pihak Ketiga & PWA     : 2026-10-01, 60d
 ```
-High Impact, Low Effort  →  Kerjakan Pertama
-High Impact, High Effort →  Rencanakan dengan Matang
-Low Impact, Low Effort   →  Isi Celah
-Low Impact, High Effort  →  Tunda / Evaluasi Ulang
-```
+
+---
+
+## Fase Pengembangan Detail
+
+### 🔄 Fase 1 — Bulan 1 & 2: Validasi Operasional Bisnis & Mitra (Pre-App)
+> **Target:** Memvalidasi pasar, mendapatkan transaksi riil pertama secara manual, dan onboarding mitra lokal.
+
+- [ ] **Onboarding Mitra Lokal:** Menjalin kerja sama dropship dengan pedagang sayur/kelontong lokal di dekat area uji coba.
+- [ ] **Pemasaran & Pre-Order Manual:** Meluncurkan promosi ke mahasiswa kos dan menerima pesanan menu mingguan secara manual (Google Form & WhatsApp).
+- [ ] **Distribusi Pengiriman:** Menguji alur pengantaran bahan masakan menggunakan kurir tim PKM-K untuk mengukur kepuasan pelanggan awal dan menghitung margin profit nyata.
+- [ ] **Penyusunan Mockup UI/UX:** Mendesain visual aplikasi web menggunakan palet warna *sage green* berdasarkan masukan dari pengguna fase awal.
+
+---
+
+### 🔧 Fase 2 — Bulan 3: Pengembangan Sistem & Rebuild Web (MVP)
+> **Target:** Menyelesaikan aplikasi web fungsional dengan database dinamis yang terintegrasi.
+
+#### 2.1 Refactor & Setup Front-End
+- [ ] Setup proyek React (Vite) dengan Tailwind CSS v4.0.
+- [ ] Terapkan desain antarmuka responsif (Mobile-first).
+- [ ] Konfigurasi skema warna global sesuai PRD:
+  * Primer: `#4E6B2F` (Olive Green)
+  * Sekunder: `#7A8C4A` (Medium Sage)
+  * Background: `#2C3A1E` (Dark Olive) & `#D9DFB0` (Cream Green)
+
+#### 2.2 Integrasi Database & Backend (Supabase)
+- [ ] Integrasi Supabase Auth untuk registrasi & login user.
+- [ ] Buat skema database Supabase:
+  * Tabel `profiles` (profil pengguna)
+  * Tabel `recipes` & `recipe_ingredients` (katalog resep)
+  * Tabel `weekly_plans` & `meal_entries` (rencana masak mingguan)
+  * Tabel `orders` & `order_items` (rekaman transaksi & ID pesanan unik)
+  * Tabel `subscriptions` (paket langganan bulanan)
+- [ ] Migrasi data 7 resep default ke Supabase.
+
+#### 2.3 Checkout Hibrida & WhatsApp Redirect
+- [ ] Hubungkan tombol Checkout dengan trigger penyimpanan baris baru ke tabel `orders` Supabase untuk memperoleh ID Pesanan unik (contoh: `#CP-260527-004`).
+- [ ] Integrasikan generator pesan WhatsApp dinamis yang memformat daftar belanjaan + ID pesanan ke tautan WhatsApp Admin.
+- [ ] Implementasikan visual demo pembayaran sandbox (Midtrans Sandbox) untuk menunjukkan sisi profesionalisme ke juri Monev.
+
+#### 2.4 Uji Coba Pengguna (User Testing)
+- [ ] **Alpha Testing:** Memastikan tidak ada bug sintaks (seperti bug pencarian bahan) dan alur penyimpanan database berjalan lancar.
+- [ ] **Beta Testing:** Meminta 10–15 mahasiswa kos menggunakan aplikasi CookPlan selama 1 minggu.
+- [ ] **Pengukuran SUS:** Membagikan kuesioner dan menghitung skor System Usability Scale (target >78).
+
+---
+
+### 🏆 Fase 3 — Bulan 4: Penilaian Monev, HKI, & Launching
+> **Target:** Penilaian Monev PKM-K, perlindungan hukum produk, dan pelaporan akhir.
+
+- [ ] **Pendaftaran HKI (Hak Cipta):** Mendaftarkan program aplikasi web CookPlan ke DJKI untuk perlindungan Hak Kekayaan Intelektual (luaran PKM wajib).
+- [ ] **Analisis Finansial PKM-K:** Merangkum total omzet penjualan, margin laba bersih, dan laju pertumbuhan pengguna dari database.
+- [ ] **Penyusunan Laporan Akhir:** Memasukkan hasil uji coba, SUS score, dan performa keuangan ke dalam Laporan Akhir PKM-K.
+- [ ] **Persiapan Presentasi PIMNAS:** Membuat slide presentasi dan video promosi aplikasi CookPlan dengan visualisasi data transaksi yang meyakinkan.
+
+---
+
+### 🚀 Fase Pasca-PIMNAS — Skalabilitas & Ekspansi (v1.5 - v2.0)
+> **Target:** Menjadikan CookPlan sebagai bisnis startup yang berkelanjutan dan fully automated.
+
+- [ ] **Integrasi API Logistik Nyata:** Menghubungkan platform dengan API pihak ketiga seperti BiteShip atau GoSend untuk otomatisasi pengantaran.
+- [ ] **API Resep Eksternal:** Menghubungkan ke API resep global (Edamam atau Spoonacular) untuk memperluas pustaka resep.
+- [ ] **PWA (Progressive Web App):** Membuat aplikasi dapat diinstal di Android/iOS dan mendukung notifikasi pengingat ketahanan bahan makanan secara luring (*offline notification*).
+- [ ] **Pembayaran Otomatis Riil:** Mengaktifkan API Midtrans/Xendit Production untuk memproses pembayaran non-tunai langsung di web tanpa WhatsApp redirect.
+
+---
+
+## Skala Prioritas Fitur (Prioritization Matrix)
 
 | Fitur | Impact | Effort | Prioritas |
 |-------|--------|--------|-----------|
-| Fix bug searchRecipes | Medium | Low | 🔴 Segera |
-| Supabase Auth | High | Medium | 🔴 Segera |
-| Persistensi data | High | Medium | 🔴 Segera |
-| Recipe API integration | High | Medium | 🟠 Berikutnya |
-| Local supplier | High | High | 🟡 Phase 3 |
-| Delivery system | High | Very High | 🟡 Phase 4 |
-| Pantry & reminder | Medium | Medium | 🟢 Phase 5 |
-| PWA | Medium | Medium | 🟢 Phase 5 |
+| Fix Bug Pencarian Bahan | High | Low | 🔴 Segera (Bulan 3) |
+| Supabase Auth & DB | High | Medium | 🔴 Segera (Bulan 3) |
+| WhatsApp ID Redirect | High | Low | 🔴 Segera (Bulan 3) |
+| Simulasi Checkout & Payment | High | Medium | 🔴 Segera (Bulan 3) |
+| Uji Coba SUS & Validasi | High | Medium | 🔴 Segera (Bulan 3-4) |
+| Langganan Bulanan (Subscription) | Medium | Medium | 🟠 Sedang (Bulan 4) |
+| Live Payment Gateway | Medium | High | 🟡 Nanti (Pasca-PIMNAS) |
+| Live Logistics API (BiteShip) | Medium | High | 🟡 Nanti (Pasca-PIMNAS) |
+| Notifikasi PWA & Smart Pantry | Medium | High | 🟡 Nanti (Pasca-PIMNAS) |
 
 ---
 
-## Teknologi yang Direkomendasikan
-
-### Backend
-```
-Supabase (PostgreSQL + Auth + Realtime + Storage)
-  └── Cocok untuk projek ini karena:
-      - Open-source & generous free tier
-      - Built-in auth, realtime, dan storage
-      - REST & GraphQL API otomatis
-      - Mudah di-migrate ke self-hosted jika diperlukan
-```
-
-### Frontend (jika dimigrasi ke framework)
-```
-Next.js (React)
-  └── Cocok karena:
-      - SSR untuk SEO landing page
-      - SPA behavior untuk app section
-      - File-based routing
-      - Ekosistem besar
-```
-
-### Notifications
-```
-Firebase Cloud Messaging (FCM)
-  └── Untuk push notification browser & mobile
-```
-
-### Payment
-```
-Midtrans
-  └── Payment gateway lokal Indonesia terpercaya
-      - Mendukung semua e-wallet populer Indonesia
-      - Snap UI yang mudah diintegrasikan
-```
-
----
-
-*Roadmap ini bersifat dinamis dan dapat berubah berdasarkan feedback pengguna dan prioritas bisnis.*
+*Roadmap ini bersifat dinamis dan dievaluasi setiap minggu bersama seluruh anggota tim CookPlan.*
