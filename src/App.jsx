@@ -5,6 +5,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('overview');
 
   // State rencana masak mingguan (diambil dari localStorage jika ada)
+  // eslint-disable-next-line no-unused-vars
   const [weeklyPlan, setWeeklyPlan] = useState(() => {
     const saved = localStorage.getItem('weeklyPlan');
     return saved ? JSON.parse(saved) : {
