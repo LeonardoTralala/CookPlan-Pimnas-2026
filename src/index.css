@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary: #375219;
+  --color-primary-container: #4e6b2f;
+  --color-on-primary-container: #c8eaa0;
+  --color-secondary: #546527;
+  --color-secondary-container: #d4e89c;
+  --color-surface-cream: #d9dfb0;
+  --color-canvas-white: #fbfaf9;
+  --color-on-surface: #121f06;
+  --color-on-surface-variant: #44483d;
+  --color-outline-variant: #c4c8b9;
+  --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
+}
+
+@utility recipe-card-shadow {
+  box-shadow: 0 8px 20px -4px rgba(44, 58, 30, 0.06);
+  transition: all 0.3s ease;
+  &:hover {
+    box-shadow: 0 12px 24px -4px rgba(44, 58, 30, 0.12);
+  }
+}
