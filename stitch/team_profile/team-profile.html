@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>About Us - CookPlan</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap"
+        rel="stylesheet">
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet">
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Configuration -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#e1e49f",
+                        "primary-fixed-dim": "#afd189",
+                        "surface-bright": "#efffd9",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#161f00",
+                        "inverse-on-surface": "#e5f7ce",
+                        "surface-container-low": "#e8fad1",
+                        "secondary": "#546527",
+                        "background": "#efffd9",
+                        "on-secondary-fixed-variant": "#3d4c11",
+                        "on-primary-fixed": "#0f2000",
+                        "surface-variant": "#d7e9c0",
+                        "inverse-surface": "#273419",
+                        "secondary-fixed-dim": "#bbcf85",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d4e89c",
+                        "on-secondary-container": "#58692b",
+                        "error": "#ba1a1a",
+                        "primary-container": "#4e6b2f",
+                        "on-error": "#ffffff",
+                        "canvas-white": "#FBFAF9",
+                        "surface-container-highest": "#d7e9c0",
+                        "tertiary-fixed": "#e4e7a2",
+                        "secondary-fixed": "#d7eb9f",
+                        "on-tertiary-fixed": "#1b1d00",
+                        "on-surface-variant": "#44483d",
+                        "surface-dim": "#cfe0b8",
+                        "action-blue": "#3784F4",
+                        "tertiary": "#4b4e19",
+                        "success-green": "#34C759",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c4c8b9",
+                        "on-primary-container": "#c8eaa0",
+                        "on-surface": "#121f06",
+                        "on-primary": "#ffffff",
+                        "surface": "#efffd9",
+                        "tertiary-fixed-dim": "#c8cb88",
+                        "surface-cream": "#D9DFB0",
+                        "primary": "#375219",
+                        "on-tertiary-fixed-variant": "#474a15",
+                        "surface-container-high": "#ddeec6",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#334e15",
+                        "tertiary-container": "#63662e",
+                        "inverse-primary": "#afd189",
+                        "on-background": "#121f06",
+                        "surface-container": "#e2f4cb",
+                        "outline": "#74796c",
+                        "primary-fixed": "#cbeea3",
+                        "surface-tint": "#4a672b",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "3xl": "1.5rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "margin-desktop": "40px",
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "section-py": "96px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-canvas-white text-on-surface antialiased min-h-screen flex flex-col">
+    <!-- TopNavBar -->
+    <header
+        class="w-full bg-canvas-white dark:bg-inverse-surface border-b border-outline-variant dark:border-outline sticky top-0 z-50">
+        <div
+            class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
+            <!-- Brand Logo -->
+            <div
+                class="font-headline-lg text-headline-lg font-bold text-primary dark:text-inverse-primary cursor-pointer">
+                CookPlan
+            </div>
+            <!-- Navigation Links (Hidden on Mobile, flex on md+) -->
+            <nav class="hidden md:flex gap-8 items-center">
+                <a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors font-label-md text-label-md"
+                    href="#">
+                    Catalog
+                </a>
+                <a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors font-label-md text-label-md"
+                    href="#">
+                    Planner
+                </a>
+                <a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors font-label-md text-label-md"
+                    href="#">
+                    Shopping List
+                </a>
+            </nav>
+            <!-- Trailing Action -->
+            <div class="flex items-center gap-4">
+                <button
+                    class="w-10 h-10 rounded-full hover:bg-surface-container-low dark:hover:bg-surface-variant transition-all flex items-center justify-center text-on-surface-variant">
+                    <span class="material-symbols-outlined">person</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <!-- Main Content Canvas -->
+    <main class="flex-grow flex flex-col w-full">
+        <!-- Hero Section -->
+        <section
+            class="w-full px-margin-mobile md:px-margin-desktop py-section-py max-w-container-max mx-auto text-center flex flex-col items-center justify-center">
+            <h1 class="font-headline-xl text-headline-xl text-primary max-w-3xl mb-6">
+                Simplifying Meal Planning for Busy Minds
+            </h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-12">
+                Born from the everyday struggles of students and office workers, CookPlan is an initiative to bring
+                structure, health, and simplicity back into the kitchen. We believe good food shouldn't be a source of
+                stress.
+            </p>
+            <!-- Atmospheric Image -->
+            <div class="w-full h-64 md:h-96 rounded-3xl overflow-hidden relative shadow-sm">
+                <img alt="Fresh ingredients in a bright kitchen" class="w-full h-full object-cover"
+                    data-alt="A bright, airy modern kitchen setting viewed from a slightly elevated angle. Sunlight streams in through large windows, illuminating a rustic wooden table scattered with fresh ingredients like basil, tomatoes, and artisan bread. The color palette emphasizes soft whites, natural wood tones, and vibrant organic greens. The overall aesthetic is clean, minimalist, and deeply inviting, capturing the essence of effortless healthy cooking."
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTan0YwTAFImhRNy7X1vnggjL3YGOlrlNO4RaqGTpyaaUFS1sQWUXhb7VJPzst2I4iX1dxGED24bwrFFQmLo2I9FdR5BYtFlqP8x_M46UlikamyzGmEgQfvOEXwqOaR-BlB5OB10XOvIPn1D-xTzR9EMilqh8xDqmHhjYhUNAMOHxviTwlgCMgzsDFRwungMI7B-VmO7i14q4zkCXiPZA9sV52edJPRRAA2EdYMi7-xl1Ofp4AIiBYBLrzGpsFXN8iWxoTUj9Zl-ay">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+            </div>
+        </section>
+        <!-- Team Members Section -->
+        <section class="w-full bg-surface-container-lowest py-section-py">
+            <div class="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+                <div class="mb-12 text-center md:text-left">
+                    <h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">Meet the Team</h2>
+                    <p class="font-body-md text-body-md text-on-surface-variant">The passionate individuals building
+                        your next favorite kitchen assistant.</p>
+                </div>
+                <!-- Bento Grid Layout for Team -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-gutter">
+                    <!-- Team Card 1 -->
+                    <div
+                        class="lg:col-span-2 bg-surface-cream rounded-3xl p-8 flex flex-col items-center text-center transition-transform hover:-translate-y-1 duration-300">
+                        <div class="w-32 h-32 rounded-full mb-6 overflow-hidden border-4 border-canvas-white shadow-sm">
+                            <img alt="Team Member Avatar" class="w-full h-full object-cover"
+                                data-alt="A close-up portrait of a young professional male in a well-lit, natural outdoor environment. He is wearing a casual yet tidy olive green sweater. The lighting is soft and diffused, highlighting a warm, approachable smile. The background is slightly blurred featuring natural greenery, perfectly aligning with an organic, clean lifestyle aesthetic."
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpHb7tYloa0BDmp1tla8W5Z3fGq_SoNEovlqzjkckmk329EjCLlyL9y_LOHFjn701JkOQ2zY15yNZ6b4oXfvPPZRho5hGmc3LRkXHhMsm1IFS1I2xZKgsnjBObldhtq_ZbWFCbgw0IqXB5jjzOHHDqYnZQR0n0Fx9VYHMVsbF-LpU_wjfb4LubMPB5aTV4AMBQhkF84ace_ds_XAdkXmGp5ylGLJThszi5sOVZOcnimn9OyGVyXslhaC1uC6vMZeIaIBibtlccSIf3">
+                        </div>
+                        <h3 class="font-headline-md text-headline-md text-on-surface mb-1">Alex Roihan</h3>
+                        <span
+                            class="font-label-md text-label-md text-primary-container bg-primary-fixed px-4 py-1 rounded-full mb-4">Team
+                            Leader</span>
+                        <p class="font-body-md text-body-md text-on-surface-variant mt-auto">Orchestrating the vision
+                            and keeping the team aligned with our core mission.</p>
+                    </div>
+                    <!-- Team Card 2 -->
+                    <div
+                        class="lg:col-span-2 bg-surface-cream rounded-3xl p-8 flex flex-col items-center text-center transition-transform hover:-translate-y-1 duration-300">
+                        <div class="w-32 h-32 rounded-full mb-6 overflow-hidden border-4 border-canvas-white shadow-sm">
+                            <img alt="Team Member Avatar" class="w-full h-full object-cover"
+                                data-alt="A bright, professional portrait of a young woman with a friendly, confident expression. She is standing in a modern, light-filled studio space with subtle architectural details. Her attire is smart casual in neutral tones. The photography style is high-key with soft contrast, emphasizing a clean, contemporary, and trustworthy brand image."
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT7YooE8UjaErpcem6_aP9yMu4WEXnMD7EKOvFIGQURRt78sKD5XKv9ne6KcW6Ze2gM0wdfwLNqOVTgXIwXVAlU9PPK7l0Xux0NqGex-YXs_d1SZiI10P6gH62N58x-aokikuoxFG3O28w7tc0zy41gKFkDrEhKlLAmPoj-0u2QMqaquhXh94-3q_K2LfL32rDbkFlh3-UCwwmMYTY5U0EChmftdjmnlrbxY8BACD18Zme_d79Srx3Y2xadVXZifGoGI6wD-XuYvsh">
+                        </div>
+                        <h3 class="font-headline-md text-headline-md text-on-surface mb-1">Sarah Devina</h3>
+                        <span
+                            class="font-label-md text-label-md text-primary-container bg-primary-fixed px-4 py-1 rounded-full mb-4">Lead
+                            Developer</span>
+                        <p class="font-body-md text-body-md text-on-surface-variant mt-auto">Translating complex
+                            nutritional data into a seamless, fast user experience.</p>
+                    </div>
+                    <!-- Team Card 3 -->
+                    <div
+                        class="lg:col-span-2 bg-surface-cream rounded-3xl p-8 flex flex-col items-center text-center transition-transform hover:-translate-y-1 duration-300">
+                        <div class="w-32 h-32 rounded-full mb-6 overflow-hidden border-4 border-canvas-white shadow-sm">
+                            <img alt="Team Member Avatar" class="w-full h-full object-cover"
+                                data-alt="A portrait of a creative young male professional, captured in a trendy, minimalist workspace. He is looking slightly off-camera thoughtfully. The lighting features soft, natural daylight casting gentle shadows, enhancing the depth. The color palette includes muted earthy tones, echoing a sophisticated, organic design sensibility."
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp3lQYBRtDdRvMmO--uwGJTSqGoObhuJocmc9mEu4oCiZYLR9HnanM6teQzHsUNjnxMF9G1NiNp6L_mvmN97GWYopVncszvh9fAl7cQ5olwFArPaB_vI56zVJbxLJPsiuHSygABx2_MGHciOjUGqCvoCTTz30OAARH_dtbwZocvwczQEPcYjjVyFAXLHP-KDwbYrf6Sg_dbuT7NDJmG8YJ8NDZvBdoNpeTIu-PoqIsIQGqIu72ewDBrTOC9wKePledC5PLDykWD6sD">
+                        </div>
+                        <h3 class="font-headline-md text-headline-md text-on-surface mb-1">Budi Santoso</h3>
+                        <span
+                            class="font-label-md text-label-md text-primary-container bg-primary-fixed px-4 py-1 rounded-full mb-4">Marketing
+                            &amp; UI</span>
+                        <p class="font-body-md text-body-md text-on-surface-variant mt-auto">Crafting the visual
+                            identity and ensuring our voice reaches those who need it most.</p>
+                    </div>
+                    <!-- Team Card 4 -->
+                    <div
+                        class="lg:col-span-2 md:col-start-auto lg:col-start-2 bg-surface-cream rounded-3xl p-8 flex flex-col items-center text-center transition-transform hover:-translate-y-1 duration-300">
+                        <div class="w-32 h-32 rounded-full mb-6 overflow-hidden border-4 border-canvas-white shadow-sm">
+                            <img alt="Team Member Avatar" class="w-full h-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBC62N1k8-S7oYLiNHHRx5iTLjA52eu_m3NKeISKXuzNpDEEEykW6wcQpbJCoscJcZrmLguyicQKgZTJeruG841U4X0lOYGiajvRALuh5ktCprLLpD8OClMkjCGFtbAAY3yKVOAo1BfymjlUP-lHAhNR3w_dmF9U0iwIe22dvPR36-6NwK1s-FmffXkeu5IS5LuiB5tXo6KIyS9n24K7wnbJzVzlIbOyWHhvXWwlbUoeIc5SJi6JWoAiFJYugxmBbJz_E45J79wFqZ0">
+                        </div>
+                        <h3 class="font-headline-md text-headline-md text-on-surface mb-1">Diana Larasati</h3>
+                        <span
+                            class="font-label-md text-label-md text-primary-container bg-primary-fixed px-4 py-1 rounded-full mb-4">UI/UX
+                            Designer</span>
+                        <p class="font-body-md text-body-md text-on-surface-variant mt-auto">Ensuring every interaction
+                            feels natural and delightful for our users.</p>
+                    </div>
+                    <!-- Team Card 5 -->
+                    <div
+                        class="lg:col-span-2 bg-surface-cream rounded-3xl p-8 flex flex-col items-center text-center transition-transform hover:-translate-y-1 duration-300">
+                        <div class="w-32 h-32 rounded-full mb-6 overflow-hidden border-4 border-canvas-white shadow-sm">
+                            <img alt="Team Member Avatar" class="w-full h-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAraZeNcJYcOHCmXxW4l7dsh4i4zvOChnBnscgKTrKClCUxUKWZuzTxPQdnZ5vOtoyiouX6U-KxW1JEwH6jHAvd55l9SyujPtAzR7K3jKK_DgULWFN08o-vTsjAoSo8pVpSHiNrnb_hmGuwjWVchpdPgBIhLN4boZBkbU9f9n-WkhvLb7Nqd4ZxhVYxt-cI9NrRU5R0GnntwB1cL_gq2pwW9EjfyZ6JVGM4gzrUkosTRM7Msp3DoXFWqwS_mrFI4xrhGNCv5JxBfQRn">
+                        </div>
+                        <h3 class="font-headline-md text-headline-md text-on-surface mb-1">Kevin Pratama</h3>
+                        <span
+                            class="font-label-md text-label-md text-primary-container bg-primary-fixed px-4 py-1 rounded-full mb-4">Operations</span>
+                        <p class="font-body-md text-body-md text-on-surface-variant mt-auto">Keeping the wheels turning
+                            and ensuring smooth delivery of our services.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Advisor Section -->
+        <section class="w-full bg-surface-container-low py-section-py border-t border-outline-variant/30">
+            <div class="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+                <div
+                    class="flex flex-col md:flex-row items-center gap-12 bg-canvas-white rounded-3xl p-8 md:p-12 shadow-sm border border-outline-variant/50">
+                    <div class="w-48 h-48 flex-shrink-0 rounded-2xl overflow-hidden shadow-md">
+                        <img alt="Project Advisor Avatar" class="w-full h-full object-cover"
+                            data-alt="A formal yet warm portrait of an experienced male mentor or professor. He is wearing a neat blazer and standing in a modern academic or library setting. The lighting is distinguished and clear, projecting authority and wisdom. The surrounding environment uses a muted, elegant color palette that complements the overall organic minimalist theme without being distracting."
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJGeaql2BD_nXf_7ymZ7NnrVxA4GD4PWK9UGb8h3Zvm4RZTyJ2p5hSue_Rk9gQWNhfoTU6pn7tbeGDyUh9NH_lVnlUpR-rYDvxvKCNdrGcAvJ1P7l6-d800ZDCNUH1MLQS-CeqGOjCdrHzRSLF53FT4mXBt7tD3W99jxcVntHfYGSsEyG6oPm7cfyTGMOntuNfKd0nIQBUWZUo5Bpwp6LEOICvJUOZ4gImFDO8U_6X73B1Vk8ApPNnHRJLcxPp-Juv4iVqEQ8qDdEG">
+                    </div>
+                    <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                        <div class="flex items-center gap-2 mb-2 text-primary">
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">verified</span>
+                            <span
+                                class="font-label-sm text-label-sm uppercase tracking-widest text-primary-container">Project
+                                Advisor</span>
+                        </div>
+                        <h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">Dr. Hendra Wijaya, M.Sc.</h2>
+                        <p class="font-body-lg text-body-lg text-on-surface-variant mb-6 max-w-2xl">
+                            "Guiding this talented group through the PKM-K program has been incredibly rewarding. Their
+                            dedication to solving real-world dietary challenges with a beautifully engineered platform
+                            sets a new standard for student innovation."
+                        </p>
+                        <div class="flex gap-4">
+                            <span class="inline-flex items-center gap-2 font-label-md text-label-md text-secondary">
+                                <span class="material-symbols-outlined text-[18px]">school</span> Faculty of Computer
+                                Science
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer class="w-full bg-surface-container-highest dark:bg-inverse-surface mt-auto">
+        <div
+            class="w-full px-margin-mobile md:px-margin-desktop py-12 flex flex-col md:flex-row justify-between items-center max-w-container-max mx-auto gap-8">
+            <!-- Brand & Copyright -->
+            <div class="flex flex-col items-center md:items-start gap-2">
+                <div class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">
+                    CookPlan
+                </div>
+                <div class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant">
+                    ©2026 CookPlan All rights reserved.
+                </div>
+            </div>
+            <!-- Footer Links -->
+            <div class="flex flex-wrap justify-center gap-6">
+                <a class="font-label-sm text-label-sm text-primary dark:text-inverse-primary font-bold hover:text-primary dark:hover:text-inverse-primary transition-opacity duration-200"
+                    href="#">
+                    About Us
+                </a>
+                <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-opacity duration-200"
+                    href="#">
+                    Support
+                </a>
+                <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-opacity duration-200"
+                    href="#">
+                    Privacy Policy
+                </a>
+                <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-opacity duration-200"
+                    href="#">
+                    Terms of Service
+                </a>
+            </div>
+        </div>
+    </footer>
+
+
+</body>
+
+</html>
