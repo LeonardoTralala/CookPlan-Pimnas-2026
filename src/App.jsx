@@ -79,7 +79,7 @@ function App() {
         <div className="flex items-center gap-3">
           <span className="text-3xl">🍳</span>
           <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">Masakin</h1>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">CookPlan</h1>
             <p className="text-xs text-slate-500 font-medium">Meal Planner & Local Sourcing</p>
           </div>
         </div>
@@ -123,7 +123,7 @@ function App() {
               <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
                 Penulisan Ulang Kode <br />
                 <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-300 bg-clip-text text-transparent">
-                  Masakin Sedang Berjalan
+                  CookPlan Sedang Berjalan
                 </span>
               </h2>
               <p className="text-lg text-slate-400 leading-relaxed">
@@ -147,14 +147,27 @@ function App() {
               </div>
             </div>
 
-            {/* Quick Warning/Notice */}
-            <div className="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-6 max-w-2xl mx-auto flex items-start gap-4 backdrop-blur-sm">
-              <span className="text-2xl mt-1">📁</span>
-              <div>
-                <h4 className="font-bold text-slate-200">Referensi Kode Lama Disimpan</h4>
-                <p className="text-sm text-slate-400 mt-1 leading-relaxed">
-                  Semua berkas purwarupa HTML statis yang dikembangkan sebelumnya (seperti <code>deepsek.html</code> dan <code>Home page.html</code>) telah dipindahkan dengan aman ke dalam folder <code>/prototypes</code> untuk referensi desain antarmuka dan logika mock.
-                </p>
+            {/* Quick Documentation Navigation Links */}
+            <div className="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-6 max-w-2xl mx-auto flex flex-col gap-4 backdrop-blur-sm">
+              <div className="flex items-start gap-4">
+                <span className="text-2xl mt-1">📄</span>
+                <div>
+                  <h4 className="font-bold text-slate-200">Dokumentasi Proyek CookPlan</h4>
+                  <p className="text-sm text-slate-400 mt-1 leading-relaxed">
+                    Seluruh berkas purwarupa awal HTML statis telah dibersihkan demi kerapian repositori. Anda dapat mempelajari arsitektur target, fitur, dan panduan melalui file dokumentasi utama berikut:
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-800/50">
+                <a href="./README.md" className="flex items-center justify-center py-2 px-3 bg-slate-950/60 hover:bg-slate-900 border border-slate-850 hover:border-slate-700 text-xs font-semibold rounded-lg transition-all text-orange-400">
+                  📖 README.md
+                </a>
+                <a href="./ARCHITECTURE.md" className="flex items-center justify-center py-2 px-3 bg-slate-950/60 hover:bg-slate-900 border border-slate-850 hover:border-slate-700 text-xs font-semibold rounded-lg transition-all text-orange-400">
+                  🏛️ ARCHITECTURE.md
+                </a>
+                <a href="./PRD_PKM.md" className="flex items-center justify-center py-2 px-3 bg-slate-950/60 hover:bg-slate-900 border border-slate-850 hover:border-slate-700 text-xs font-semibold rounded-lg transition-all text-orange-400">
+                  📋 PRD_PKM.md
+                </a>
               </div>
             </div>
           </div>
@@ -261,7 +274,7 @@ function App() {
 
       {/* Footer */}
       <footer className="mt-auto border-t border-slate-900 bg-slate-950 px-6 py-6 text-center text-xs text-slate-600">
-        <p>Masakin © 2026 — Clean Architecture Rebuild. Dibuat untuk Pimnas 2026.</p>
+        <p>CookPlan © 2026 — Clean Architecture Rebuild. Dibuat untuk Pimnas 2026.</p>
       </footer>
     </div>
   );

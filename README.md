@@ -23,7 +23,7 @@
 **CookPlan** adalah aplikasi berbasis web yang dirancang untuk menyederhanakan proses perencanaan masakan dan belanja bahan makanan bagi mahasiswa kos dan pekerja kantoran. Proyek ini dijalankan di bawah skema **PKM Kewirausahaan (PKM-K) 2026**.
 
 > [!NOTE]
-> **Status Kode Sekarang:** Projek ini sedang ditulis ulang dari awal (*code rebuild*) ke arsitektur modern menggunakan **React (Vite) + Tailwind CSS v4 + Supabase**. Berkas-berkas purwarupa lama HTML statis (`Home page.html`, `deepsek.html`, dll.) sudah diarsipkan ke folder `/prototypes` dan dipertahankan hanya sebagai acuan logika mock dan referensi visual.
+> **Status Kode Sekarang:** Projek ini dikembangkan menggunakan arsitektur modern **React (Vite) + Tailwind CSS v4 + Supabase**. Seluruh kode purwarupa (*prototype*) awal telah dibersihkan agar struktur repositori tetap profesional dan terorganisir.
 
 ---
 
@@ -38,41 +38,46 @@
 | 5 | 🚚 Pengiriman Bahan Masakan | 🔄 Planned |
 | 6 | 🔔 Pengingat Ketahanan Bahan | 🔄 Planned |
 
-> **Catatan:** Semua fitur saat ini berstatus **Planned (Direncanakan)** karena projek sedang dalam proses penulisan ulang kode dari awal (*code rebuild*). Berkas HTML lama (`Home page.html`, `deepsek.html`, dll.) digunakan sebagai acuan/referensi purwarupa saja. Lihat [`FEATURES.md`](./FEATURES.md) untuk rincian spesifikasi.
+> **Catatan:** Semua fitur saat ini berstatus **Planned (Direncanakan)** karena projek sedang dalam proses penulisan ulang kode dari awal (*code rebuild*). Berkas HTML lama (`Home page.html`, `deepsek.html`, dll.) digunakan sebagai acuan/referensi purwarupa saja. Lihat [`FEATURES.md`](./docs/FEATURES.md) untuk rincian spesifikasi.
 
 ---
 
 ## Struktur Berkas
 
 ```
-Cookplan/
-├── Home page.html       # Landing Page utama (Masakin)
-├── deepsek.html         # Aplikasi utama fungsional (Kukplen core)
-├── Untitled-2.html      # UI Prototype / desain komponen
-├── Untitled-1.html      # Draft awal (pure CSS + Spoonacular API plan)
-├── README.md            # Dokumen ini
-├── FEATURES.md          # Dokumentasi detail fitur
-├── ROADMAP.md           # Rencana pengembangan
-└── ARCHITECTURE.md      # Dokumentasi arsitektur teknis
+CookPlan/
+├── docs/                 # Dokumentasi proyek (PRD, Arsitektur, Fitur, Roadmap)
+│   ├── ARCHITECTURE.md   # Dokumentasi arsitektur teknis sistem
+│   ├── FEATURES.md       # Dokumentasi spesifikasi detail fitur
+│   ├── PRD_PKM.md        # Product Requirement Document (PRD) PKM-K 2026
+│   └── ROADMAP.md        # Rencana timeline pengembangan projek
+├── public/
+│   └── favicon.svg       # Aset favicon aplikasi
+├── src/
+│   ├── App.css           # Styling utama komponen
+│   ├── App.jsx           # Komponen root & navigasi halaman utama
+│   ├── index.css         # Entry point styling global (Tailwind CSS v4)
+│   └── main.jsx          # Entry point rendering React ke DOM
+├── .gitignore            # Konfigurasi pengabaian berkas Git
+├── CONTRIBUTING.md       # Panduan kontribusi untuk kolaborasi tim
+├── eslint.config.js      # Konfigurasi linter ESLint
+├── index.html            # Berkas HTML utama/entry point Vite
+├── package.json          # Manifest projek & daftar dependensi
+├── package-lock.json     # Lockfile versi dependensi npm
+├── README.md             # Dokumen panduan utama repositori
+└── vite.config.js        # Konfigurasi build tool Vite
 ```
 
 ### Deskripsi Berkas Utama
 
-#### `Home page.html` — Landing Page
-Halaman depan komersial berisi:
-- Hero section dengan CTA
-- Daftar fitur unggulan (3 kartu fitur)
-- Cara Kerja (3 langkah: Pilih resep → Atur jadwal → Dapatkan daftar belanja)
-- Testimoni pengguna
-- FAQ interaktif (accordion)
-- Footer dengan informasi kontak
+#### `src/App.jsx`
+Komponen utama React yang mengatur tampilan visual, state aplikasi (seperti daftar tab aktif), dan struktur layout keseluruhan (Header, Hero, Feature Grid, dan Footer).
 
-#### `deepsek.html` — Aplikasi Utama
-Aplikasi fungsional client-side berisi:
-- Modul autentikasi (Login / Register)
-- Katalog resep dengan pencarian & filter
-- Weekly Planner (kalender mingguan Senin–Minggu)
-- Auto Shopping List dengan kategorisasi dan kalkulasi biaya
+#### `src/main.jsx` & `index.html`
+Titik masuk utama aplikasi. `main.jsx` merender komponen React `App` ke dalam element DOM root yang didefinisikan di dalam `index.html`.
+
+#### `src/index.css` & `src/App.css`
+Konfigurasi styling global proyek menggunakan Tailwind CSS v4 serta modifikasi style tambahan untuk komponen antarmuka.
 
 ---
 
@@ -102,23 +107,27 @@ Aplikasi fungsional client-side berisi:
 
 ## Menjalankan Projek
 
-Karena proyek ini sedang dibangun ulang dari awal (*rebuild*), belum ada kode aplikasi utama yang berjalan. Namun, Anda dapat melihat dan menjalankan berkas purwarupa (*prototype*) HTML yang digunakan sebagai referensi desain dan alur:
+Untuk menjalankan proyek CookPlan versi React + Vite ini di lingkungan lokal Anda, ikuti langkah-langkah berikut:
 
-### Menjalankan Purwarupa Referensi (Prototype Reference)
+### Prasyarat
+Pastikan Anda sudah menginstal **Node.js** (versi 18 atau lebih baru) dan **npm** di komputer Anda.
 
-1. **Clone atau download** repositori ini ke komputer lokal.
-2. Pastikan terhubung ke **internet** (dibutuhkan oleh berkas purwarupa untuk memuat Tailwind CSS, Font Awesome, dan gambar dari Unsplash via CDN).
-3. Buka berkas `Home page.html` di browser (Klik ganda berkas atau klik kanan → *Open with* → Chrome/Firefox/Edge).
-4. Dari Landing Page purwarupa tersebut, Anda dapat mengklik **"Mulai Rencanakan Sekarang"** untuk membuka `deepsek.html` yang mensimulasikan alur aplikasi.
-5. Gunakan kredensial mock berikut untuk demo login cepat pada purwarupa:
+### Langkah-langkah Menjalankan Proyek:
 
-```
-Username : user1
-Password : password1
-```
-
-> [!WARNING]
-> Berkas-berkas HTML di atas hanyalah referensi purwarupa statis. Pembangunan ulang kode dari awal akan menggunakan struktur proyek baru yang bersih dan terorganisir.
+1. **Clone repositori** ini ke komputer lokal Anda:
+   ```bash
+   git clone https://github.com/LeonardoTralala/CookPlan-Pimnas-2026.git
+   cd CookPlan-Pimnas-2026
+   ```
+2. **Instal dependensi** yang dibutuhkan proyek:
+   ```bash
+   npm install
+   ```
+3. **Jalankan server pengembangan** lokal:
+   ```bash
+   npm run dev
+   ```
+4. Buka tautan lokal yang muncul di terminal (biasanya `http://localhost:5173`) menggunakan web browser Anda.
 
 ---
 
@@ -144,10 +153,10 @@ graph TD
 
 | Dokumen | Deskripsi |
 |---------|-----------|
-| [`PRD_PKM.md`](./PRD_PKM.md) | Dokumen Kebutuhan Produk (PRD) versi penyelarasan PKM-K 2026 |
-| [`FEATURES.md`](./FEATURES.md) | Spesifikasi lengkap setiap fitur (implementasi & rencana) |
-| [`ROADMAP.md`](./ROADMAP.md) | Prioritas pengembangan dari prototype ke production |
-| [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Struktur kode, state management, dan panduan integrasi |
+| [`PRD_PKM.md`](./docs/PRD_PKM.md) | Dokumen Kebutuhan Produk (PRD) versi penyelarasan PKM-K 2026 |
+| [`FEATURES.md`](./docs/FEATURES.md) | Spesifikasi lengkap setiap fitur (implementasi & rencana) |
+| [`ROADMAP.md`](./docs/ROADMAP.md) | Prioritas pengembangan dari prototype ke production |
+| [`ARCHITECTURE.md`](./docs/ARCHITECTURE.md) | Struktur kode, state management, dan panduan integrasi |
 
 ---
 
@@ -161,7 +170,7 @@ Ringkasan singkat tahapan pengembangan selanjutnya:
 4. **v1.3 — Delivery**: Layanan kurir bahan masakan ke rumah
 5. **v2.0 — PWA**: Aplikasi mobile-installable dengan notifikasi ketahanan bahan
 
-> Lihat [`ROADMAP.md`](./ROADMAP.md) untuk detail lengkap.
+> Lihat [`ROADMAP.md`](./docs/ROADMAP.md) untuk detail lengkap.
 
 ---
 

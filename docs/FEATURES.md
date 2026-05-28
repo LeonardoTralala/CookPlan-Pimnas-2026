@@ -19,15 +19,15 @@ Dokumen ini menjelaskan seluruh fitur aplikasi CookPlan secara detail untuk skem
 
 ## Fitur 1: Katalog Inspirasi Menu 🔄 Planned
 
-**Berkas:** `deepsek.html` (tab Recipes)
+**Modul Aplikasi:** Halaman Utama / Pustaka Resep (React Component)
 
 ### Deskripsi
 Pengguna dapat menjelajahi koleksi resep masakan khas Indonesia yang tersedia di aplikasi. Setiap kartu resep menampilkan informasi esensial untuk membantu pengguna memilih.
 
 ### Spesifikasi Teknis
-- **Data source:** Hardcoded mock data (7 resep default)
-- **Rendering:** JavaScript DOM manipulation (`displayRecipes()`)
-- **Filter logic:** Client-side filtering di fungsi `searchRecipes()`
+- **Data source:** Supabase Database (Tabel `recipes`)
+- **Rendering:** React Component Client-Side Rendering (`App.jsx`)
+- **Filter logic:** React state-driven filtering berdasarkan input pencarian dan filter porsi
 
 ### Resep yang Tersedia (Default)
 | ID | Nama | Waktu | Estimasi Harga |
@@ -56,20 +56,19 @@ Pengguna dapat menjelajahi koleksi resep masakan khas Indonesia yang tersedia di
 - Preview 3 bahan utama
 - Tombol **Add to Plan**
 
-### Catatan untuk Developer
-> Fungsi `searchRecipes()` di baris ~578 memiliki **bug kecil**: closing parenthesis pada `recipe.ingredients.some(...)` belum tertutup dengan benar. Perlu diperbaiki sebelum production.
+
 
 ---
 
 ## Fitur 2: Perencanaan Menu Mingguan 🔄 Planned
 
-**Berkas Rujukan:** `deepsek.html` (tab Planner)
+**Modul Aplikasi Rujukan:** Halaman Utama / Perencana Mingguan (React Component)
 
 ### Deskripsi
 Fitur untuk menyusun jadwal menu masakan untuk 7 hari ke depan (Senin–Minggu). Pengguna bisa menambahkan, menghapus, atau mengacak ulang rencana masakan kapan saja.
 
 ### Spesifikasi Teknis
-- **State:** Object `weeklyPlan` di JavaScript memory (tidak persist saat refresh)
+- **State:** React state `weeklyPlan` yang tersinkronisasi ke database Supabase / localStorage
 - **Tampilan:** Grid 7 kolom (responsive: 1 kolom di mobile, 3 di tablet, 7 di desktop)
 - **Interaksi:** Modal popup untuk memilih resep dan jumlah porsi
 
@@ -103,7 +102,7 @@ weeklyPlan = {
 
 ## Fitur 3: Daftar Belanja Otomatis 🔄 Planned
 
-**Berkas Rujukan:** `deepsek.html` (tab Shopping)
+**Modul Aplikasi Rujukan:** Halaman Utama / Daftar Belanja (React Component)
 
 ### Deskripsi
 Sistem secara otomatis mengkonversi rencana menu mingguan menjadi daftar belanja yang terkategorisasi, disesuaikan dengan jumlah porsi.
