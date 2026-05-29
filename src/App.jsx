@@ -121,7 +121,6 @@ function App() {
             className="flex items-center gap-3 cursor-pointer select-none"
           >
             <img src="/cookplan-logo.svg" alt="CookPlan Logo" className="w-8 h-8 shrink-0" />
-            <span className="font-sans font-bold text-2xl text-primary tracking-tight">CookPlan</span>
           </div>
 
           {/* Nav Links */}
@@ -387,7 +386,6 @@ function App() {
             <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-sm">
               <div className="flex items-center gap-3 mb-4">
                 <img src="/cookplan-logo.svg" alt="CookPlan Logo" className="w-8 h-8 shrink-0" />
-                <span className="font-bold text-2xl text-primary tracking-tight">CookPlan</span>
               </div>
               <p className="text-xs md:text-sm text-on-surface-variant leading-relaxed">
                 Membantu keluarga merencanakan makanan sehat dengan bahan lokal dan hemat budget.
