@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import RecipeCatalog from './pages/RecipeCatalog';
 import WeeklyPlanner from './pages/WeeklyPlanner';
+import UserProfile from './pages/UserProfile';
 
 const DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 const MEAL_TYPES = ['breakfast', 'lunch', 'dinner'];
@@ -140,7 +141,7 @@ function App() {
   ];
 
   // Halaman bertema terang (light) memakai header & footer yang sama
-  const isLightPage = activeTab === 'catalog' || activeTab === 'planner';
+  const isLightPage = activeTab === 'catalog' || activeTab === 'planner' || activeTab === 'profile';
 
   return (
     <div className="min-h-screen bg-[#FBFAF9] flex flex-col font-sans selection:bg-[#4E6B2F] selection:text-white">
@@ -190,6 +191,16 @@ function App() {
             >
               Shopping List
             </button>
+            <button
+              onClick={() => setActiveTab('profile')}
+              className={`pb-1 text-sm transition-colors cursor-pointer ${
+                activeTab === 'profile'
+                  ? 'text-primary font-bold border-b-2 border-primary'
+                  : 'text-on-surface-variant hover:text-primary font-semibold'
+              }`}
+            >
+              Profile
+            </button>
           </nav>
 
           {/* Right actions */}
@@ -200,14 +211,17 @@ function App() {
             >
               <span className="material-symbols-outlined text-2xl">search</span>
             </button>
-            <div className="flex items-center gap-2 cursor-pointer hover:bg-secondary-container/20 p-1 rounded-full pr-3 transition-all">
+            <button
+              onClick={() => setActiveTab('profile')}
+              className="flex items-center gap-2 cursor-pointer hover:bg-secondary-container/20 p-1 rounded-full pr-3 transition-all"
+            >
               <img
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6odIuOL3lOpT9KvOC3lLPVT9QUV5V0_ERHx_tm4JbQgrxb4YQ-3YA71v9MPggK9PKLK8GwLCrY58zvY2thnXRYIWZx_MKNu9T1unG1Loy-2z6TZjGTMM-Q2bC7lbTKVG_QQU2S_zKpH4kBECNu-_g_a8TxyfbpbYzlykIJEoGOVpfZFinQPBWE34Nvl7WSNewV3llUb5Xn4162z2Az3_VgWDc2t81tIMwMAQXKpjk_WSIyzTknKRzKQp6-MDp4YcBAzS12o2LGrDD"
                 alt="User profile"
                 className="w-8 h-8 rounded-full border border-outline-variant object-cover"
               />
               <span className="text-sm font-bold text-on-surface hidden sm:inline">Profile</span>
-            </div>
+            </button>
           </div>
         </header>
       ) : (
@@ -430,6 +444,10 @@ function App() {
             onRemoveSlot={handleRemoveSlot}
             onGoToCatalog={() => setActiveTab('catalog')}
           />
+        )}
+
+        {activeTab === 'profile' && (
+          <UserProfile />
         )}
 
       </main>
