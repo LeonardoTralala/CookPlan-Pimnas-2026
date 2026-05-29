@@ -1,7 +1,79 @@
 import { useState } from 'react';
+import RecipeCatalog from './pages/RecipeCatalog';
+import WeeklyPlanner from './pages/WeeklyPlanner';
+
+const DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+const MEAL_TYPES = ['breakfast', 'lunch', 'dinner'];
+
+// Struktur kosong rencana mingguan: setiap hari punya slot breakfast/lunch/dinner
+function createEmptyPlan() {
+  return DAYS.reduce((acc, day) => {
+    acc[day] = { breakfast: null, lunch: null, dinner: null };
+    return acc;
+  }, {});
+}
+
+// Pastikan data dari localStorage sesuai bentuk slot makan (migrasi dari format lama)
+function isValidPlanShape(plan) {
+  if (!plan || typeof plan !== 'object') return false;
+  return DAYS.every((day) => {
+    const slots = plan[day];
+    return slots && typeof slots === 'object' && !Array.isArray(slots) &&
+      MEAL_TYPES.every((meal) => meal in slots);
+  });
+}
 
 function App() {
   const [activeTab, setActiveTab] = useState('overview');
+
+  // State rencana masak mingguan (diambil dari localStorage jika ada & valid)
+  const [weeklyPlan, setWeeklyPlan] = useState(() => {
+    const saved = localStorage.getItem('weeklyPlan');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (isValidPlanShape(parsed)) return parsed;
+      } catch {
+        // abaikan data rusak, mulai dari kosong
+      }
+    }
+    return createEmptyPlan();
+  });
+
+  // Isi sebuah slot (hari + jenis makan) dengan resep
+  const handleSetSlot = (recipe, day, mealType, servings) => {
+    setWeeklyPlan((prev) => {
+      const updated = {
+        ...prev,
+        [day]: {
+          ...prev[day],
+          [mealType]: {
+            recipeId: recipe.id,
+            title: recipe.title,
+            servings: servings,
+            imageUrl: recipe.imageUrl,
+            priceIdr: recipe.priceIdr,
+            readyInMinutes: recipe.readyInMinutes,
+            calories: recipe.calories
+          }
+        }
+      };
+      localStorage.setItem('weeklyPlan', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  // Kosongkan kembali sebuah slot
+  const handleRemoveSlot = (day, mealType) => {
+    setWeeklyPlan((prev) => {
+      const updated = {
+        ...prev,
+        [day]: { ...prev[day], [mealType]: null }
+      };
+      localStorage.setItem('weeklyPlan', JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   const features = [
     {
@@ -67,54 +139,125 @@ function App() {
     }
   ];
 
+  // Halaman bertema terang (light) memakai header & footer yang sama
+  const isLightPage = activeTab === 'catalog' || activeTab === 'planner';
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-[#FBFAF9] flex flex-col font-sans selection:bg-[#4E6B2F] selection:text-white">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-orange-600 to-amber-500 text-center py-2 px-4 text-xs font-semibold tracking-wider text-slate-950 uppercase shadow-md">
-        🚀 Mode Rebuild: Arsitektur React + Vite + Tailwind v4 + Supabase Sedang Di-setup
-      </div>
+      {!isLightPage && (
+        <div className="bg-gradient-to-r from-orange-600 to-amber-500 text-center py-2 px-4 text-xs font-semibold tracking-wider text-slate-950 uppercase shadow-md">
+          🚀 Mode Rebuild: Arsitektur React + Vite + Tailwind v4 + Supabase Sedang Di-setup
+        </div>
+      )}
 
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-900 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-3xl">🍳</span>
-          <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">CookPlan</h1>
-            <p className="text-xs text-slate-500 font-medium">Meal Planner & Local Sourcing</p>
-          </div>
-        </div>
-        <nav className="hidden md:flex items-center gap-6">
-          <button 
+      {isLightPage ? (
+        <header className="sticky top-0 z-50 bg-[#FBFAF9] border-b border-outline-variant px-6 md:px-12 py-4 flex items-center justify-between">
+          {/* Logo */}
+          <div
             onClick={() => setActiveTab('overview')}
-            className={`text-sm font-medium transition-colors ${activeTab === 'overview' ? 'text-orange-400' : 'text-slate-400 hover:text-slate-200'}`}
+            className="flex items-center gap-3 cursor-pointer select-none"
           >
-            Overview
-          </button>
-          <button 
-            onClick={() => setActiveTab('features')}
-            className={`text-sm font-medium transition-colors ${activeTab === 'features' ? 'text-orange-400' : 'text-slate-400 hover:text-slate-200'}`}
-          >
-            Fitur Utama
-          </button>
-          <button 
-            onClick={() => setActiveTab('tech')}
-            className={`text-sm font-medium transition-colors ${activeTab === 'tech' ? 'text-orange-400' : 'text-slate-400 hover:text-slate-200'}`}
-          >
-            Tech Stack
-          </button>
-        </nav>
-        <div>
-          <span className="px-3 py-1 bg-orange-500/10 text-orange-400 border border-orange-500/20 rounded-full text-xs font-semibold">
-            Status: v0.0 (Greenfield)
-          </span>
-        </div>
-      </header>
+            <img src="/cookplan-logo.svg" alt="CookPlan Logo" className="w-8 h-8 shrink-0" />
+          </div>
+
+          {/* Nav Links */}
+          <nav className="flex items-center gap-6 md:gap-8 overflow-x-auto whitespace-nowrap py-1">
+            <button
+              onClick={() => setActiveTab('catalog')}
+              className={`pb-1 text-sm transition-colors cursor-pointer ${
+                activeTab === 'catalog'
+                  ? 'text-primary font-bold border-b-2 border-primary'
+                  : 'text-on-surface-variant hover:text-primary font-semibold'
+              }`}
+            >
+              Catalog
+            </button>
+            <button
+              onClick={() => setActiveTab('planner')}
+              className={`pb-1 text-sm transition-colors cursor-pointer ${
+                activeTab === 'planner'
+                  ? 'text-primary font-bold border-b-2 border-primary'
+                  : 'text-on-surface-variant hover:text-primary font-semibold'
+              }`}
+            >
+              Planner
+            </button>
+            <button
+              onClick={() => alert('Fitur Shopping List sedang didevelop oleh rekan tim!')}
+              className="text-on-surface-variant hover:text-primary transition-colors text-sm font-semibold cursor-pointer"
+            >
+              Shopping List
+            </button>
+          </nav>
+
+          {/* Right actions */}
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => alert('Gunakan bar pencarian di halaman untuk mencari resep!')}
+              className="p-2 hover:bg-secondary-container/20 rounded-full transition-all text-on-surface-variant cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-2xl">search</span>
+            </button>
+            <div className="flex items-center gap-2 cursor-pointer hover:bg-secondary-container/20 p-1 rounded-full pr-3 transition-all">
+              <img
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6odIuOL3lOpT9KvOC3lLPVT9QUV5V0_ERHx_tm4JbQgrxb4YQ-3YA71v9MPggK9PKLK8GwLCrY58zvY2thnXRYIWZx_MKNu9T1unG1Loy-2z6TZjGTMM-Q2bC7lbTKVG_QQU2S_zKpH4kBECNu-_g_a8TxyfbpbYzlykIJEoGOVpfZFinQPBWE34Nvl7WSNewV3llUb5Xn4162z2Az3_VgWDc2t81tIMwMAQXKpjk_WSIyzTknKRzKQp6-MDp4YcBAzS12o2LGrDD"
+                alt="User profile"
+                className="w-8 h-8 rounded-full border border-outline-variant object-cover"
+              />
+              <span className="text-sm font-bold text-on-surface hidden sm:inline">Profile</span>
+            </div>
+          </div>
+        </header>
+      ) : (
+        <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-900 px-6 py-4 flex items-center justify-between text-slate-100">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">🍳</span>
+            <div>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">CookPlan</h1>
+              <p className="text-xs text-slate-500 font-medium">Meal Planner & Local Sourcing</p>
+            </div>
+          </div>
+          <nav className="flex items-center gap-4 sm:gap-6 overflow-x-auto whitespace-nowrap py-1">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`text-sm font-medium transition-colors ${activeTab === 'overview' ? 'text-orange-400 font-semibold' : 'text-slate-400 hover:text-slate-200'}`}
+            >
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('features')}
+              className={`text-sm font-medium transition-colors ${activeTab === 'features' ? 'text-orange-400' : 'text-slate-400 hover:text-slate-200'}`}
+            >
+              Fitur Utama
+            </button>
+            <button
+              onClick={() => setActiveTab('tech')}
+              className={`text-sm font-medium transition-colors ${activeTab === 'tech' ? 'text-orange-400' : 'text-slate-400 hover:text-slate-200'}`}
+            >
+              Tech Stack
+            </button>
+            <button
+              onClick={() => setActiveTab('catalog')}
+              className={`text-sm font-medium transition-colors ${activeTab === 'catalog' ? 'text-orange-400 font-bold' : 'text-slate-400 hover:text-slate-200'}`}
+            >
+              🥗 Katalog Resep
+            </button>
+          </nav>
+          <div>
+            <span className="px-3 py-1 bg-orange-500/10 text-orange-400 border border-orange-500/20 rounded-full text-xs font-semibold">
+              Status: v0.0 (Greenfield)
+            </span>
+          </div>
+        </header>
+      )}
 
       {/* Main Content */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-12 flex flex-col justify-center">
-        
+      <main className={`flex-1 flex flex-col justify-center ${isLightPage ? 'bg-[#FBFAF9] text-on-surface' : 'max-w-6xl w-full mx-auto px-6 py-12 bg-slate-950 text-slate-100'}`}>
+
         {activeTab === 'overview' && (
-          <div className="space-y-12 animate-fade-in">
+          <div className="space-y-12 animate-fade-in py-12">
             {/* Hero Section */}
             <div className="text-center space-y-6 max-w-3xl mx-auto">
               <div className="inline-block p-2 bg-slate-900 border border-slate-800 rounded-2xl shadow-xl mb-4">
@@ -127,18 +270,24 @@ function App() {
                 </span>
               </h2>
               <p className="text-lg text-slate-400 leading-relaxed">
-                Kami sedang melakukan migrasi dari purwarupa statis monolitik HTML menuju arsitektur modern berbasis 
-                <strong> React SPA (Vite)</strong> dengan sistem styling <strong>Tailwind CSS v4</strong>. 
+                Kami sedang melakukan migrasi dari purwarupa statis monolitik HTML menuju arsitektur modern berbasis
+                <strong> React SPA (Vite)</strong> dengan sistem styling <strong>Tailwind CSS v4</strong>.
                 Semua fitur diatur ulang agar siap diintegrasikan dengan backend database dan autentikasi Supabase.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-                <button 
+                <button
+                  onClick={() => setActiveTab('catalog')}
+                  className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 font-extrabold rounded-xl shadow-lg shadow-orange-950/30 transition-all hover:scale-105 flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>🥗</span> Buka Katalog Resep
+                </button>
+                <button
                   onClick={() => setActiveTab('features')}
-                  className="px-6 py-3 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-orange-950/30 transition-all hover:scale-105"
+                  className="px-6 py-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-medium rounded-xl transition-all"
                 >
                   Lihat Rencana Fitur
                 </button>
-                <button 
+                <button
                   onClick={() => setActiveTab('tech')}
                   className="px-6 py-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-medium rounded-xl transition-all"
                 >
@@ -162,10 +311,10 @@ function App() {
                 <a href="./README.md" className="flex items-center justify-center py-2 px-3 bg-slate-950/60 hover:bg-slate-900 border border-slate-850 hover:border-slate-700 text-xs font-semibold rounded-lg transition-all text-orange-400">
                   📖 README.md
                 </a>
-                <a href="./ARCHITECTURE.md" className="flex items-center justify-center py-2 px-3 bg-slate-950/60 hover:bg-slate-900 border border-slate-850 hover:border-slate-700 text-xs font-semibold rounded-lg transition-all text-orange-400">
+                <a href="./docs/ARCHITECTURE.md" className="flex items-center justify-center py-2 px-3 bg-slate-950/60 hover:bg-slate-900 border border-slate-850 hover:border-slate-700 text-xs font-semibold rounded-lg transition-all text-orange-400">
                   🏛️ ARCHITECTURE.md
                 </a>
-                <a href="./PRD_PKM.md" className="flex items-center justify-center py-2 px-3 bg-slate-950/60 hover:bg-slate-900 border border-slate-850 hover:border-slate-700 text-xs font-semibold rounded-lg transition-all text-orange-400">
+                <a href="./docs/PRD_PKM.md" className="flex items-center justify-center py-2 px-3 bg-slate-950/60 hover:bg-slate-900 border border-slate-850 hover:border-slate-700 text-xs font-semibold rounded-lg transition-all text-orange-400">
                   📋 PRD_PKM.md
                 </a>
               </div>
@@ -174,14 +323,14 @@ function App() {
         )}
 
         {activeTab === 'features' && (
-          <div className="space-y-8 animate-fade-in">
+          <div className="space-y-8 animate-fade-in py-12">
             <div className="text-center max-w-2xl mx-auto space-y-3">
               <h2 className="text-3xl font-bold tracking-tight text-white">Rencana Fitur Utama (Rebuild)</h2>
               <p className="text-slate-400 text-sm">
                 Enam fitur utama yang dirancang untuk membantu mahasiswa dan pekerja kantoran merencanakan masakan mingguan dengan efisien.
               </p>
             </div>
-            
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {features.map((f) => (
                 <div key={f.id} className="group relative bg-slate-900/30 hover:bg-slate-900/60 border border-slate-900 hover:border-slate-800 rounded-2xl p-6 transition-all hover:-translate-y-1 duration-300">
@@ -200,7 +349,7 @@ function App() {
         )}
 
         {activeTab === 'tech' && (
-          <div className="space-y-8 animate-fade-in">
+          <div className="space-y-8 animate-fade-in py-12">
             <div className="text-center max-w-2xl mx-auto space-y-3">
               <h2 className="text-3xl font-bold tracking-tight text-white">Spesifikasi Arsitektur Baru</h2>
               <p className="text-slate-400 text-sm">
@@ -270,12 +419,54 @@ function App() {
           </div>
         )}
 
+        {activeTab === 'catalog' && (
+          <RecipeCatalog onAddToPlan={handleSetSlot} />
+        )}
+
+        {activeTab === 'planner' && (
+          <WeeklyPlanner
+            weeklyPlan={weeklyPlan}
+            onSetSlot={handleSetSlot}
+            onRemoveSlot={handleRemoveSlot}
+            onGoToCatalog={() => setActiveTab('catalog')}
+          />
+        )}
+
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-slate-900 bg-slate-950 px-6 py-6 text-center text-xs text-slate-600">
-        <p>CookPlan © 2026 — Clean Architecture Rebuild. Dibuat untuk Pimnas 2026.</p>
-      </footer>
+      {isLightPage ? (
+        <footer className="bg-[#D9DFB0]/50 border-t border-outline-variant py-12 px-6 md:px-16 text-on-surface">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
+            {/* Left side brand */}
+            <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <img src="/cookplan-logo.svg" alt="CookPlan Logo" className="w-8 h-8 shrink-0" />
+              </div>
+              <p className="text-xs md:text-sm text-on-surface-variant leading-relaxed">
+                Membantu keluarga merencanakan makanan sehat dengan bahan lokal dan hemat budget.
+              </p>
+            </div>
+
+            {/* Right side links */}
+            <div className="flex flex-col items-center md:items-end gap-6">
+              <div className="flex flex-wrap justify-center gap-6 text-xs md:text-sm font-semibold text-on-surface-variant">
+                <a href="#" className="hover:text-primary transition-colors">About Us</a>
+                <a href="#" className="hover:text-primary transition-colors">Support</a>
+                <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
+                <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
+              </div>
+              <p className="text-[10px] md:text-xs text-on-surface-variant/80">
+                © 2026 CookPlan All rights reserved.
+              </p>
+            </div>
+          </div>
+        </footer>
+      ) : (
+        <footer className="mt-auto border-t border-slate-900 bg-slate-950 px-6 py-6 text-center text-xs text-slate-600">
+          <p>CookPlan © 2026 — Clean Architecture Rebuild. Dibuat untuk Pimnas 2026.</p>
+        </footer>
+      )}
     </div>
   );
 }
