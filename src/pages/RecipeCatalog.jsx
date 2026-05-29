@@ -12,9 +12,15 @@ function RecipeCatalog({ onAddToPlan }) {
   
   // State for Add to Plan form
   const [planDay, setPlanDay] = useState('Senin');
+  const [planMeal, setPlanMeal] = useState('breakfast');
   const [planServings, setPlanServings] = useState(2);
 
   const daysOfWeek = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+  const mealOptions = [
+    { value: 'breakfast', label: 'Sarapan' },
+    { value: 'lunch', label: 'Makan Siang' },
+    { value: 'dinner', label: 'Makan Malam' }
+  ];
 
   // Toggle quick filter tag
   const handleToggleFilter = (filterName) => {
@@ -81,16 +87,21 @@ function RecipeCatalog({ onAddToPlan }) {
     if (!selectedRecipeForPlan) return;
 
     if (onAddToPlan) {
-      onAddToPlan(selectedRecipeForPlan, planDay, planServings);
+      onAddToPlan(selectedRecipeForPlan, planDay, planMeal, planServings);
     }
+
+    // Simpan info untuk pesan sebelum reset
+    const mealLabel = mealOptions.find((m) => m.value === planMeal)?.label || '';
+    const recipeTitle = selectedRecipeForPlan.title;
 
     // Reset and close
     setSelectedRecipeForPlan(null);
     setPlanDay('Senin');
+    setPlanMeal('breakfast');
     setPlanServings(2);
 
     // Show alert
-    alert(`Berhasil menambahkan "${selectedRecipeForPlan.title}" (${planServings} porsi) ke hari ${planDay}!`);
+    alert(`Berhasil menambahkan "${recipeTitle}" (${planServings} porsi) ke ${mealLabel} hari ${planDay}!`);
   };
 
   // Utility to format price to Rupiah
@@ -509,6 +520,24 @@ function RecipeCatalog({ onAddToPlan }) {
 
             {/* Form Fields */}
             <div className="space-y-5">
+              {/* Meal Type Selection */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block">
+                  Pilih Jenis Makan
+                </label>
+                <select
+                  value={planMeal}
+                  onChange={(e) => setPlanMeal(e.target.value)}
+                  className="w-full p-3 rounded-2xl border border-outline-variant bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-sm font-semibold text-on-surface"
+                >
+                  {mealOptions.map((meal) => (
+                    <option key={meal.value} value={meal.value}>
+                      {meal.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {/* Day Selection */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block">

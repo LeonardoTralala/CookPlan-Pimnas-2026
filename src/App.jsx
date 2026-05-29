@@ -1,38 +1,74 @@
 import { useState } from 'react';
 import RecipeCatalog from './pages/RecipeCatalog';
+import WeeklyPlanner from './pages/WeeklyPlanner';
+
+const DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+const MEAL_TYPES = ['breakfast', 'lunch', 'dinner'];
+
+// Struktur kosong rencana mingguan: setiap hari punya slot breakfast/lunch/dinner
+function createEmptyPlan() {
+  return DAYS.reduce((acc, day) => {
+    acc[day] = { breakfast: null, lunch: null, dinner: null };
+    return acc;
+  }, {});
+}
+
+// Pastikan data dari localStorage sesuai bentuk slot makan (migrasi dari format lama)
+function isValidPlanShape(plan) {
+  if (!plan || typeof plan !== 'object') return false;
+  return DAYS.every((day) => {
+    const slots = plan[day];
+    return slots && typeof slots === 'object' && !Array.isArray(slots) &&
+      MEAL_TYPES.every((meal) => meal in slots);
+  });
+}
 
 function App() {
   const [activeTab, setActiveTab] = useState('overview');
 
-  // State rencana masak mingguan (diambil dari localStorage jika ada)
-  // eslint-disable-next-line no-unused-vars
+  // State rencana masak mingguan (diambil dari localStorage jika ada & valid)
   const [weeklyPlan, setWeeklyPlan] = useState(() => {
     const saved = localStorage.getItem('weeklyPlan');
-    return saved ? JSON.parse(saved) : {
-      "Senin": [],
-      "Selasa": [],
-      "Rabu": [],
-      "Kamis": [],
-      "Jumat": [],
-      "Sabtu": [],
-      "Minggu": []
-    };
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (isValidPlanShape(parsed)) return parsed;
+      } catch {
+        // abaikan data rusak, mulai dari kosong
+      }
+    }
+    return createEmptyPlan();
   });
 
-  // Handler callback untuk menambah resep ke planner
-  const handleAddToPlan = (recipe, day, servings) => {
+  // Isi sebuah slot (hari + jenis makan) dengan resep
+  const handleSetSlot = (recipe, day, mealType, servings) => {
     setWeeklyPlan((prev) => {
       const updated = {
         ...prev,
-        [day]: [...prev[day], {
-          recipeId: recipe.id,
-          title: recipe.title,
-          servings: servings,
-          imageUrl: recipe.imageUrl,
-          priceIdr: recipe.priceIdr,
-          readyInMinutes: recipe.readyInMinutes,
-          calories: recipe.calories
-        }]
+        [day]: {
+          ...prev[day],
+          [mealType]: {
+            recipeId: recipe.id,
+            title: recipe.title,
+            servings: servings,
+            imageUrl: recipe.imageUrl,
+            priceIdr: recipe.priceIdr,
+            readyInMinutes: recipe.readyInMinutes,
+            calories: recipe.calories
+          }
+        }
+      };
+      localStorage.setItem('weeklyPlan', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  // Kosongkan kembali sebuah slot
+  const handleRemoveSlot = (day, mealType) => {
+    setWeeklyPlan((prev) => {
+      const updated = {
+        ...prev,
+        [day]: { ...prev[day], [mealType]: null }
       };
       localStorage.setItem('weeklyPlan', JSON.stringify(updated));
       return updated;
@@ -103,17 +139,20 @@ function App() {
     }
   ];
 
+  // Halaman bertema terang (light) memakai header & footer yang sama
+  const isLightPage = activeTab === 'catalog' || activeTab === 'planner';
+
   return (
     <div className="min-h-screen bg-[#FBFAF9] flex flex-col font-sans selection:bg-[#4E6B2F] selection:text-white">
       {/* Top Banner */}
-      {activeTab !== 'catalog' && (
+      {!isLightPage && (
         <div className="bg-gradient-to-r from-orange-600 to-amber-500 text-center py-2 px-4 text-xs font-semibold tracking-wider text-slate-950 uppercase shadow-md">
           🚀 Mode Rebuild: Arsitektur React + Vite + Tailwind v4 + Supabase Sedang Di-setup
         </div>
       )}
 
       {/* Header */}
-      {activeTab === 'catalog' ? (
+      {isLightPage ? (
         <header className="sticky top-0 z-50 bg-[#FBFAF9] border-b border-outline-variant px-6 md:px-12 py-4 flex items-center justify-between">
           {/* Logo */}
           <div
@@ -127,13 +166,21 @@ function App() {
           <nav className="flex items-center gap-6 md:gap-8 overflow-x-auto whitespace-nowrap py-1">
             <button
               onClick={() => setActiveTab('catalog')}
-              className="text-primary font-bold border-b-2 border-primary pb-1 text-sm transition-colors cursor-pointer"
+              className={`pb-1 text-sm transition-colors cursor-pointer ${
+                activeTab === 'catalog'
+                  ? 'text-primary font-bold border-b-2 border-primary'
+                  : 'text-on-surface-variant hover:text-primary font-semibold'
+              }`}
             >
               Catalog
             </button>
             <button
-              onClick={() => alert('Fitur Weekly Planner sedang didevelop oleh rekan tim!')}
-              className="text-on-surface-variant hover:text-primary transition-colors text-sm font-semibold cursor-pointer"
+              onClick={() => setActiveTab('planner')}
+              className={`pb-1 text-sm transition-colors cursor-pointer ${
+                activeTab === 'planner'
+                  ? 'text-primary font-bold border-b-2 border-primary'
+                  : 'text-on-surface-variant hover:text-primary font-semibold'
+              }`}
             >
               Planner
             </button>
@@ -207,7 +254,7 @@ function App() {
       )}
 
       {/* Main Content */}
-      <main className={`flex-1 flex flex-col justify-center ${activeTab === 'catalog' ? 'bg-[#FBFAF9] text-on-surface' : 'max-w-6xl w-full mx-auto px-6 py-12 bg-slate-950 text-slate-100'}`}>
+      <main className={`flex-1 flex flex-col justify-center ${isLightPage ? 'bg-[#FBFAF9] text-on-surface' : 'max-w-6xl w-full mx-auto px-6 py-12 bg-slate-950 text-slate-100'}`}>
 
         {activeTab === 'overview' && (
           <div className="space-y-12 animate-fade-in py-12">
@@ -373,13 +420,22 @@ function App() {
         )}
 
         {activeTab === 'catalog' && (
-          <RecipeCatalog onAddToPlan={handleAddToPlan} />
+          <RecipeCatalog onAddToPlan={handleSetSlot} />
+        )}
+
+        {activeTab === 'planner' && (
+          <WeeklyPlanner
+            weeklyPlan={weeklyPlan}
+            onSetSlot={handleSetSlot}
+            onRemoveSlot={handleRemoveSlot}
+            onGoToCatalog={() => setActiveTab('catalog')}
+          />
         )}
 
       </main>
 
       {/* Footer */}
-      {activeTab === 'catalog' ? (
+      {isLightPage ? (
         <footer className="bg-[#D9DFB0]/50 border-t border-outline-variant py-12 px-6 md:px-16 text-on-surface">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
             {/* Left side brand */}
