@@ -120,9 +120,7 @@ function App() {
             onClick={() => setActiveTab('overview')}
             className="flex items-center gap-3 cursor-pointer select-none"
           >
-            <svg className="w-8 h-8 text-primary shrink-0" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18 6h-2V5c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v1H6c-1.1 0-2 .9-2 2v1h16V8c0-1.1-.9-2-2-2zM8 5h8v1H8V5zm12 5H4v9c0 1.65 1.35 3 3 3h10c1.65 0 3-1.35 3-3v-9zm-8 8.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-            </svg>
+            <img src="/cookplan-logo.svg" alt="CookPlan Logo" className="w-8 h-8 shrink-0" />
             <span className="font-sans font-bold text-2xl text-primary tracking-tight">CookPlan</span>
           </div>
 
@@ -388,9 +386,7 @@ function App() {
             {/* Left side brand */}
             <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-sm">
               <div className="flex items-center gap-3 mb-4">
-                <svg className="w-8 h-8 text-primary shrink-0" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M18 6h-2V5c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v1H6c-1.1 0-2 .9-2 2v1h16V8c0-1.1-.9-2-2-2zM8 5h8v1H8V5zm12 5H4v9c0 1.65 1.35 3 3 3h10c1.65 0 3-1.35 3-3v-9zm-8 8.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                </svg>
+                <img src="/cookplan-logo.svg" alt="CookPlan Logo" className="w-8 h-8 shrink-0" />
                 <span className="font-bold text-2xl text-primary tracking-tight">CookPlan</span>
               </div>
               <p className="text-xs md:text-sm text-on-surface-variant leading-relaxed">
