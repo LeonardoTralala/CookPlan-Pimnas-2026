@@ -10,8 +10,7 @@ export function Footer() {
     <footer className="w-full mt-auto bg-surface-container-highest border-t border-outline-variant/30">
       <div className="w-full px-margin-mobile md:px-margin-desktop py-12 flex flex-col md:flex-row justify-between items-center max-w-container-max mx-auto gap-8">
         <div className="flex items-center gap-3 select-none">
-          <Logo className="w-9 h-9 text-primary" />
-          <span className="font-headline-md text-headline-md font-bold text-primary">CookPlan</span>
+          <Logo className="h-9 w-auto" />
         </div>
         <div className="flex flex-wrap justify-center gap-6 md:gap-8">
           {links.map((label) => (
