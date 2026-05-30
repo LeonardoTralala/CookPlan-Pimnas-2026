@@ -298,8 +298,13 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                 </div>
               </div>
 
-              {/* Kartu promo petani lokal */}
-              <div className="relative overflow-hidden rounded-[2rem] h-60 bg-primary group cursor-pointer shadow-md">
+              {/* Kartu ajakan jadi supplier CookPlan */}
+              <button
+                onClick={() =>
+                  alert('Pendaftaran supplier CookPlan akan segera dibuka untuk produsen & petani lokal!')
+                }
+                className="w-full text-left relative overflow-hidden rounded-[2rem] h-60 bg-primary group cursor-pointer shadow-md"
+              >
                 <div
                   className="absolute inset-0 z-0 transition-transform duration-700 group-hover:scale-110"
                   style={{
@@ -312,14 +317,19 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent z-10"></div>
                 <div className="absolute bottom-6 left-6 right-6 z-20 text-white">
                   <p className="text-xs uppercase tracking-widest mb-1 opacity-80">
-                    Local Partnership
+                    Jadi Mitra Supplier
                   </p>
                   <h4 className="text-xl font-bold mb-2 leading-tight">
-                    Dukung Petani Lokal, Makan Lebih Segar
+                    Daftar sebagai Supplier CookPlan
                   </h4>
-                  <span className="material-symbols-outlined">arrow_forward</span>
+                  <div className="flex items-center gap-1.5 text-sm font-semibold">
+                    <span>Mulai jual bahan segarmu</span>
+                    <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">
+                      arrow_forward
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </button>
             </div>
           </div>
         </div>
