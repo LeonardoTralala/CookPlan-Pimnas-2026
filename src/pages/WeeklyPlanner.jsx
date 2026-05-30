@@ -355,19 +355,9 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog }) {
                             />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h4 className="font-bold text-sm text-on-surface leading-tight line-clamp-2 mb-1">
+                            <h4 className="font-bold text-sm text-on-surface leading-tight line-clamp-2">
                               {recipe.title}
                             </h4>
-                            <div className="flex items-center gap-3 text-on-surface-variant text-xs font-semibold">
-                              <span className="flex items-center gap-0.5">
-                                <span className="material-symbols-outlined text-[15px]">schedule</span>
-                                {recipe.readyInMinutes} mnt
-                              </span>
-                              <span className="flex items-center gap-0.5">
-                                <span className="material-symbols-outlined text-[15px]">payments</span>
-                                {formatRupiah(recipe.priceIdr)}
-                              </span>
-                            </div>
                           </div>
                         </button>
                       ))}
