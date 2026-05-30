@@ -4,6 +4,7 @@ import RecipeCatalog from './pages/RecipeCatalog';
 import WeeklyPlanner from './pages/WeeklyPlanner';
 import UserProfile from './pages/UserProfile';
 import TeamProfile from './pages/TeamProfile';
+import ShoppingList from './pages/ShoppingList';
 
 const DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 const MEAL_TYPES = ['breakfast', 'lunch', 'dinner'];
@@ -149,7 +150,7 @@ function App() {
   }
 
   // Halaman bertema terang (light) memakai header & footer yang sama
-  const isLightPage = activeTab === 'catalog' || activeTab === 'planner' || activeTab === 'profile' || activeTab === 'about';
+  const isLightPage = activeTab === 'catalog' || activeTab === 'planner' || activeTab === 'shopping' || activeTab === 'profile' || activeTab === 'about';
 
   return (
     <div className="min-h-screen bg-[#FBFAF9] flex flex-col font-sans selection:bg-[#4E6B2F] selection:text-white">
@@ -194,8 +195,12 @@ function App() {
               Planner
             </button>
             <button
-              onClick={() => alert('Fitur Shopping List sedang didevelop oleh rekan tim!')}
-              className="text-on-surface-variant hover:text-primary transition-colors text-sm font-semibold cursor-pointer"
+              onClick={() => setActiveTab('shopping')}
+              className={`pb-1 text-sm transition-colors cursor-pointer ${
+                activeTab === 'shopping'
+                  ? 'text-primary font-bold border-b-2 border-primary'
+                  : 'text-on-surface-variant hover:text-primary font-semibold'
+              }`}
             >
               Shopping List
             </button>
@@ -385,6 +390,14 @@ function App() {
             onSetSlot={handleSetSlot}
             onRemoveSlot={handleRemoveSlot}
             onGoToCatalog={() => setActiveTab('catalog')}
+            onGenerateShoppingList={() => setActiveTab('shopping')}
+          />
+        )}
+
+        {activeTab === 'shopping' && (
+          <ShoppingList
+            weeklyPlan={weeklyPlan}
+            onGoToPlanner={() => setActiveTab('planner')}
           />
         )}
 

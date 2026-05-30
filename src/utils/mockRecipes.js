@@ -10,15 +10,15 @@ export const mockRecipes = [
     difficulty: "easy",
     badges: ["Vegetarian", "Budget Friendly", "Local Ingredients"],
     ingredients: [
-      { name: "Kacang Tanah", amount: 150, unit: "g", category: "dry_goods" },
-      { name: "Tahu Putih", amount: 2, unit: "pcs", category: "dry_goods" },
-      { name: "Tempe", amount: 150, unit: "g", category: "dry_goods" },
-      { name: "Bayam", amount: 1, unit: "ikat", category: "vegetables" },
-      { name: "Tauge", amount: 100, unit: "g", category: "vegetables" },
-      { name: "Telur Rebus", amount: 2, unit: "pcs", category: "dairy" },
-      { name: "Gula Merah", amount: 50, unit: "g", category: "spices" },
-      { name: "Bawang Putih", amount: 2, unit: "siung", category: "spices" },
-      { name: "Cabai Rawit", amount: 3, unit: "pcs", category: "spices" }
+      { name: "Kacang Tanah", amount: 150, unit: "g", category: "dry_goods", priceIdr: 8000 },
+      { name: "Tahu Putih", amount: 2, unit: "pcs", category: "dry_goods", priceIdr: 5000 },
+      { name: "Tempe", amount: 150, unit: "g", category: "dry_goods", priceIdr: 5000 },
+      { name: "Bayam", amount: 1, unit: "ikat", category: "vegetables", priceIdr: 3000 },
+      { name: "Tauge", amount: 100, unit: "g", category: "vegetables", priceIdr: 3000 },
+      { name: "Telur Rebus", amount: 2, unit: "pcs", category: "dairy", priceIdr: 6000 },
+      { name: "Gula Merah", amount: 50, unit: "g", category: "spices", priceIdr: 3000 },
+      { name: "Bawang Putih", amount: 2, unit: "siung", category: "spices", priceIdr: 1500 },
+      { name: "Cabai Rawit", amount: 3, unit: "pcs", category: "spices", priceIdr: 2000 }
     ],
     instructions: [
       "Potong tahu dan tempe kotak-kotak, lalu goreng hingga kecokelatan dan tiriskan.",
@@ -39,16 +39,16 @@ export const mockRecipes = [
     difficulty: "medium",
     badges: ["Local Ingredients", "Budget Friendly"],
     ingredients: [
-      { name: "Daging Ayam Kampung", amount: 350, unit: "g", category: "meat" },
-      { name: "Kol", amount: 100, unit: "g", category: "vegetables" },
-      { name: "Soun", amount: 50, unit: "g", category: "dry_goods" },
-      { name: "Tauge", amount: 50, unit: "g", category: "vegetables" },
-      { name: "Telur Rebus", amount: 2, unit: "pcs", category: "dairy" },
-      { name: "Kunyit", amount: 2, unit: "ruas", category: "spices" },
-      { name: "Serai", amount: 2, unit: "batang", category: "spices" },
-      { name: "Daun Jeruk", amount: 4, unit: "lembar", category: "spices" },
-      { name: "Bawang Merah", amount: 6, unit: "siung", category: "spices" },
-      { name: "Bawang Putih", amount: 4, unit: "siung", category: "spices" }
+      { name: "Daging Ayam Kampung", amount: 350, unit: "g", category: "meat", priceIdr: 25000 },
+      { name: "Kol", amount: 100, unit: "g", category: "vegetables", priceIdr: 3000 },
+      { name: "Soun", amount: 50, unit: "g", category: "dry_goods", priceIdr: 4000 },
+      { name: "Tauge", amount: 50, unit: "g", category: "vegetables", priceIdr: 2000 },
+      { name: "Telur Rebus", amount: 2, unit: "pcs", category: "dairy", priceIdr: 6000 },
+      { name: "Kunyit", amount: 2, unit: "ruas", category: "spices", priceIdr: 2000 },
+      { name: "Serai", amount: 2, unit: "batang", category: "spices", priceIdr: 2000 },
+      { name: "Daun Jeruk", amount: 4, unit: "lembar", category: "spices", priceIdr: 1000 },
+      { name: "Bawang Merah", amount: 6, unit: "siung", category: "spices", priceIdr: 3000 },
+      { name: "Bawang Putih", amount: 4, unit: "siung", category: "spices", priceIdr: 2000 }
     ],
     instructions: [
       "Rebus ayam kampung dalam air mendidih bersama serai dan daun jeruk hingga empuk. Angkat ayam, tiriskan, dan suwir-suwir dagingnya. Jangan buang air kaldu rebusannya.",
@@ -71,14 +71,14 @@ export const mockRecipes = [
     difficulty: "easy",
     badges: ["Vegetarian", "Quick", "Budget Friendly"],
     ingredients: [
-      { name: "Tempe Segar", amount: 150, unit: "g", category: "dry_goods" },
-      { name: "Nasi Merah", amount: 200, unit: "g", category: "dry_goods" },
-      { name: "Alpukat Mentega", amount: 0.5, unit: "pcs", category: "vegetables" },
-      { name: "Edamame Kupas", amount: 50, unit: "g", category: "vegetables" },
-      { name: "Wortel", amount: 50, unit: "g", category: "vegetables" },
-      { name: "Minyak Wijen", amount: 1, unit: "sdm", category: "spices" },
-      { name: "Kecap Asin", amount: 2, unit: "sdm", category: "spices" },
-      { name: "Biji Wijen", amount: 1, unit: "sdt", category: "spices" }
+      { name: "Tempe Segar", amount: 150, unit: "g", category: "dry_goods", priceIdr: 5000 },
+      { name: "Nasi Merah", amount: 200, unit: "g", category: "dry_goods", priceIdr: 6000 },
+      { name: "Alpukat Mentega", amount: 0.5, unit: "pcs", category: "vegetables", priceIdr: 8000 },
+      { name: "Edamame Kupas", amount: 50, unit: "g", category: "vegetables", priceIdr: 5000 },
+      { name: "Wortel", amount: 50, unit: "g", category: "vegetables", priceIdr: 2000 },
+      { name: "Minyak Wijen", amount: 1, unit: "sdm", category: "spices", priceIdr: 3000 },
+      { name: "Kecap Asin", amount: 2, unit: "sdm", category: "spices", priceIdr: 2000 },
+      { name: "Biji Wijen", amount: 1, unit: "sdt", category: "spices", priceIdr: 3000 }
     ],
     instructions: [
       "Potong tempe berbentuk kubus tebal. Rendam dalam campuran kecap asin, minyak wijen, dan sedikit bawang putih bubuk selama 5 menit.",
@@ -100,15 +100,15 @@ export const mockRecipes = [
     difficulty: "easy",
     badges: ["Quick", "Budget Friendly"],
     ingredients: [
-      { name: "Mie Basah Kuning", amount: 200, unit: "g", category: "dry_goods" },
-      { name: "Kol", amount: 50, unit: "g", category: "vegetables" },
-      { name: "Sawi Hijau", amount: 50, unit: "g", category: "vegetables" },
-      { name: "Bakso Sapi", amount: 4, unit: "pcs", category: "meat" },
-      { name: "Telur Ayam", amount: 1, unit: "pcs", category: "dairy" },
-      { name: "Kecap Manis", amount: 3, unit: "sdm", category: "spices" },
-      { name: "Kemiri", amount: 2, unit: "butir", category: "spices" },
-      { name: "Bawang Merah", amount: 4, unit: "siung", category: "spices" },
-      { name: "Bawang Putih", amount: 2, unit: "siung", category: "spices" }
+      { name: "Mie Basah Kuning", amount: 200, unit: "g", category: "dry_goods", priceIdr: 5000 },
+      { name: "Kol", amount: 50, unit: "g", category: "vegetables", priceIdr: 2000 },
+      { name: "Sawi Hijau", amount: 50, unit: "g", category: "vegetables", priceIdr: 2000 },
+      { name: "Bakso Sapi", amount: 4, unit: "pcs", category: "meat", priceIdr: 8000 },
+      { name: "Telur Ayam", amount: 1, unit: "pcs", category: "dairy", priceIdr: 3000 },
+      { name: "Kecap Manis", amount: 3, unit: "sdm", category: "spices", priceIdr: 3000 },
+      { name: "Kemiri", amount: 2, unit: "butir", category: "spices", priceIdr: 2000 },
+      { name: "Bawang Merah", amount: 4, unit: "siung", category: "spices", priceIdr: 2000 },
+      { name: "Bawang Putih", amount: 2, unit: "siung", category: "spices", priceIdr: 1500 }
     ],
     instructions: [
       "Haluskan bawang merah, bawang putih, kemiri, merica bubuk, dan garam.",
@@ -131,15 +131,15 @@ export const mockRecipes = [
     difficulty: "medium",
     badges: ["Local Ingredients"],
     ingredients: [
-      { name: "Ikan Nila/Kerapu", amount: 400, unit: "g", category: "meat" },
-      { name: "Cabai Merah Keriting", amount: 5, unit: "pcs", category: "spices" },
-      { name: "Bawang Merah", amount: 8, unit: "siung", category: "spices" },
-      { name: "Bawang Putih", amount: 3, unit: "siung", category: "spices" },
-      { name: "Serai", amount: 3, unit: "batang", category: "spices" },
-      { name: "Daun Jeruk Purut", amount: 4, unit: "lembar", category: "spices" },
-      { name: "Terasi Bakar", amount: 1, unit: "sdt", category: "spices" },
-      { name: "Minyak Kelapa", amount: 3, unit: "sdm", category: "spices" },
-      { name: "Jeruk Nipis", amount: 1, unit: "pcs", category: "spices" }
+      { name: "Ikan Nila/Kerapu", amount: 400, unit: "g", category: "meat", priceIdr: 35000 },
+      { name: "Cabai Merah Keriting", amount: 5, unit: "pcs", category: "spices", priceIdr: 5000 },
+      { name: "Bawang Merah", amount: 8, unit: "siung", category: "spices", priceIdr: 3000 },
+      { name: "Bawang Putih", amount: 3, unit: "siung", category: "spices", priceIdr: 2000 },
+      { name: "Serai", amount: 3, unit: "batang", category: "spices", priceIdr: 2000 },
+      { name: "Daun Jeruk Purut", amount: 4, unit: "lembar", category: "spices", priceIdr: 1000 },
+      { name: "Terasi Bakar", amount: 1, unit: "sdt", category: "spices", priceIdr: 2000 },
+      { name: "Minyak Kelapa", amount: 3, unit: "sdm", category: "spices", priceIdr: 4000 },
+      { name: "Jeruk Nipis", amount: 1, unit: "pcs", category: "spices", priceIdr: 2500 }
     ],
     instructions: [
       "Bersihkan ikan, kerat-kerat badannya, lalu lumuri dengan perasan air jeruk nipis dan garam. Diamkan 10 menit.",
@@ -160,13 +160,13 @@ export const mockRecipes = [
     difficulty: "easy",
     badges: ["Vegetarian", "Quick", "Budget Friendly", "Local Ingredients"],
     ingredients: [
-      { name: "Brokoli", amount: 100, unit: "g", category: "vegetables" },
-      { name: "Wortel", amount: 80, unit: "g", category: "vegetables" },
-      { name: "Jagung Muda", amount: 50, unit: "g", category: "vegetables" },
-      { name: "Tahu Sutra", amount: 1, unit: "pcs", category: "dry_goods" },
-      { name: "Bawang Putih", amount: 3, unit: "siung", category: "spices" },
-      { name: "Saus Tiram Vegetarian", amount: 2, unit: "sdm", category: "spices" },
-      { name: "Minyak Wijen", amount: 1, unit: "sdt", category: "spices" }
+      { name: "Brokoli", amount: 100, unit: "g", category: "vegetables", priceIdr: 5000 },
+      { name: "Wortel", amount: 80, unit: "g", category: "vegetables", priceIdr: 3000 },
+      { name: "Jagung Muda", amount: 50, unit: "g", category: "vegetables", priceIdr: 3000 },
+      { name: "Tahu Sutra", amount: 1, unit: "pcs", category: "dry_goods", priceIdr: 4000 },
+      { name: "Bawang Putih", amount: 3, unit: "siung", category: "spices", priceIdr: 2000 },
+      { name: "Saus Tiram Vegetarian", amount: 2, unit: "sdm", category: "spices", priceIdr: 4000 },
+      { name: "Minyak Wijen", amount: 1, unit: "sdt", category: "spices", priceIdr: 2000 }
     ],
     instructions: [
       "Potong tahu sutra menjadi kotak-kotak, lalu goreng sebentar hingga berkulit luar. Sisihkan.",
