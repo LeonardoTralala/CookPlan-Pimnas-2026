@@ -5,7 +5,7 @@
   --color-primary: #375219;
   --color-primary-container: #4e6b2f;
   --color-on-primary: #ffffff;
-  --color-on-primary-container: #cbeea3;
+  --color-on-primary-container: #c8eaa0;
 
   --color-secondary: #546527;
   --color-secondary-container: #d4e89c;
@@ -13,6 +13,8 @@
 
   --color-surface: #efffd9;
   --color-surface-cream: #d9dfb0;
+  --color-surface-variant: #d7e9c0;
+  --color-surface-container-lowest: #ffffff;
   --color-surface-container-low: #e8fad1;
   --color-surface-container: #e2f4cb;
   --color-surface-container-high: #ddeec6;
@@ -26,9 +28,12 @@
   --color-outline-variant: #c4c8b9;
   --color-inverse-surface: #273419;
   --color-inverse-primary: #afd189;
+  --color-surface-tint: #4a672b;
   --color-success-green: #34c759;
+  --color-error: #ba1a1a;
 
   /* ---- Font families ---- */
+  --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
   --font-headline-xl: "Poppins", sans-serif;
   --font-headline-lg: "Poppins", sans-serif;
   --font-headline-md: "Poppins", sans-serif;
@@ -96,4 +101,20 @@ body {
 
 .image-reveal:hover {
   transform: scale(1.02);
+}
+
+@utility hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility recipe-card-shadow {
+  box-shadow: 0 8px 20px -4px rgba(44, 58, 30, 0.06);
+  transition: all 0.3s ease;
+  &:hover {
+    box-shadow: 0 12px 24px -4px rgba(44, 58, 30, 0.12);
+  }
 }

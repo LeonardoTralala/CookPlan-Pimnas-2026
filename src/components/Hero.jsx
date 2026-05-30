@@ -1,7 +1,10 @@
 import { heroImage } from "../utils/recipes.js";
 import { scrollToSection } from "../utils/scroll.js";
 
-export function Hero() {
+export function Hero({ onNavigate }) {
+  const goPlanner = () => (onNavigate ? onNavigate("planner") : scrollToSection("how-it-works"));
+  const goCatalog = () => (onNavigate ? onNavigate("catalog") : scrollToSection("recipes"));
+
   return (
     <section className="hero-gradient pt-20 pb-32 px-margin-mobile md:px-margin-desktop">
       <div className="max-w-container-max mx-auto grid md:grid-cols-2 gap-12 items-center">
@@ -17,13 +20,13 @@ export function Hero() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button
-              onClick={() => scrollToSection("how-it-works")}
+              onClick={goPlanner}
               className="px-8 py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg transition-shadow cursor-pointer font-semibold"
             >
               Mulai Rencana Masak
             </button>
             <button
-              onClick={() => scrollToSection("recipes")}
+              onClick={goCatalog}
               className="px-8 py-4 border-2 border-primary text-primary rounded-full font-label-md text-label-md hover:bg-primary/5 transition-colors cursor-pointer font-semibold"
             >
               Lihat Katalog Resep

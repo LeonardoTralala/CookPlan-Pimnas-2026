@@ -2,8 +2,11 @@ import { RecipeCard } from "./RecipeCard.jsx";
 import { usePlan } from "../hooks/usePlan.js";
 import { initialRecipes } from "../utils/recipes.js";
 
-export function FeaturedRecipes({ searchQuery = "" }) {
+export function FeaturedRecipes({ searchQuery = "", onNavigate }) {
   const { showToast } = usePlan();
+
+  const seeAll = () =>
+    onNavigate ? onNavigate("catalog") : showToast("Katalog lengkap resep sedang disiapkan!");
 
   const query = searchQuery.toLowerCase();
   const filteredRecipes = initialRecipes.filter(
@@ -23,7 +26,7 @@ export function FeaturedRecipes({ searchQuery = "" }) {
           </p>
         </div>
         <button
-          onClick={() => showToast("Katalog lengkap resep sedang disiapkan!")}
+          onClick={seeAll}
           className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all cursor-pointer"
         >
           <span>Lihat Semua Resep</span>

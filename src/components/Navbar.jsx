@@ -5,10 +5,14 @@ import { usePlan } from "../hooks/usePlan.js";
 import { scrollToSection, scrollToTop } from "../utils/scroll.js";
 
 // Sticky top navigation: brand, section links, search, shopping counter & profile.
-export function Navbar({ searchQuery, onSearchChange }) {
+// `onNavigate(tab)` routes into the app tabs; falls back to in-page scrolling.
+export function Navbar({ searchQuery, onSearchChange, onNavigate }) {
   const { addedRecipes, showToast } = usePlan();
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
+
+  const goCatalog = () => (onNavigate ? onNavigate("catalog") : scrollToSection("recipes"));
+  const goPlanner = () => (onNavigate ? onNavigate("planner") : scrollToSection("how-it-works"));
 
   const toggleSearch = () => {
     setShowSearchInput((open) => {
@@ -38,13 +42,13 @@ export function Navbar({ searchQuery, onSearchChange }) {
 
         <div className="hidden md:flex items-center space-x-8">
           <button
-            onClick={() => scrollToSection("recipes")}
+            onClick={goCatalog}
             className="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md cursor-pointer"
           >
             Catalog
           </button>
           <button
-            onClick={() => scrollToSection("how-it-works")}
+            onClick={goPlanner}
             className="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md cursor-pointer"
           >
             Planner

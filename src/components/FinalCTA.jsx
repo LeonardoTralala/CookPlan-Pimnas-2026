@@ -1,7 +1,12 @@
 import { usePlan } from "../hooks/usePlan.js";
 
-export function FinalCTA() {
+export function FinalCTA({ onNavigate }) {
   const { showToast } = usePlan();
+
+  const start = () =>
+    onNavigate
+      ? onNavigate("catalog")
+      : showToast("Terima kasih! Pendaftaran beta akan segera dibuka.");
 
   return (
     <section className="py-24 px-margin-mobile md:px-margin-desktop text-center">
@@ -15,7 +20,7 @@ export function FinalCTA() {
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
           <button
-            onClick={() => showToast("Terima kasih! Pendaftaran beta akan segera dibuka.")}
+            onClick={start}
             className="px-10 py-5 bg-on-primary-container text-primary-container font-bold rounded-full hover:bg-white hover:text-primary transition-colors shadow-xl cursor-pointer"
           >
             Mulai Sekarang - Gratis
