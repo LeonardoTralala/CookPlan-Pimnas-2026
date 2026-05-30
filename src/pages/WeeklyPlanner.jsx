@@ -47,6 +47,8 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog }) {
   // Slot yang sedang diisi: { day, meal } | null
   const [pickerTarget, setPickerTarget] = useState(null);
   const [pickerSearch, setPickerSearch] = useState('');
+  const [pickerSelectedRecipe, setPickerSelectedRecipe] = useState(null);
+  const [pickerServings, setPickerServings] = useState(2);
 
   const weekDates = useMemo(() => getWeekDates(), []);
 
@@ -91,10 +93,20 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog }) {
   const recommendCaptions = ['Terpopuler minggu ini', 'Berdasarkan pesananmu sebelumnya', 'Favorit di wilayahmu'];
 
   const handlePickRecipe = (recipe) => {
-    if (!pickerTarget) return;
-    onSetSlot(recipe, pickerTarget.day, pickerTarget.meal, 2);
+    setPickerSelectedRecipe(recipe);
+    setPickerServings(2);
+  };
+
+  const handleConfirmAdd = () => {
+    if (!pickerTarget || !pickerSelectedRecipe) return;
+    onSetSlot(pickerSelectedRecipe, pickerTarget.day, pickerTarget.meal, pickerServings);
     setPickerTarget(null);
     setPickerSearch('');
+    setPickerSelectedRecipe(null);
+  };
+
+  const handleCancelPick = () => {
+    setPickerSelectedRecipe(null);
   };
 
   return (
@@ -154,9 +166,15 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog }) {
                               <span className="text-white font-semibold text-[13px] leading-tight mb-1 line-clamp-2">
                                 {slot.title}
                               </span>
-                              <div className="flex items-center gap-1 text-white/80">
-                                <span className="material-symbols-outlined text-[16px]">schedule</span>
-                                <span className="text-[10px]">{slot.readyInMinutes} mnt</span>
+                              <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                                <div className="flex items-center gap-1 bg-black/50 backdrop-blur-md px-2 py-0.5 rounded-full text-white/95 shadow-sm border border-white/10">
+                                  <span className="material-symbols-outlined text-[12px]">schedule</span>
+                                  <span className="text-[9px] font-bold tracking-wide">{slot.readyInMinutes}m</span>
+                                </div>
+                                <div className="flex items-center gap-1 bg-primary/90 backdrop-blur-md px-2 py-0.5 rounded-full text-white shadow-sm border border-primary-container/30">
+                                  <span className="material-symbols-outlined text-[12px]">group</span>
+                                  <span className="text-[9px] font-bold tracking-wide">{slot.servings || 2} porsi</span>
+                                </div>
                               </div>
                             </div>
                             {/* Tombol hapus */}
@@ -275,82 +293,153 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog }) {
       {pickerTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
           <div className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative">
-            {/* Header */}
-            <div className="p-6 border-b border-outline-variant shrink-0">
-              <button
-                onClick={() => setPickerTarget(null)}
-                className="absolute right-4 top-4 w-9 h-9 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-lg">close</span>
-              </button>
-              <h3 className="text-xl font-bold text-primary mb-1 flex items-center gap-1.5 pr-10">
-                <span className="material-symbols-outlined text-2xl">restaurant_menu</span>
-                Pilih Resep
-              </h3>
-              <p className="text-xs text-on-surface-variant mb-4">
-                Pilih hidangan untuk{' '}
-                <strong>{MEALS.find((m) => m.key === pickerTarget.meal)?.label}</strong> hari{' '}
-                <strong>{pickerTarget.day}</strong>.
-              </p>
-              <div className="relative">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">
-                  search
-                </span>
-                <input
-                  type="text"
-                  autoFocus
-                  value={pickerSearch}
-                  onChange={(e) => setPickerSearch(e.target.value)}
-                  placeholder="Cari resep..."
-                  className="w-full pl-11 pr-4 py-2.5 rounded-full border border-outline-variant bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm font-medium"
-                />
-              </div>
-            </div>
+            {/* Content Based on Selection */}
+            {!pickerSelectedRecipe ? (
+              <>
+                <div className="p-6 border-b border-outline-variant shrink-0">
+                  <button
+                    onClick={() => {
+                      setPickerTarget(null);
+                      setPickerSelectedRecipe(null);
+                    }}
+                    className="absolute right-4 top-4 w-9 h-9 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-lg">close</span>
+                  </button>
+                  <h3 className="text-xl font-bold text-primary mb-1 flex items-center gap-1.5 pr-10">
+                    <span className="material-symbols-outlined text-2xl">restaurant_menu</span>
+                    Pilih Resep
+                  </h3>
+                  <p className="text-xs text-on-surface-variant mb-4">
+                    Pilih hidangan untuk{' '}
+                    <strong>{MEALS.find((m) => m.key === pickerTarget.meal)?.label}</strong> hari{' '}
+                    <strong>{pickerTarget.day}</strong>.
+                  </p>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">
+                      search
+                    </span>
+                    <input
+                      type="text"
+                      autoFocus
+                      value={pickerSearch}
+                      onChange={(e) => setPickerSearch(e.target.value)}
+                      placeholder="Cari resep..."
+                      className="w-full pl-11 pr-4 py-2.5 rounded-full border border-outline-variant bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm font-medium"
+                    />
+                  </div>
+                </div>
 
-            {/* List */}
-            <div className="overflow-y-auto flex-1 p-6">
-              {pickerResults.length === 0 ? (
-                <div className="text-center py-12 text-on-surface-variant">
-                  <span className="material-symbols-outlined text-5xl text-outline-variant mb-2 block">
-                    sentiment_dissatisfied
-                  </span>
-                  <p className="text-sm">Resep tidak ditemukan.</p>
+                {/* List */}
+                <div className="overflow-y-auto flex-1 p-6">
+                  {pickerResults.length === 0 ? (
+                    <div className="text-center py-12 text-on-surface-variant">
+                      <span className="material-symbols-outlined text-5xl text-outline-variant mb-2 block">
+                        sentiment_dissatisfied
+                      </span>
+                      <p className="text-sm">Resep tidak ditemukan.</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {pickerResults.map((recipe) => (
+                        <button
+                          key={recipe.id}
+                          onClick={() => handlePickRecipe(recipe)}
+                          className="flex items-center gap-3 p-3 rounded-2xl border border-outline-variant bg-white hover:bg-secondary-container/20 hover:border-primary transition-all text-left cursor-pointer group"
+                        >
+                          <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
+                            <img
+                              src={recipe.imageUrl}
+                              alt={recipe.title}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                            />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-bold text-sm text-on-surface leading-tight line-clamp-2 mb-1">
+                              {recipe.title}
+                            </h4>
+                            <div className="flex items-center gap-3 text-on-surface-variant text-xs font-semibold">
+                              <span className="flex items-center gap-0.5">
+                                <span className="material-symbols-outlined text-[15px]">schedule</span>
+                                {recipe.readyInMinutes} mnt
+                              </span>
+                              <span className="flex items-center gap-0.5">
+                                <span className="material-symbols-outlined text-[15px]">payments</span>
+                                {formatRupiah(recipe.priceIdr)}
+                              </span>
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {pickerResults.map((recipe) => (
+              </>
+            ) : (
+              <>
+                {/* Konfirmasi Porsi Modal */}
+                <div className="p-6 md:p-8">
+                  <button
+                    onClick={() => {
+                      setPickerTarget(null);
+                      setPickerSelectedRecipe(null);
+                    }}
+                    className="absolute right-4 top-4 w-9 h-9 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-lg">close</span>
+                  </button>
+
+                  <h3 className="text-xl font-bold text-primary mb-2 flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-2xl">group</span>
+                    Atur Jumlah Porsi
+                  </h3>
+                  <p className="text-xs text-on-surface-variant mb-6 leading-relaxed">
+                    Berapa porsi <strong>{pickerSelectedRecipe.title}</strong> yang ingin Anda masak untuk{' '}
+                    <strong>{MEALS.find((m) => m.key === pickerTarget.meal)?.label}</strong> hari{' '}
+                    <strong>{pickerTarget.day}</strong>?
+                  </p>
+
+                  {/* Servings Stepper */}
+                  <div className="space-y-1.5 mb-8">
+                    <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block">
+                      Jumlah Porsi (Servings)
+                    </label>
+                    <div className="flex items-center gap-4 bg-secondary-container/20 border border-outline-variant p-2 rounded-2xl justify-between">
+                      <button
+                        onClick={() => setPickerServings(Math.max(1, pickerServings - 1))}
+                        className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-lg">remove</span>
+                      </button>
+                      <span className="font-extrabold text-lg text-primary">{pickerServings} Porsi</span>
+                      <button
+                        onClick={() => setPickerServings(pickerServings + 1)}
+                        className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-lg">add</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Action buttons */}
+                  <div className="flex gap-3 mt-4">
                     <button
-                      key={recipe.id}
-                      onClick={() => handlePickRecipe(recipe)}
-                      className="flex items-center gap-3 p-3 rounded-2xl border border-outline-variant bg-white hover:bg-secondary-container/20 hover:border-primary transition-all text-left cursor-pointer group"
+                      onClick={handleCancelPick}
+                      className="flex-1 py-3 border border-outline-variant text-on-surface-variant hover:bg-secondary-container/20 rounded-full font-bold text-sm transition-colors cursor-pointer"
                     >
-                      <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
-                        <img
-                          src={recipe.imageUrl}
-                          alt={recipe.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform"
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h4 className="font-bold text-sm text-on-surface leading-tight line-clamp-2 mb-1">
-                          {recipe.title}
-                        </h4>
-                        <div className="flex items-center gap-3 text-on-surface-variant text-xs font-semibold">
-                          <span className="flex items-center gap-0.5">
-                            <span className="material-symbols-outlined text-[15px]">schedule</span>
-                            {recipe.readyInMinutes} mnt
-                          </span>
-                          <span className="flex items-center gap-0.5">
-                            <span className="material-symbols-outlined text-[15px]">payments</span>
-                            {formatRupiah(recipe.priceIdr)}
-                          </span>
-                        </div>
-                      </div>
+                      Kembali
                     </button>
-                  ))}
+                    <button
+                      onClick={handleConfirmAdd}
+                      className="flex-1 py-3 bg-primary text-white hover:bg-primary-container rounded-full font-bold text-sm transition-all shadow-md cursor-pointer flex items-center justify-center gap-1"
+                    >
+                      <span className="material-symbols-outlined text-lg">check</span>
+                      Konfirmasi
+                    </button>
+                  </div>
                 </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
         </div>
       )}
