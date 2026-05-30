@@ -298,7 +298,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                 </div>
               </div>
 
-              {/* Kartu ajakan jadi supplier CookPlan */}
+              {/* Kartu ajakan jadi supplier CookPlan (gaya urgensi/FOMO) */}
               <button
                 onClick={() =>
                   alert('Pendaftaran supplier CookPlan akan segera dibuka untuk produsen & petani lokal!')
@@ -314,17 +314,27 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                     backgroundPosition: 'center'
                   }}
                 ></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/40 to-transparent z-10"></div>
+
+                {/* Badge slot terbatas */}
+                <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 bg-white/90 text-primary px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-error"></span>
+                  </span>
+                  Slot Mitra Terbatas
+                </div>
+
                 <div className="absolute bottom-6 left-6 right-6 z-20 text-white">
                   <p className="text-xs uppercase tracking-widest mb-1 opacity-80">
-                    Jadi Mitra Supplier
+                    Khusus Petani &amp; Produsen Lokal
                   </p>
-                  <h4 className="text-xl font-bold mb-2 leading-tight">
-                    Daftar sebagai Supplier CookPlan
+                  <h4 className="text-xl font-bold mb-3 leading-tight">
+                    Jadi Supplier Resmi CookPlan Hari Ini
                   </h4>
-                  <div className="flex items-center gap-1.5 text-sm font-semibold">
-                    <span>Mulai jual bahan segarmu</span>
-                    <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">
+                  <div className="inline-flex items-center gap-1.5 bg-white text-primary px-4 py-2 rounded-full text-sm font-bold group-hover:gap-2.5 transition-all">
+                    <span>Amankan Slotmu</span>
+                    <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-0.5">
                       arrow_forward
                     </span>
                   </div>
