@@ -36,10 +36,9 @@ function formatAmount(amount) {
 
 // Bangun daftar belanja dari rencana mingguan:
 // kumpulkan tiap slot terisi -> ambil resep penuh -> agregasi bahan per (nama+satuan),
-// skala jumlah sesuai porsi, lalu kelompokkan per kategori.
+// skala jumlah & harga sesuai porsi, lalu kelompokkan per kategori.
 function buildShoppingList(weeklyPlan) {
-  const itemMap = new Map(); // key: `${name}__${unit}` -> { name, unit, amount, category }
-  let estimatedCost = 0;
+  const itemMap = new Map(); // key: `${name}__${unit}` -> { name, unit, amount, priceIdr, category }
 
   if (weeklyPlan && typeof weeklyPlan === 'object') {
     Object.values(weeklyPlan).forEach((daySlots) => {
@@ -50,18 +49,19 @@ function buildShoppingList(weeklyPlan) {
         if (!recipe) return;
 
         const factor = (slot.servings || BASE_SERVINGS) / BASE_SERVINGS;
-        estimatedCost += (slot.priceIdr || recipe.priceIdr || 0) * factor;
 
         recipe.ingredients.forEach((ing) => {
           const key = `${ing.name}__${ing.unit}`;
           const existing = itemMap.get(key);
           if (existing) {
             existing.amount += ing.amount * factor;
+            existing.priceIdr += (ing.priceIdr || 0) * factor;
           } else {
             itemMap.set(key, {
               name: ing.name,
               unit: ing.unit,
               amount: ing.amount * factor,
+              priceIdr: (ing.priceIdr || 0) * factor,
               category: ing.category
             });
           }
@@ -69,6 +69,10 @@ function buildShoppingList(weeklyPlan) {
       });
     });
   }
+
+  // Total estimasi = jumlah harga semua bahan (sudah diskala)
+  let estimatedCost = 0;
+  itemMap.forEach((item) => { estimatedCost += item.priceIdr; });
 
   // Kelompokkan per kategori mengikuti urutan CATEGORY_META
   const sections = [];
@@ -216,7 +220,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                             </p>
                           </div>
                         </div>
-                        <div className="text-right shrink-0 pl-3">
+                        <div className="text-right shrink-0 pl-3 flex flex-col items-end gap-1">
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
                               checked
@@ -226,6 +230,15 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                           >
                             {formatAmount(item.amount)} {item.unit}
                           </span>
+                          {item.priceIdr > 0 && (
+                            <span
+                              className={`text-xs font-bold transition-colors ${
+                                checked ? 'text-outline line-through' : 'text-primary'
+                              }`}
+                            >
+                              {formatRupiah(Math.round(item.priceIdr))}
+                            </span>
+                          )}
                         </div>
                       </button>
                     );
