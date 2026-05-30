@@ -2,6 +2,7 @@ import { useState } from 'react';
 import RecipeCatalog from './pages/RecipeCatalog';
 import WeeklyPlanner from './pages/WeeklyPlanner';
 import UserProfile from './pages/UserProfile';
+import TeamProfile from './pages/TeamProfile';
 
 const DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 const MEAL_TYPES = ['breakfast', 'lunch', 'dinner'];
@@ -141,7 +142,7 @@ function App() {
   ];
 
   // Halaman bertema terang (light) memakai header & footer yang sama
-  const isLightPage = activeTab === 'catalog' || activeTab === 'planner' || activeTab === 'profile';
+  const isLightPage = activeTab === 'catalog' || activeTab === 'planner' || activeTab === 'profile' || activeTab === 'about';
 
   return (
     <div className="min-h-screen bg-[#FBFAF9] flex flex-col font-sans selection:bg-[#4E6B2F] selection:text-white">
@@ -450,6 +451,10 @@ function App() {
           <UserProfile />
         )}
 
+        {activeTab === 'about' && (
+          <TeamProfile />
+        )}
+
       </main>
 
       {/* Footer */}
@@ -469,7 +474,7 @@ function App() {
             {/* Right side links */}
             <div className="flex flex-col items-center md:items-end gap-6">
               <div className="flex flex-wrap justify-center gap-6 text-xs md:text-sm font-semibold text-on-surface-variant">
-                <a href="#" className="hover:text-primary transition-colors">About Us</a>
+                <button onClick={() => setActiveTab('about')} className="hover:text-primary transition-colors cursor-pointer">About Us</button>
                 <a href="#" className="hover:text-primary transition-colors">Support</a>
                 <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
                 <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
