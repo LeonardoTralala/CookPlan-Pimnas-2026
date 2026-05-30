@@ -36,8 +36,7 @@ export function Navbar({ searchQuery, onSearchChange, onNavigate }) {
           className="flex items-center gap-3 cursor-pointer select-none"
           onClick={scrollToTop}
         >
-          <Logo />
-          <span className="font-headline-lg text-headline-lg font-bold text-primary">CookPlan</span>
+          <Logo className="h-11 w-auto" />
         </div>
 
         <div className="hidden md:flex items-center space-x-8">
