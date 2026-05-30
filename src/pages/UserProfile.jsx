@@ -43,11 +43,10 @@ function UserProfile() {
               <button
                 key={item.id}
                 onClick={() => setActiveNav(item.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-left transition-colors cursor-pointer ${
-                  active
-                    ? 'bg-surface-cream text-primary font-bold shadow-[0_4px_20px_-4px_rgba(44,58,30,0.04)]'
-                    : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary'
-                }`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-left transition-colors cursor-pointer ${active
+                  ? 'bg-surface-cream text-primary font-bold shadow-[0_4px_20px_-4px_rgba(44,58,30,0.04)]'
+                  : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary'
+                  }`}
               >
                 <span className={`material-symbols-outlined ${active ? 'fill' : ''}`}>{item.icon}</span>
                 {item.label}
@@ -90,9 +89,9 @@ function UserProfile() {
 
             <div className="flex-grow text-center md:text-left space-y-2 mt-2 md:mt-4">
               <h1 className="text-3xl md:text-[40px] font-extrabold text-primary tracking-tight leading-tight">
-                Alex Sterling
+                Brokoli
               </h1>
-              <p className="text-lg text-on-surface-variant">alex.sterling@example.com</p>
+              <p className="text-lg text-on-surface-variant">brokoli@example.com</p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-2">
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary text-on-primary rounded-full text-xs font-semibold shadow-sm">
                   <span className="material-symbols-outlined text-[14px] fill">verified</span> Pro Plan
@@ -159,11 +158,10 @@ function UserProfile() {
                   <button
                     key={filter}
                     onClick={() => setActiveFilter(filter)}
-                    className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors cursor-pointer ${
-                      active
-                        ? 'bg-primary text-on-primary'
-                        : 'bg-surface-cream text-on-surface-variant hover:bg-surface-variant'
-                    }`}
+                    className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors cursor-pointer ${active
+                      ? 'bg-primary text-on-primary'
+                      : 'bg-surface-cream text-on-surface-variant hover:bg-surface-variant'
+                      }`}
                   >
                     {filter}
                   </button>
