@@ -43,7 +43,7 @@ function formatRupiah(num) {
   }).format(num);
 }
 
-function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog }) {
+function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onGenerateShoppingList }) {
   // Slot yang sedang diisi: { day, meal } | null
   const [pickerTarget, setPickerTarget] = useState(null);
   const [pickerSearch, setPickerSearch] = useState('');
@@ -259,9 +259,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog }) {
       {/* ---------------- Bottom Action Bar ---------------- */}
       <div className="fixed bottom-0 left-0 right-0 z-40 p-4 md:p-6 bg-gradient-to-t from-[#FBFAF9] via-[#FBFAF9]/95 to-transparent flex justify-center pointer-events-none">
         <button
-          onClick={() =>
-            alert('Fitur Generate Shopping List sedang dikembangkan oleh rekan tim!')
-          }
+          onClick={onGenerateShoppingList}
           className="pointer-events-auto bg-primary hover:bg-primary-container text-white px-8 py-4 rounded-full shadow-2xl shadow-primary/30 flex items-center gap-3 transition-all active:scale-95 group cursor-pointer"
         >
           <span className="material-symbols-outlined group-hover:rotate-12 transition-transform">
