@@ -185,33 +185,33 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                       <button
                         key={item.id}
                         onClick={() => toggleItem(item.id)}
-                        className="w-full text-left item-row flex items-center justify-between p-5 md:p-6 border-b border-outline-variant last:border-0 hover:bg-surface-container-low transition-colors group cursor-pointer"
+                        className={`w-full text-left item-row flex items-center justify-between p-5 md:p-6 border-b border-outline-variant last:border-0 transition-colors group cursor-pointer ${
+                          checked
+                            ? 'bg-surface-container-low hover:bg-surface-container-low'
+                            : 'hover:bg-surface-container-low'
+                        }`}
                       >
                         <div className="flex items-center gap-4 min-w-0">
                           {/* Check ring */}
                           <div
                             className={`w-6 h-6 shrink-0 rounded-full border-2 flex items-center justify-center transition-colors ${
                               checked
-                                ? 'bg-primary border-primary'
-                                : 'border-outline-variant'
+                                ? 'bg-success-green border-success-green'
+                                : 'border-outline-variant group-hover:border-primary'
                             }`}
                           >
                             <span
                               className={`material-symbols-outlined text-sm transition-opacity ${
                                 checked
                                   ? 'text-white opacity-100'
-                                  : 'text-primary opacity-0 group-hover:opacity-100'
+                                  : 'text-primary opacity-0 group-hover:opacity-60'
                               }`}
                             >
                               check
                             </span>
                           </div>
                           <div className="min-w-0">
-                            <p
-                              className={`font-semibold text-on-surface truncate transition-all ${
-                                checked ? 'line-through text-on-surface-variant' : ''
-                              }`}
-                            >
+                            <p className="font-semibold text-on-surface truncate">
                               {item.name}
                             </p>
                             <p className="text-xs text-on-surface-variant">
@@ -224,18 +224,14 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
                               checked
-                                ? 'bg-surface-container-low text-outline'
+                                ? 'bg-success-green/15 text-success-green'
                                 : 'bg-surface-cream text-on-surface'
                             }`}
                           >
                             {formatAmount(item.amount)} {item.unit}
                           </span>
                           {item.priceIdr > 0 && (
-                            <span
-                              className={`text-xs font-bold transition-colors ${
-                                checked ? 'text-outline line-through' : 'text-primary'
-                              }`}
-                            >
+                            <span className="text-xs font-bold text-primary">
                               {formatRupiah(Math.round(item.priceIdr))}
                             </span>
                           )}
@@ -260,7 +256,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                   <div className="flex justify-between text-xs font-semibold text-on-surface-variant mb-2">
                     <span>Progress belanja</span>
                     <span>
-                      {checkedCount} dari {totalItems} terbeli
+                      {checkedCount} dari {totalItems} akan dibeli
                     </span>
                   </div>
                   <div className="h-2.5 bg-white/60 rounded-full overflow-hidden">
