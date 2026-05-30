@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { LandingPage } from './pages/LandingPage.jsx';
 import RecipeCatalog from './pages/RecipeCatalog';
 import WeeklyPlanner from './pages/WeeklyPlanner';
 import UserProfile from './pages/UserProfile';
@@ -141,6 +142,12 @@ function App() {
     }
   ];
 
+  // Halaman utama (landing) dirender penuh dengan navbar & footer-nya sendiri.
+  // Link nav & tombol CTA di landing page mengarahkan ke tab aplikasi.
+  if (activeTab === 'overview') {
+    return <LandingPage onNavigate={setActiveTab} />;
+  }
+
   // Halaman bertema terang (light) memakai header & footer yang sama
   const isLightPage = activeTab === 'catalog' || activeTab === 'planner' || activeTab === 'profile' || activeTab === 'about';
 
@@ -270,72 +277,6 @@ function App() {
 
       {/* Main Content */}
       <main className={`flex-1 flex flex-col justify-center ${isLightPage ? 'bg-[#FBFAF9] text-on-surface' : 'max-w-6xl w-full mx-auto px-6 py-12 bg-slate-950 text-slate-100'}`}>
-
-        {activeTab === 'overview' && (
-          <div className="space-y-12 animate-fade-in py-12">
-            {/* Hero Section */}
-            <div className="text-center space-y-6 max-w-3xl mx-auto">
-              <div className="inline-block p-2 bg-slate-900 border border-slate-800 rounded-2xl shadow-xl mb-4">
-                <span className="text-5xl">👷‍♂️</span>
-              </div>
-              <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
-                Penulisan Ulang Kode <br />
-                <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-300 bg-clip-text text-transparent">
-                  CookPlan Sedang Berjalan
-                </span>
-              </h2>
-              <p className="text-lg text-slate-400 leading-relaxed">
-                Kami sedang melakukan migrasi dari purwarupa statis monolitik HTML menuju arsitektur modern berbasis
-                <strong> React SPA (Vite)</strong> dengan sistem styling <strong>Tailwind CSS v4</strong>.
-                Semua fitur diatur ulang agar siap diintegrasikan dengan backend database dan autentikasi Supabase.
-              </p>
-              <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-                <button
-                  onClick={() => setActiveTab('catalog')}
-                  className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 font-extrabold rounded-xl shadow-lg shadow-orange-950/30 transition-all hover:scale-105 flex items-center gap-1.5 cursor-pointer"
-                >
-                  <span>🥗</span> Buka Katalog Resep
-                </button>
-                <button
-                  onClick={() => setActiveTab('features')}
-                  className="px-6 py-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-medium rounded-xl transition-all"
-                >
-                  Lihat Rencana Fitur
-                </button>
-                <button
-                  onClick={() => setActiveTab('tech')}
-                  className="px-6 py-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-medium rounded-xl transition-all"
-                >
-                  Detail Arsitektur
-                </button>
-              </div>
-            </div>
-
-            {/* Quick Documentation Navigation Links */}
-            <div className="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-6 max-w-2xl mx-auto flex flex-col gap-4 backdrop-blur-sm">
-              <div className="flex items-start gap-4">
-                <span className="text-2xl mt-1">📄</span>
-                <div>
-                  <h4 className="font-bold text-slate-200">Dokumentasi Proyek CookPlan</h4>
-                  <p className="text-sm text-slate-400 mt-1 leading-relaxed">
-                    Seluruh berkas purwarupa awal HTML statis telah dibersihkan demi kerapian repositori. Anda dapat mempelajari arsitektur target, fitur, dan panduan melalui file dokumentasi utama berikut:
-                  </p>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-800/50">
-                <a href="./README.md" className="flex items-center justify-center py-2 px-3 bg-slate-950/60 hover:bg-slate-900 border border-slate-850 hover:border-slate-700 text-xs font-semibold rounded-lg transition-all text-orange-400">
-                  📖 README.md
-                </a>
-                <a href="./docs/ARCHITECTURE.md" className="flex items-center justify-center py-2 px-3 bg-slate-950/60 hover:bg-slate-900 border border-slate-850 hover:border-slate-700 text-xs font-semibold rounded-lg transition-all text-orange-400">
-                  🏛️ ARCHITECTURE.md
-                </a>
-                <a href="./docs/PRD_PKM.md" className="flex items-center justify-center py-2 px-3 bg-slate-950/60 hover:bg-slate-900 border border-slate-850 hover:border-slate-700 text-xs font-semibold rounded-lg transition-all text-orange-400">
-                  📋 PRD_PKM.md
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
 
         {activeTab === 'features' && (
           <div className="space-y-8 animate-fade-in py-12">
