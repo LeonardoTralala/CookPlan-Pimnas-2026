@@ -13,6 +13,12 @@
   --color-outline: #74796c;
   --color-outline-variant: #c4c8b9;
   --color-success-green: #34c759;
+  --color-surface-variant: #d7e9c0;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #e8fad1;
+  --color-on-primary: #ffffff;
+  --color-surface-tint: #4a672b;
+  --color-error: #ba1a1a;
   --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
 }
 
