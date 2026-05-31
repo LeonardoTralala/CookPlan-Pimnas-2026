@@ -8,7 +8,7 @@ export const mockRecipes = [
     priceIdr: 30000,
     imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuDk5CQmmXxTLEdn-JZ2cdm0uSXqhprKYJ7fsDNllaTIWs56rpBG5lq1JPZFl8aqFyj5dgTa05R1W2auBYTbwIZpqwWaGzzmu70p171K-i6e4xRBCs4CENnb-zAotsSaV4WuKec4zI-uU2dNiVYTEZw5Ja0jdTR33nnfvlsCH_P29yKgtPbjFGqrS9ZuNYNSg8KdLQ3kLDvrnxTEsemTZ1HAf8tX5Rb0YBt0z21N1XcQe1f7F-oLo5FHZEA6YFNCCEYNUFS2CEE3GnGX",
     difficulty: "easy",
-    badges: ["Vegetarian", "Budget Friendly", "Local Ingredients"],
+    badges: ["Vegetarian", "Hemat Budget", "Bahan Lokal"],
     ingredients: [
       { name: "Kacang Tanah", amount: 150, unit: "g", category: "dry_goods", priceIdr: 8000 },
       { name: "Tahu Putih", amount: 2, unit: "pcs", category: "dry_goods", priceIdr: 5000 },
@@ -37,7 +37,7 @@ export const mockRecipes = [
     priceIdr: 40000,
     imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCB_ovYxZPlfuqHHWZWsXcQtck3mkMMTWWVbtFfISdnDmYYCprdM2cNFtNQDwcbrwSN4XJeRuVeoId3E0WVOixZOMyGBZa23N_ulDGl0eriio9Td3UBsyiTPtThLkux1bujZBfPFVlmtDP-RYsoKD0eIYbEDShjMwqmO55JCHkHo_yo2SoIrssAH5N-Se4zLmjRQ56WWqfGAFbwRepmLqZUAud8UOpZFwrlhyxXjXOhzL4HQb4o81kwap9hG99T1Va2kUFotJvjtyGA",
     difficulty: "medium",
-    badges: ["Local Ingredients", "Budget Friendly"],
+    badges: ["Bahan Lokal", "Hemat Budget"],
     ingredients: [
       { name: "Daging Ayam Kampung", amount: 350, unit: "g", category: "meat", priceIdr: 25000 },
       { name: "Kol", amount: 100, unit: "g", category: "vegetables", priceIdr: 3000 },
@@ -69,7 +69,7 @@ export const mockRecipes = [
     priceIdr: 25000,
     imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuD7AaGkhvQceouj7DjoYa0KeRNG47PciPWfAI_qLiL31Ye5Ogz0SC1vgqb8AJjP1LtnkmkybO_LYhsK0ZHSZ0h91QiFyLUmxKQItXAGB64dPqot9g-tVZ7LW75pdm7uNlSpCPz_84nI3oy0iJZn8jQOoUbKqGmKsybz1KhD5xMQ2lIYkGDT3yg1jlq2D9HqSTDGnXLrEiTyIVcVHrmp4_TvzlB3-V83DSoTni-UIPIdEdGtSahp72FpGk_LQ6BawLrlTRtI8O-I_REA",
     difficulty: "easy",
-    badges: ["Vegetarian", "Quick", "Budget Friendly"],
+    badges: ["Vegetarian", "Cepat", "Hemat Budget"],
     ingredients: [
       { name: "Tempe Segar", amount: 150, unit: "g", category: "dry_goods", priceIdr: 5000 },
       { name: "Nasi Merah", amount: 200, unit: "g", category: "dry_goods", priceIdr: 6000 },
@@ -98,7 +98,7 @@ export const mockRecipes = [
     priceIdr: 28000,
     imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuBBOo1ImnnPyKDHnFzklBsF2yhHJqP7jHRTBOxMUL8Zz1Cz-RwFeefpHKM8eL_S6hgBQvKk8pgmN7E_SDhOzDvenXy-gYk7RzdpedE0BZHew_S7qGA5SpufyA07_AQqlHCjhJ1OTNhPIrzX3_-QQetUnc7jhgJQz3RXLH16JkT9Xb19qpkdRWHEnFQ4ffheuWuwfPtxuwSvwfB3Xrjfb6USlHWV-AiID9aGDrM32KK5JOYBydvEyvAzAuHtKDpPVfvEieG0FsbpEg1V",
     difficulty: "easy",
-    badges: ["Quick", "Budget Friendly"],
+    badges: ["Cepat", "Hemat Budget"],
     ingredients: [
       { name: "Mie Basah Kuning", amount: 200, unit: "g", category: "dry_goods", priceIdr: 5000 },
       { name: "Kol", amount: 50, unit: "g", category: "vegetables", priceIdr: 2000 },
@@ -129,7 +129,7 @@ export const mockRecipes = [
     priceIdr: 48000,
     imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCCCdUb4DF4C5nHJVl3kkRyZzL9NmHFvNWsQY9g76Otg8PSPYEU3y6pJ8m2A3RNuS8Gu_MEe7hddJsDLEKEwBaNV5453BtThP7De14rYhG0Yt6GzN54qfJhRkc6H3UuX8SPlLmZH2WRK_d1l2jJuzqHVGugQB7o2f-8rcZmyK4rfshHwFaXflHPFOX1eYaE-NE7XOcXT2rX-Ebb8RyvnLm650dG4AM33T2YQHfW6G5ajx0pMweIsqbsFcAYQWOd0uyFqHDp-wRcItjN",
     difficulty: "medium",
-    badges: ["Local Ingredients"],
+    badges: ["Bahan Lokal"],
     ingredients: [
       { name: "Ikan Nila/Kerapu", amount: 400, unit: "g", category: "meat", priceIdr: 35000 },
       { name: "Cabai Merah Keriting", amount: 5, unit: "pcs", category: "spices", priceIdr: 5000 },
@@ -158,7 +158,7 @@ export const mockRecipes = [
     priceIdr: 22000,
     imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuBYdhqaLNhiPpC7e7itJL1iHdJVa1yUz9Y-u_6dsJxIWUs0S1EDlM6kA4ux8I7Plgv_c0UvcPYjmMMeieOAyFKQo1NbuzUBNrdCZsUU77Nyp1XHIrdzwJkttwCvfEz-MllkJ9bVKrLKk_V2XXUXmNS52ieI_GzZz0-tfMss_PNdryKq6pi4LxVS9WocQZf1OeeBxt2pLn5koKDB5gffc2zFqhhMcAMu0D5x_O_rxyJnT4j3_00vQR_jsgxhMJuhu0F8Atv3GmaPDG9C",
     difficulty: "easy",
-    badges: ["Vegetarian", "Quick", "Budget Friendly", "Local Ingredients"],
+    badges: ["Vegetarian", "Cepat", "Hemat Budget", "Bahan Lokal"],
     ingredients: [
       { name: "Brokoli", amount: 100, unit: "g", category: "vegetables", priceIdr: 5000 },
       { name: "Wortel", amount: 80, unit: "g", category: "vegetables", priceIdr: 3000 },

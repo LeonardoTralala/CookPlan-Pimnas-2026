@@ -1,11 +1,13 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
+import { usePlan } from '../hooks/usePlan.js';
 
 function RecipeCatalog({ onAddToPlan }) {
+  const { showToast } = usePlan();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
-  const [maxTime, setMaxTime] = useState(60); // default max 60 minutes
-  const [maxPrice, setMaxPrice] = useState(50000); // default max 50,000 IDR
+  const [maxTime, setMaxTime] = useState(120); // default max 120 minutes
+  const [priceCategory, setPriceCategory] = useState('Semua'); // 'Semua', 'Hemat', 'Standar', 'Premium'
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [selectedRecipeForDetail, setSelectedRecipeForDetail] = useState(null);
   const [selectedRecipeForPlan, setSelectedRecipeForPlan] = useState(null);
@@ -22,6 +24,19 @@ function RecipeCatalog({ onAddToPlan }) {
     { value: 'dinner', label: 'Makan Malam' }
   ];
 
+  // Handle Escape key to close modals
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (selectedRecipeForPlan) setSelectedRecipeForPlan(null);
+        else if (selectedRecipeForDetail) setSelectedRecipeForDetail(null);
+        else if (showAdvancedFilters) setShowAdvancedFilters(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedRecipeForDetail, selectedRecipeForPlan, showAdvancedFilters]);
+
   // Toggle quick filter tag
   const handleToggleFilter = (filterName) => {
     if (activeFilters.includes(filterName)) {
@@ -31,12 +46,11 @@ function RecipeCatalog({ onAddToPlan }) {
     }
   };
 
-  // Reset all filters
   const handleResetFilters = () => {
     setSearchQuery('');
     setActiveFilters([]);
     setMaxTime(120);
-    setMaxPrice(60000);
+    setPriceCategory('Semua');
   };
 
   // Filter recipes based on search query, quick filters, and advanced criteria
@@ -58,14 +72,14 @@ function RecipeCatalog({ onAddToPlan }) {
           if (filter === 'Vegetarian') {
             return recipe.badges.includes('Vegetarian');
           }
-          if (filter === 'Quick') {
-            return recipe.readyInMinutes <= 30 || recipe.badges.includes('Quick');
+          if (filter === 'Cepat') {
+            return recipe.readyInMinutes <= 30 || recipe.badges.includes('Cepat');
           }
-          if (filter === 'Local') {
-            return recipe.badges.includes('Local Ingredients');
+          if (filter === 'Bahan Lokal') {
+            return recipe.badges.includes('Bahan Lokal');
           }
-          if (filter === 'Budget') {
-            return recipe.priceIdr <= 30000 || recipe.badges.includes('Budget Friendly');
+          if (filter === 'Hemat Budget') {
+            return recipe.priceIdr <= 30000 || recipe.badges.includes('Hemat Budget');
           }
           return true;
         });
@@ -75,12 +89,14 @@ function RecipeCatalog({ onAddToPlan }) {
       // 3. Max Cooking Time
       if (recipe.readyInMinutes > maxTime) return false;
 
-      // 4. Max Price
-      if (recipe.priceIdr > maxPrice) return false;
+      // 4. Price Category
+      if (priceCategory === 'Hemat' && recipe.priceIdr >= 15000) return false;
+      if (priceCategory === 'Standar' && (recipe.priceIdr < 15000 || recipe.priceIdr > 30000)) return false;
+      if (priceCategory === 'Premium' && recipe.priceIdr <= 30000) return false;
 
       return true;
     });
-  }, [searchQuery, activeFilters, maxTime, maxPrice]);
+  }, [searchQuery, activeFilters, maxTime, priceCategory]);
 
   // Handle confirming "Add to Plan"
   const handleConfirmAddToPlan = () => {
@@ -101,7 +117,7 @@ function RecipeCatalog({ onAddToPlan }) {
     setPlanServings(2);
 
     // Show alert
-    alert(`Berhasil menambahkan "${recipeTitle}" (${planServings} porsi) ke ${mealLabel} hari ${planDay}!`);
+    showToast(`Berhasil menambahkan "${recipeTitle}" (${planServings} porsi) ke ${mealLabel} hari ${planDay}!`);
   };
 
   // Utility to format price to Rupiah
@@ -138,8 +154,9 @@ function RecipeCatalog({ onAddToPlan }) {
             <button
               onClick={() => setSearchQuery('')}
               className="absolute right-6 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors"
+              aria-label="Hapus pencarian"
             >
-              <span className="material-symbols-outlined text-lg">close</span>
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
             </button>
           )}
         </div>
@@ -157,34 +174,34 @@ function RecipeCatalog({ onAddToPlan }) {
             Vegetarian
           </button>
           <button
-            onClick={() => handleToggleFilter('Quick')}
+            onClick={() => handleToggleFilter('Cepat')}
             className={`px-6 py-2 rounded-full font-semibold text-xs md:text-sm border transition-all cursor-pointer ${
-              activeFilters.includes('Quick')
+              activeFilters.includes('Cepat')
                 ? 'bg-primary text-white border-primary shadow-sm'
                 : 'bg-surface-cream/50 text-primary border-outline-variant hover:bg-primary-container hover:text-white'
             }`}
           >
-            Quick (&lt; 30 min)
+            Cepat (&lt; 30 mnt)
           </button>
           <button
-            onClick={() => handleToggleFilter('Local')}
+            onClick={() => handleToggleFilter('Bahan Lokal')}
             className={`px-6 py-2 rounded-full font-semibold text-xs md:text-sm border transition-all cursor-pointer ${
-              activeFilters.includes('Local')
+              activeFilters.includes('Bahan Lokal')
                 ? 'bg-primary text-white border-primary shadow-sm'
                 : 'bg-surface-cream/50 text-primary border-outline-variant hover:bg-primary-container hover:text-white'
             }`}
           >
-            Local Ingredients
+            Bahan Lokal
           </button>
           <button
-            onClick={() => handleToggleFilter('Budget')}
+            onClick={() => handleToggleFilter('Hemat Budget')}
             className={`px-6 py-2 rounded-full font-semibold text-xs md:text-sm border transition-all cursor-pointer ${
-              activeFilters.includes('Budget')
+              activeFilters.includes('Hemat Budget')
                 ? 'bg-primary text-white border-primary shadow-sm'
                 : 'bg-surface-cream/50 text-primary border-outline-variant hover:bg-primary-container hover:text-white'
             }`}
           >
-            Budget Friendly
+            Hemat Budget
           </button>
 
           {/* Toggle Advanced Filters Button */}
@@ -197,16 +214,16 @@ function RecipeCatalog({ onAddToPlan }) {
             }`}
           >
             <span className="material-symbols-outlined text-lg">tune</span>
-            Filters
+            Filter
           </button>
 
-          {(searchQuery || activeFilters.length > 0 || maxTime < 120 || maxPrice < 60000) && (
+          {(searchQuery || activeFilters.length > 0 || maxTime < 120 || priceCategory !== 'Semua') && (
             <button
               onClick={handleResetFilters}
               className="text-xs md:text-sm font-bold text-red-600 hover:text-red-800 transition-colors flex items-center gap-1 cursor-pointer pl-2"
             >
               <span className="material-symbols-outlined text-base">restart_alt</span>
-              Reset
+              Atur Ulang
             </button>
           )}
         </div>
@@ -214,10 +231,19 @@ function RecipeCatalog({ onAddToPlan }) {
         {/* Sliding Panel / Advanced Filters Section */}
         {showAdvancedFilters && (
           <div className="max-w-2xl mx-auto mt-6 p-6 bg-white border border-outline-variant rounded-3xl shadow-sm animate-fade-in text-left">
-            <h4 className="font-bold text-primary mb-4 flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-xl">tune</span>
-              Batasan Memasak & Budget
-            </h4>
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-bold text-primary flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-xl">tune</span>
+                Batasan Memasak & Budget
+              </h4>
+              <button
+                onClick={() => setShowAdvancedFilters(false)}
+                className="w-8 h-8 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                aria-label="Tutup pengaturan filter"
+              >
+                <span className="material-symbols-outlined text-base" aria-hidden="true">close</span>
+              </button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Max Cooking Time Slider */}
               <div className="space-y-2">
@@ -240,24 +266,27 @@ function RecipeCatalog({ onAddToPlan }) {
                 </div>
               </div>
 
-              {/* Max Price Slider */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs font-semibold text-on-surface-variant">
-                  <span>Harga Bahan Maksimal</span>
-                  <span className="text-primary font-bold">{formatRupiah(maxPrice)}</span>
+              {/* Price Category Filter */}
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-on-surface-variant">
+                  Kategori Harga (per porsi)
                 </div>
-                <input
-                  type="range"
-                  min="15000"
-                  max="60000"
-                  step="1000"
-                  className="w-full h-1.5 bg-secondary-container rounded-lg appearance-none cursor-pointer accent-primary"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(Number(e.target.value))}
-                />
-                <div className="flex justify-between text-[10px] text-on-surface-variant">
-                  <span>Rp 15k</span>
-                  <span>Rp 60k</span>
+                <div className="flex flex-wrap gap-2">
+                  {['Semua', 'Hemat', 'Standar', 'Premium'].map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setPriceCategory(cat)}
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer ${
+                        priceCategory === cat
+                          ? 'bg-primary text-white border-primary shadow-sm'
+                          : 'bg-white text-on-surface-variant border-outline-variant hover:bg-secondary-container/30'
+                      }`}
+                    >
+                      {cat === 'Hemat' ? 'Hemat (< Rp 15k)' : 
+                       cat === 'Standar' ? 'Standar (Rp 15k - 30k)' : 
+                       cat === 'Premium' ? 'Premium (> Rp 30k)' : 'Semua'}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -320,8 +349,9 @@ function RecipeCatalog({ onAddToPlan }) {
                       }}
                       className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md shrink-0 cursor-pointer"
                       title="Tambah ke Rencana Mingguan"
+                      aria-label="Tambah ke Rencana Mingguan"
                     >
-                      <span className="material-symbols-outlined text-xl">add</span>
+                      <span className="material-symbols-outlined text-xl" aria-hidden="true">add</span>
                     </button>
                   </div>
 
@@ -347,8 +377,11 @@ function RecipeCatalog({ onAddToPlan }) {
         {/* Load More Button */}
         {filteredRecipes.length > 0 && (
           <div className="mt-16 text-center">
-            <button className="px-8 py-3 rounded-full border border-secondary text-secondary font-bold hover:bg-secondary-container/20 transition-all cursor-pointer">
-              Load More Recipes
+            <button
+              onClick={() => showToast('Lebih banyak resep akan segera ditambahkan!')}
+              className="px-8 py-3 rounded-full border border-secondary text-secondary font-bold hover:bg-secondary-container/20 transition-all cursor-pointer"
+            >
+              Muat Lebih Banyak Resep
             </button>
           </div>
         )}
@@ -356,14 +389,24 @@ function RecipeCatalog({ onAddToPlan }) {
 
       {/* -------------------- DETAIL RESEP MODAL -------------------- */}
       {selectedRecipeForDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
+          onClick={() => setSelectedRecipeForDetail(null)}
+        >
+          <div 
+            className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-recipe-title"
+          >
             {/* Header Close button */}
             <button
               onClick={() => setSelectedRecipeForDetail(null)}
               className="absolute right-4 top-4 z-10 w-9 h-9 rounded-full bg-slate-950/60 text-white flex items-center justify-center hover:bg-slate-950 transition-colors shadow-md cursor-pointer"
+              aria-label="Tutup detail resep"
             >
-              <span className="material-symbols-outlined text-lg">close</span>
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
             </button>
 
             {/* Scrollable Container */}
@@ -387,7 +430,7 @@ function RecipeCatalog({ onAddToPlan }) {
                       </span>
                     ))}
                   </div>
-                  <h3 className="text-2xl md:text-3xl font-extrabold">{selectedRecipeForDetail.title}</h3>
+                  <h3 id="modal-recipe-title" className="text-2xl md:text-3xl font-extrabold">{selectedRecipeForDetail.title}</h3>
                 </div>
               </div>
 
@@ -403,7 +446,7 @@ function RecipeCatalog({ onAddToPlan }) {
                     <span className="material-symbols-outlined text-primary text-2xl mb-1 block">
                       schedule
                     </span>
-                    <span className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">
+                    <span className="text-[10px] uppercase font-bold text-on-surface tracking-wider block">
                       Waktu Masak
                     </span>
                     <span className="text-sm font-bold text-primary">
@@ -414,7 +457,7 @@ function RecipeCatalog({ onAddToPlan }) {
                     <span className="material-symbols-outlined text-primary text-2xl mb-1 block">
                       whatshot
                     </span>
-                    <span className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">
+                    <span className="text-[10px] uppercase font-bold text-on-surface tracking-wider block">
                       Kalori
                     </span>
                     <span className="text-sm font-bold text-primary">
@@ -425,7 +468,7 @@ function RecipeCatalog({ onAddToPlan }) {
                     <span className="material-symbols-outlined text-primary text-2xl mb-1 block">
                       payments
                     </span>
-                    <span className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">
+                    <span className="text-[10px] uppercase font-bold text-on-surface tracking-wider block">
                       Estimasi Harga
                     </span>
                     <span className="text-sm font-bold text-primary">
@@ -491,7 +534,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 className="px-6 py-2.5 bg-primary text-white hover:bg-primary-container rounded-full font-bold text-sm cursor-pointer flex items-center gap-1.5 transition-all shadow-md"
               >
                 <span className="material-symbols-outlined text-lg">add</span>
-                Add to Plan
+                Tambah ke Rencana
               </button>
             </div>
           </div>
@@ -500,17 +543,27 @@ function RecipeCatalog({ onAddToPlan }) {
 
       {/* -------------------- ADD TO PLAN MODAL -------------------- */}
       {selectedRecipeForPlan && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl border border-outline-variant relative">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
+          onClick={() => setSelectedRecipeForPlan(null)}
+        >
+          <div 
+            className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl border border-outline-variant relative"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-plan-title"
+          >
             {/* Close Button */}
             <button
               onClick={() => setSelectedRecipeForPlan(null)}
               className="absolute right-4 top-4 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
+              aria-label="Tutup form rencana menu"
             >
-              <span className="material-symbols-outlined">close</span>
+              <span className="material-symbols-outlined" aria-hidden="true">close</span>
             </button>
 
-            <h3 className="text-xl font-bold text-primary mb-2 flex items-center gap-1.5">
+            <h3 id="modal-plan-title" className="text-xl font-bold text-primary mb-2 flex items-center gap-1.5">
               <span className="material-symbols-outlined text-2xl">calendar_today</span>
               Atur Menu Mingguan
             </h3>
@@ -522,7 +575,7 @@ function RecipeCatalog({ onAddToPlan }) {
             <div className="space-y-5">
               {/* Meal Type Selection */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block">
+                <label className="text-xs font-bold text-on-surface uppercase tracking-wider block">
                   Pilih Jenis Makan
                 </label>
                 <select
@@ -540,7 +593,7 @@ function RecipeCatalog({ onAddToPlan }) {
 
               {/* Day Selection */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block">
+                <label className="text-xs font-bold text-on-surface uppercase tracking-wider block">
                   Pilih Hari Memasak
                 </label>
                 <select
@@ -558,22 +611,24 @@ function RecipeCatalog({ onAddToPlan }) {
 
               {/* Servings Stepper */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block">
+                <label className="text-xs font-bold text-on-surface uppercase tracking-wider block">
                   Jumlah Porsi (Servings)
                 </label>
                 <div className="flex items-center gap-4 bg-secondary-container/20 border border-outline-variant p-2 rounded-2xl justify-between">
                   <button
                     onClick={() => setPlanServings(Math.max(1, planServings - 1))}
                     className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                    aria-label="Kurangi porsi"
                   >
-                    <span className="material-symbols-outlined text-lg">remove</span>
+                    <span className="material-symbols-outlined text-lg" aria-hidden="true">remove</span>
                   </button>
-                  <span className="font-extrabold text-lg text-primary">{planServings} Porsi</span>
+                  <span className="font-extrabold text-lg text-primary" aria-live="polite">{planServings} Porsi</span>
                   <button
                     onClick={() => setPlanServings(planServings + 1)}
                     className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                    aria-label="Tambah porsi"
                   >
-                    <span className="material-symbols-outlined text-lg">add</span>
+                    <span className="material-symbols-outlined text-lg" aria-hidden="true">add</span>
                   </button>
                 </div>
               </div>

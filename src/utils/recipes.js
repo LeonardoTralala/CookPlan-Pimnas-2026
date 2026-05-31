@@ -14,7 +14,7 @@ export const initialRecipes = [
   {
     id: 2,
     name: "Salmon Panggang Lemon",
-    tag: "High Protein",
+    tag: "Tinggi Protein",
     time: "30m",
     calories: "520 kCal",
     desc: "Salmon panggang kaya omega-3 dengan kentang dan asparagus segar.",
@@ -24,7 +24,7 @@ export const initialRecipes = [
   {
     id: 3,
     name: "Modern Gado-Gado",
-    tag: "Local Choice",
+    tag: "Pilihan Lokal",
     time: "15m",
     calories: "380 kCal",
     desc: "Gado-gado sehat tradisional Indonesia dengan saus kacang rendah lemak.",

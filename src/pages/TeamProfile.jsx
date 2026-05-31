@@ -2,37 +2,37 @@
 // Setiap kartu pakai lg:col-span-2 agar membentuk grid bento di 6 kolom.
 const TEAM_MEMBERS = [
   {
-    name: 'Alex Roihan',
-    role: 'Team Leader',
-    desc: 'Mengatur visi proyek dan menjaga seluruh tim tetap selaras dengan misi utama kami.'
+    name: 'Zilfi Alvin Mubarok',
+    role: 'Direktur Utama',
+    desc: 'Mengatur visi proyek dan memastikan seluruh elemen tim selaras dengan misi CookPlan.'
   },
   {
-    name: 'Sarah Devina',
-    role: 'Lead Developer',
-    desc: 'Menerjemahkan data nutrisi yang kompleks menjadi pengalaman pengguna yang cepat dan mulus.'
+    name: 'Tiara Eka Wahyuningayu Vasha',
+    role: 'Manajer IT',
+    desc: 'Bertanggung jawab atas arsitektur sistem, pengembangan fitur, dan pengalaman digital pengguna.'
   },
   {
-    name: 'Budi Santoso',
-    role: 'Marketing & UI',
-    desc: 'Membangun identitas visual dan memastikan suara kami sampai pada yang paling membutuhkan.'
+    name: 'Tri Khusnul Hidayati',
+    role: 'Manajer Operasional',
+    desc: 'Memastikan alur kerja harian dan integrasi produk dengan petani lokal berjalan lancar.'
   },
   {
-    name: 'Diana Larasati',
-    role: 'UI/UX Designer',
-    desc: 'Memastikan setiap interaksi terasa alami dan menyenangkan bagi pengguna kami.'
+    name: 'Irma Ramadia Hakim',
+    role: 'Manajer Keuangan',
+    desc: 'Mengelola efisiensi anggaran, pembukuan, dan memastikan keberlanjutan bisnis CookPlan.'
   },
   {
-    name: 'Kevin Pratama',
-    role: 'Operations',
-    desc: 'Menjaga roda tetap berputar dan memastikan kelancaran layanan yang kami berikan.'
+    name: 'Nanda Maharani',
+    role: 'Manajer Marketing',
+    desc: 'Merancang strategi promosi dan kampanye kreatif untuk mendekatkan CookPlan dengan masyarakat.'
   }
 ];
 
 const ADVISOR = {
-  name: 'Dr. Hendra Wijaya, M.Sc.',
+  name: 'Dr. Uke Prajogo, S.TP., M.M., CMA',
   quote:
-    'Membimbing tim berbakat ini melalui program PKM-K sangat memuaskan. Dedikasi mereka dalam memecahkan tantangan pola makan nyata dengan platform yang dirancang apik menetapkan standar baru bagi inovasi mahasiswa.',
-  faculty: 'Fakultas Ilmu Komputer'
+    'Membimbing tim berbakat ini melalui program PKM-K sangat membanggakan. Dedikasi mereka dalam memecahkan masalah gizi dan efisiensi waktu melalui platform inovatif patut diapresiasi.',
+  faculty: 'Dosen Pembimbing PKM-K'
 };
 
 function TeamProfile() {
@@ -66,14 +66,12 @@ function TeamProfile() {
             </p>
           </div>
 
-          {/* Bento grid: 6 kolom di desktop, tiap kartu mengisi 2 kolom */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
-            {TEAM_MEMBERS.map((member, idx) => (
+          {/* Horizontal Scroll (Netflix style) */}
+          <div className="flex overflow-x-auto hide-scrollbar gap-6 pb-8 -mx-5 px-5 md:-mx-10 md:px-10 snap-x snap-mandatory">
+            {TEAM_MEMBERS.map((member) => (
               <div
                 key={member.name}
-                className={`lg:col-span-2 ${
-                  idx === 3 ? 'lg:col-start-2' : ''
-                } bg-surface-cream rounded-3xl p-8 flex flex-col items-center text-center transition-transform hover:-translate-y-1 duration-300`}
+                className="w-[280px] md:w-[320px] shrink-0 snap-center bg-surface-cream rounded-3xl p-8 flex flex-col items-center text-center transition-transform hover:-translate-y-1 duration-300"
               >
                 <div className="w-32 h-32 rounded-full mb-6 overflow-hidden border-4 border-canvas-white bg-surface-variant flex items-center justify-center shadow-sm">
                   <span className="material-symbols-outlined text-[64px] text-primary opacity-50">

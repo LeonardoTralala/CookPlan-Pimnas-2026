@@ -1,24 +1,25 @@
 import { useState, useMemo } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
+import { usePlan } from '../hooks/usePlan.js';
 
 // Item navigasi pada sidebar Settings (desktop)
 const SETTINGS_NAV = [
-  { id: 'personal', icon: 'person', label: 'Personal Info' },
-  { id: 'orders', icon: 'receipt_long', label: 'Order History' },
-  { id: 'addresses', icon: 'location_on', label: 'Addresses' },
-  { id: 'preferences', icon: 'tune', label: 'Preferences' },
-  { id: 'saved', icon: 'bookmark', label: 'Saved Recipes' },
-  { id: 'security', icon: 'shield', label: 'Security' },
-  { id: 'subscription', icon: 'payments', label: 'Subscription' }
+  { id: 'personal', icon: 'person', label: 'Info Personal' },
+  { id: 'orders', icon: 'receipt_long', label: 'Riwayat Pesanan' },
+  { id: 'addresses', icon: 'location_on', label: 'Alamat' },
+  { id: 'preferences', icon: 'tune', label: 'Preferensi' },
+  { id: 'saved', icon: 'bookmark', label: 'Resep Tersimpan' },
+  { id: 'security', icon: 'shield', label: 'Keamanan' },
+  { id: 'subscription', icon: 'payments', label: 'Langganan' }
 ];
 
-const RECIPE_FILTERS = ['All Recipes', 'Quick Breakfast', 'Vegetarian Favorites', 'Traditional Dinner'];
-
-const soon = (fitur) => alert(`Fitur ${fitur} sedang dikembangkan oleh rekan tim!`);
+const RECIPE_FILTERS = ['Semua Resep', 'Sarapan Cepat', 'Favorit Vegetarian', 'Makan Malam Tradisional'];
 
 function UserProfile() {
+  const { showToast } = usePlan();
+  const soon = (fitur) => showToast(`Fitur ${fitur} sedang dikembangkan oleh rekan tim!`);
   const [activeNav, setActiveNav] = useState('saved');
-  const [activeFilter, setActiveFilter] = useState('All Recipes');
+  const [activeFilter, setActiveFilter] = useState('Semua Resep');
   const [savedSearch, setSavedSearch] = useState('');
   const [gender, setGender] = useState('');
 
@@ -36,7 +37,7 @@ function UserProfile() {
       <div className="w-full max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* ---------------- Sidebar Settings (desktop) ---------------- */}
         <aside className="hidden md:block col-span-3 space-y-2 sticky top-[100px] self-start">
-          <h2 className="text-2xl font-bold text-primary mb-6">Settings</h2>
+          <h2 className="text-2xl font-bold text-primary mb-6">Pengaturan</h2>
           {SETTINGS_NAV.map((item) => {
             const active = activeNav === item.id;
             return (
@@ -54,22 +55,22 @@ function UserProfile() {
             );
           })}
           <div className="pt-6 mt-6 border-t border-outline-variant">
-            <h3 className="text-xs font-semibold text-outline mb-3 px-4 uppercase tracking-widest">
-              Support &amp; Legal
+            <h3 className="text-xs font-semibold text-on-surface mb-3 px-4 uppercase tracking-widest">
+              Bantuan &amp; Legal
             </h3>
             <button
               onClick={() => soon('Customer Service')}
               className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:text-primary transition-colors text-sm font-medium cursor-pointer text-left"
             >
               <span className="material-symbols-outlined text-[20px]">support_agent</span>
-              Customer Service
+              Layanan Pelanggan
             </button>
             <button
               onClick={() => soon('Privacy Policy')}
               className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:text-primary transition-colors text-sm font-medium cursor-pointer text-left"
             >
               <span className="material-symbols-outlined text-[20px]">policy</span>
-              Privacy Policy
+              Kebijakan Privasi
             </button>
           </div>
         </aside>
@@ -80,7 +81,11 @@ function UserProfile() {
           <section className="flex flex-col md:flex-row items-center md:items-start gap-6 bg-surface-container-lowest p-6 rounded-3xl border border-outline-variant shadow-[0_8px_24px_-8px_rgba(44,58,30,0.04)]">
             <div className="relative group cursor-pointer" onClick={() => soon('Ubah Foto Profil')}>
               <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-surface-cream bg-surface-variant flex items-center justify-center shadow-sm">
-                <span className="material-symbols-outlined text-[48px] text-primary opacity-50">account_circle</span>
+                <img
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6odIuOL3lOpT9KvOC3lLPVT9QUV5V0_ERHx_tm4JbQgrxb4YQ-3YA71v9MPggK9PKLK8GwLCrY58zvY2thnXRYIWZx_MKNu9T1unG1Loy-2z6TZjGTMM-Q2bC7lbTKVG_QQU2S_zKpH4kBECNu-_g_a8TxyfbpbYzlykIJEoGOVpfZFinQPBWE34Nvl7WSNewV3llUb5Xn4162z2Az3_VgWDc2t81tIMwMAQXKpjk_WSIyzTknKRzKQp6-MDp4YcBAzS12o2LGrDD"
+                  alt="Brokoli"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div className="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full backdrop-blur-sm">
                 <span className="material-symbols-outlined text-white">photo_camera</span>
@@ -94,7 +99,7 @@ function UserProfile() {
               <p className="text-lg text-on-surface-variant">brokoli@example.com</p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-2">
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary text-on-primary rounded-full text-xs font-semibold shadow-sm">
-                  <span className="material-symbols-outlined text-[14px] fill">verified</span> Pro Plan
+                  <span className="material-symbols-outlined text-[14px] fill">verified</span> Paket Pro
                 </span>
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-surface-container-lowest border border-outline-variant text-on-surface-variant rounded-full text-xs font-semibold">
                   Bergabung Mar 2024
@@ -119,7 +124,7 @@ function UserProfile() {
               onClick={() => soon('Edit Profil')}
               className="hidden md:flex items-center justify-center px-6 py-3 bg-primary text-white rounded-full text-sm font-semibold hover:bg-surface-tint transition-colors shadow-sm cursor-pointer"
             >
-              Edit Profile
+              Edit Profil
             </button>
           </section>
 
@@ -127,7 +132,7 @@ function UserProfile() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
-                Saved Recipes
+                Resep Tersimpan
               </h3>
               <div className="flex gap-2 w-full md:w-auto">
                 <div className="relative flex-grow md:w-64">
@@ -145,8 +150,9 @@ function UserProfile() {
                 <button
                   onClick={() => soon('Tambah Koleksi Resep')}
                   className="flex items-center justify-center p-2 bg-surface-cream text-primary rounded-full hover:bg-surface-variant transition-colors cursor-pointer"
+                  aria-label="Tambah koleksi resep"
                 >
-                  <span className="material-symbols-outlined">add</span>
+                  <span className="material-symbols-outlined" aria-hidden="true">add</span>
                 </button>
               </div>
             </div>
@@ -189,8 +195,9 @@ function UserProfile() {
                       <button
                         onClick={() => soon('Hapus dari Tersimpan')}
                         className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-md rounded-full text-error hover:bg-white transition-colors cursor-pointer"
+                        aria-label="Hapus resep tersimpan"
                       >
-                        <span className="material-symbols-outlined fill text-[20px]">favorite</span>
+                        <span className="material-symbols-outlined fill text-[20px]" aria-hidden="true">favorite</span>
                       </button>
                     </div>
                     <p className="text-sm font-medium text-on-surface line-clamp-1">{recipe.title}</p>
@@ -204,7 +211,7 @@ function UserProfile() {
           {/* Connected Accounts */}
           <section className="space-y-6">
             <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
-              Connected Accounts
+              Akun Terhubung
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {/* Google */}
@@ -221,8 +228,9 @@ function UserProfile() {
                 <button
                   onClick={() => soon('Putuskan Akun Google')}
                   className="text-outline hover:text-error transition-colors cursor-pointer"
+                  aria-label="Putuskan akun Google"
                 >
-                  <span className="material-symbols-outlined">link_off</span>
+                  <span className="material-symbols-outlined" aria-hidden="true">link_off</span>
                 </button>
               </div>
               {/* Phone */}
@@ -239,8 +247,9 @@ function UserProfile() {
                 <button
                   onClick={() => soon('Ubah Nomor Telepon')}
                   className="text-primary hover:text-surface-tint transition-colors cursor-pointer"
+                  aria-label="Ubah nomor telepon"
                 >
-                  <span className="material-symbols-outlined">edit</span>
+                  <span className="material-symbols-outlined" aria-hidden="true">edit</span>
                 </button>
               </div>
               {/* WhatsApp */}
@@ -267,7 +276,7 @@ function UserProfile() {
           {/* Account Security */}
           <section className="space-y-6 pt-4">
             <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
-              Account Security
+              Keamanan Akun
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button
@@ -310,7 +319,7 @@ function UserProfile() {
           {/* Subscription Management */}
           <section className="space-y-6 pt-4">
             <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
-              Subscription Management
+              Manajemen Langganan
             </h3>
             <div className="p-6 rounded-2xl border border-outline-variant bg-surface-container-lowest flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-6">
@@ -318,7 +327,7 @@ function UserProfile() {
                   <span className="material-symbols-outlined text-[32px] fill">card_membership</span>
                 </div>
                 <div className="space-y-1 text-center md:text-left">
-                  <p className="text-2xl font-bold text-primary">Pro Plan</p>
+                  <p className="text-2xl font-bold text-primary">Paket Pro</p>
                   <p className="text-base text-on-surface-variant">
                     Langganan Anda diperpanjang pada 15 April 2026
                   </p>

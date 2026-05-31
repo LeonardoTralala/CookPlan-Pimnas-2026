@@ -2,17 +2,11 @@ import { RecipeCard } from "./RecipeCard.jsx";
 import { usePlan } from "../hooks/usePlan.js";
 import { initialRecipes } from "../utils/recipes.js";
 
-export function FeaturedRecipes({ searchQuery = "", onNavigate }) {
+export function FeaturedRecipes({ onNavigate }) {
   const { showToast } = usePlan();
 
   const seeAll = () =>
     onNavigate ? onNavigate("catalog") : showToast("Katalog lengkap resep sedang disiapkan!");
-
-  const query = searchQuery.toLowerCase();
-  const filteredRecipes = initialRecipes.filter(
-    (recipe) =>
-      recipe.name.toLowerCase().includes(query) || recipe.tag.toLowerCase().includes(query)
-  );
 
   return (
     <section id="recipes" className="py-24 bg-canvas-white px-margin-mobile md:px-margin-desktop">
@@ -35,17 +29,9 @@ export function FeaturedRecipes({ searchQuery = "", onNavigate }) {
       </div>
 
       <div className="max-w-container-max mx-auto grid md:grid-cols-3 gap-8">
-        {filteredRecipes.length > 0 ? (
-          filteredRecipes.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)
-        ) : (
-          <div className="col-span-full text-center py-12 text-on-surface-variant">
-            <span className="material-symbols-outlined text-5xl mb-3 text-outline">search_off</span>
-            <p className="text-lg font-semibold">Resep tidak ditemukan</p>
-            <p className="text-sm mt-1">
-              Coba cari kata kunci lain seperti "Vegan" atau "Gado-Gado"
-            </p>
-          </div>
-        )}
+        {initialRecipes.map((recipe) => (
+          <RecipeCard key={recipe.id} recipe={recipe} />
+        ))}
       </div>
     </section>
   );
