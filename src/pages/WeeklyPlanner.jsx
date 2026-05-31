@@ -14,9 +14,9 @@ const DAYS = [
 ];
 
 const MEALS = [
-  { key: 'breakfast', label: 'Breakfast' },
-  { key: 'lunch', label: 'Lunch' },
-  { key: 'dinner', label: 'Dinner' }
+  { key: 'breakfast', label: 'Sarapan' },
+  { key: 'lunch', label: 'Makan Siang' },
+  { key: 'dinner', label: 'Makan Malam' }
 ];
 
 const TOTAL_SLOTS = DAYS.length * MEALS.length; // 21
@@ -208,7 +208,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                           <span className="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform">
                             add_circle
                           </span>
-                          <span className="text-xs font-semibold">Add Recipe</span>
+                          <span className="text-xs font-semibold">Tambah Resep</span>
                         </button>
                       );
                     })}
@@ -222,7 +222,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
           <aside className="lg:w-80 shrink-0 flex flex-col gap-6">
             {/* Recommended for you */}
             <div className="bg-surface-cream/40 border border-outline-variant rounded-[32px] p-6">
-              <h3 className="text-xl font-bold text-primary mb-2">Recommended for you</h3>
+              <h3 className="text-xl font-bold text-primary mb-2">Rekomendasi untuk Anda</h3>
               <p className="text-on-surface-variant text-sm mb-6">
                 Rekomendasi pilihan berdasarkan tren populer dan riwayat pesanan Anda.
               </p>
@@ -255,7 +255,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
 
             {/* Weekly Progress */}
             <div className="bg-primary-container text-on-primary-container rounded-[32px] p-6">
-              <h3 className="text-xl font-bold mb-2">Weekly Progress</h3>
+              <h3 className="text-xl font-bold mb-2">Progres Mingguan</h3>
               <p className="text-on-primary-container/80 text-sm mb-6">
                 {stats.filled} dari {TOTAL_SLOTS} slot makan terisi.
               </p>
@@ -270,11 +270,11 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                   <div className="text-2xl font-bold">
                     {new Intl.NumberFormat('id-ID').format(stats.avgCalories)}
                   </div>
-                  <div className="text-[10px] uppercase opacity-70 tracking-tight">Avg Calories</div>
+                  <div className="text-[10px] uppercase opacity-70 tracking-tight">Rata-rata Kalori</div>
                 </div>
                 <div className="text-right">
                   <div className={`text-2xl font-bold ${budgetColor}`}>{stats.budgetImpact}</div>
-                  <div className="text-[10px] uppercase opacity-70 tracking-tight">Budget Impact</div>
+                  <div className="text-[10px] uppercase opacity-70 tracking-tight">Dampak Budget</div>
                 </div>
               </div>
             </div>
@@ -291,7 +291,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
           <span className="material-symbols-outlined group-hover:rotate-12 transition-transform">
             shopping_cart
           </span>
-          <span className="font-bold text-lg">Generate Shopping List</span>
+          <span className="font-bold text-lg">Buat Daftar Belanja</span>
         </button>
       </div>
 

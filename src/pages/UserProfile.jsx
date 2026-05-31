@@ -4,22 +4,22 @@ import { usePlan } from '../hooks/usePlan.js';
 
 // Item navigasi pada sidebar Settings (desktop)
 const SETTINGS_NAV = [
-  { id: 'personal', icon: 'person', label: 'Personal Info' },
-  { id: 'orders', icon: 'receipt_long', label: 'Order History' },
-  { id: 'addresses', icon: 'location_on', label: 'Addresses' },
-  { id: 'preferences', icon: 'tune', label: 'Preferences' },
-  { id: 'saved', icon: 'bookmark', label: 'Saved Recipes' },
-  { id: 'security', icon: 'shield', label: 'Security' },
-  { id: 'subscription', icon: 'payments', label: 'Subscription' }
+  { id: 'personal', icon: 'person', label: 'Info Personal' },
+  { id: 'orders', icon: 'receipt_long', label: 'Riwayat Pesanan' },
+  { id: 'addresses', icon: 'location_on', label: 'Alamat' },
+  { id: 'preferences', icon: 'tune', label: 'Preferensi' },
+  { id: 'saved', icon: 'bookmark', label: 'Resep Tersimpan' },
+  { id: 'security', icon: 'shield', label: 'Keamanan' },
+  { id: 'subscription', icon: 'payments', label: 'Langganan' }
 ];
 
-const RECIPE_FILTERS = ['All Recipes', 'Quick Breakfast', 'Vegetarian Favorites', 'Traditional Dinner'];
+const RECIPE_FILTERS = ['Semua Resep', 'Sarapan Cepat', 'Favorit Vegetarian', 'Makan Malam Tradisional'];
 
 function UserProfile() {
   const { showToast } = usePlan();
   const soon = (fitur) => showToast(`Fitur ${fitur} sedang dikembangkan oleh rekan tim!`);
   const [activeNav, setActiveNav] = useState('saved');
-  const [activeFilter, setActiveFilter] = useState('All Recipes');
+  const [activeFilter, setActiveFilter] = useState('Semua Resep');
   const [savedSearch, setSavedSearch] = useState('');
   const [gender, setGender] = useState('');
 
@@ -37,7 +37,7 @@ function UserProfile() {
       <div className="w-full max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* ---------------- Sidebar Settings (desktop) ---------------- */}
         <aside className="hidden md:block col-span-3 space-y-2 sticky top-[100px] self-start">
-          <h2 className="text-2xl font-bold text-primary mb-6">Settings</h2>
+          <h2 className="text-2xl font-bold text-primary mb-6">Pengaturan</h2>
           {SETTINGS_NAV.map((item) => {
             const active = activeNav === item.id;
             return (
@@ -56,21 +56,21 @@ function UserProfile() {
           })}
           <div className="pt-6 mt-6 border-t border-outline-variant">
             <h3 className="text-xs font-semibold text-outline mb-3 px-4 uppercase tracking-widest">
-              Support &amp; Legal
+              Bantuan &amp; Legal
             </h3>
             <button
               onClick={() => soon('Customer Service')}
               className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:text-primary transition-colors text-sm font-medium cursor-pointer text-left"
             >
               <span className="material-symbols-outlined text-[20px]">support_agent</span>
-              Customer Service
+              Layanan Pelanggan
             </button>
             <button
               onClick={() => soon('Privacy Policy')}
               className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:text-primary transition-colors text-sm font-medium cursor-pointer text-left"
             >
               <span className="material-symbols-outlined text-[20px]">policy</span>
-              Privacy Policy
+              Kebijakan Privasi
             </button>
           </div>
         </aside>
@@ -95,7 +95,7 @@ function UserProfile() {
               <p className="text-lg text-on-surface-variant">brokoli@example.com</p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-2">
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary text-on-primary rounded-full text-xs font-semibold shadow-sm">
-                  <span className="material-symbols-outlined text-[14px] fill">verified</span> Pro Plan
+                  <span className="material-symbols-outlined text-[14px] fill">verified</span> Paket Pro
                 </span>
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-surface-container-lowest border border-outline-variant text-on-surface-variant rounded-full text-xs font-semibold">
                   Bergabung Mar 2024
@@ -120,7 +120,7 @@ function UserProfile() {
               onClick={() => soon('Edit Profil')}
               className="hidden md:flex items-center justify-center px-6 py-3 bg-primary text-white rounded-full text-sm font-semibold hover:bg-surface-tint transition-colors shadow-sm cursor-pointer"
             >
-              Edit Profile
+              Edit Profil
             </button>
           </section>
 
@@ -128,7 +128,7 @@ function UserProfile() {
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
-                Saved Recipes
+                Resep Tersimpan
               </h3>
               <div className="flex gap-2 w-full md:w-auto">
                 <div className="relative flex-grow md:w-64">
@@ -205,7 +205,7 @@ function UserProfile() {
           {/* Connected Accounts */}
           <section className="space-y-6">
             <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
-              Connected Accounts
+              Akun Terhubung
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {/* Google */}
@@ -268,7 +268,7 @@ function UserProfile() {
           {/* Account Security */}
           <section className="space-y-6 pt-4">
             <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
-              Account Security
+              Keamanan Akun
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button
@@ -311,7 +311,7 @@ function UserProfile() {
           {/* Subscription Management */}
           <section className="space-y-6 pt-4">
             <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
-              Subscription Management
+              Manajemen Langganan
             </h3>
             <div className="p-6 rounded-2xl border border-outline-variant bg-surface-container-lowest flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-6">
@@ -319,7 +319,7 @@ function UserProfile() {
                   <span className="material-symbols-outlined text-[32px] fill">card_membership</span>
                 </div>
                 <div className="space-y-1 text-center md:text-left">
-                  <p className="text-2xl font-bold text-primary">Pro Plan</p>
+                  <p className="text-2xl font-bold text-primary">Paket Pro</p>
                   <p className="text-base text-on-surface-variant">
                     Langganan Anda diperpanjang pada 15 April 2026
                   </p>

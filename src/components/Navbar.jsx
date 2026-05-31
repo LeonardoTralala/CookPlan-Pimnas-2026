@@ -36,19 +36,19 @@ export function Navbar({ onNavigate }) {
             onClick={goCatalog}
             className="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md cursor-pointer"
           >
-            Catalog
+            Katalog
           </button>
           <button
             onClick={goPlanner}
             className="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md cursor-pointer"
           >
-            Planner
+            Rencana Masak
           </button>
           <button
             onClick={handleShoppingList}
             className="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md cursor-pointer flex items-center gap-1.5"
           >
-            Shopping List
+            Daftar Belanja
             {addedRecipes.length > 0 && (
               <span className="px-2 py-0.5 bg-primary text-white text-[10px] rounded-full font-bold">
                 {addedRecipes.length}
@@ -63,7 +63,7 @@ export function Navbar({ onNavigate }) {
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md active:scale-95 duration-150 ease-in-out cursor-pointer"
           >
             <span className="material-symbols-outlined text-sm">person</span>
-            <span className="hidden sm:inline">Profile</span>
+            <span className="hidden sm:inline">Profil</span>
           </button>
         </div>
       </nav>

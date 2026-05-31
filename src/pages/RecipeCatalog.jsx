@@ -60,14 +60,14 @@ function RecipeCatalog({ onAddToPlan }) {
           if (filter === 'Vegetarian') {
             return recipe.badges.includes('Vegetarian');
           }
-          if (filter === 'Quick') {
-            return recipe.readyInMinutes <= 30 || recipe.badges.includes('Quick');
+          if (filter === 'Cepat') {
+            return recipe.readyInMinutes <= 30 || recipe.badges.includes('Cepat');
           }
-          if (filter === 'Local') {
-            return recipe.badges.includes('Local Ingredients');
+          if (filter === 'Bahan Lokal') {
+            return recipe.badges.includes('Bahan Lokal');
           }
-          if (filter === 'Budget') {
-            return recipe.priceIdr <= 30000 || recipe.badges.includes('Budget Friendly');
+          if (filter === 'Hemat Budget') {
+            return recipe.priceIdr <= 30000 || recipe.badges.includes('Hemat Budget');
           }
           return true;
         });
@@ -159,34 +159,34 @@ function RecipeCatalog({ onAddToPlan }) {
             Vegetarian
           </button>
           <button
-            onClick={() => handleToggleFilter('Quick')}
+            onClick={() => handleToggleFilter('Cepat')}
             className={`px-6 py-2 rounded-full font-semibold text-xs md:text-sm border transition-all cursor-pointer ${
-              activeFilters.includes('Quick')
+              activeFilters.includes('Cepat')
                 ? 'bg-primary text-white border-primary shadow-sm'
                 : 'bg-surface-cream/50 text-primary border-outline-variant hover:bg-primary-container hover:text-white'
             }`}
           >
-            Quick (&lt; 30 min)
+            Cepat (&lt; 30 mnt)
           </button>
           <button
-            onClick={() => handleToggleFilter('Local')}
+            onClick={() => handleToggleFilter('Bahan Lokal')}
             className={`px-6 py-2 rounded-full font-semibold text-xs md:text-sm border transition-all cursor-pointer ${
-              activeFilters.includes('Local')
+              activeFilters.includes('Bahan Lokal')
                 ? 'bg-primary text-white border-primary shadow-sm'
                 : 'bg-surface-cream/50 text-primary border-outline-variant hover:bg-primary-container hover:text-white'
             }`}
           >
-            Local Ingredients
+            Bahan Lokal
           </button>
           <button
-            onClick={() => handleToggleFilter('Budget')}
+            onClick={() => handleToggleFilter('Hemat Budget')}
             className={`px-6 py-2 rounded-full font-semibold text-xs md:text-sm border transition-all cursor-pointer ${
-              activeFilters.includes('Budget')
+              activeFilters.includes('Hemat Budget')
                 ? 'bg-primary text-white border-primary shadow-sm'
                 : 'bg-surface-cream/50 text-primary border-outline-variant hover:bg-primary-container hover:text-white'
             }`}
           >
-            Budget Friendly
+            Hemat Budget
           </button>
 
           {/* Toggle Advanced Filters Button */}
@@ -199,7 +199,7 @@ function RecipeCatalog({ onAddToPlan }) {
             }`}
           >
             <span className="material-symbols-outlined text-lg">tune</span>
-            Filters
+            Filter
           </button>
 
           {(searchQuery || activeFilters.length > 0 || maxTime < 120 || maxPrice < 60000) && (
@@ -208,7 +208,7 @@ function RecipeCatalog({ onAddToPlan }) {
               className="text-xs md:text-sm font-bold text-red-600 hover:text-red-800 transition-colors flex items-center gap-1 cursor-pointer pl-2"
             >
               <span className="material-symbols-outlined text-base">restart_alt</span>
-              Reset
+              Atur Ulang
             </button>
           )}
         </div>
@@ -353,7 +353,7 @@ function RecipeCatalog({ onAddToPlan }) {
               onClick={() => showToast('Lebih banyak resep akan segera ditambahkan!')}
               className="px-8 py-3 rounded-full border border-secondary text-secondary font-bold hover:bg-secondary-container/20 transition-all cursor-pointer"
             >
-              Load More Recipes
+              Muat Lebih Banyak Resep
             </button>
           </div>
         )}
@@ -496,7 +496,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 className="px-6 py-2.5 bg-primary text-white hover:bg-primary-container rounded-full font-bold text-sm cursor-pointer flex items-center gap-1.5 transition-all shadow-md"
               >
                 <span className="material-symbols-outlined text-lg">add</span>
-                Add to Plan
+                Tambah ke Rencana
               </button>
             </div>
           </div>

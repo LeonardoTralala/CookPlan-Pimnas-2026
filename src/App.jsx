@@ -101,7 +101,7 @@ function App() {
                 : 'text-on-surface-variant hover:text-primary font-semibold'
             }`}
           >
-            Catalog
+            Katalog
           </button>
           <button
             onClick={() => setActiveTab('planner')}
@@ -111,7 +111,7 @@ function App() {
                 : 'text-on-surface-variant hover:text-primary font-semibold'
             }`}
           >
-            Planner
+            Rencana Masak
           </button>
           <button
             onClick={() => setActiveTab('shopping')}
@@ -121,7 +121,7 @@ function App() {
                 : 'text-on-surface-variant hover:text-primary font-semibold'
             }`}
           >
-            Shopping List
+            Daftar Belanja
           </button>
           <button
             onClick={() => setActiveTab('profile')}
@@ -131,7 +131,7 @@ function App() {
                 : 'text-on-surface-variant hover:text-primary font-semibold'
             }`}
           >
-            Profile
+            Profil
           </button>
         </nav>
 
@@ -145,7 +145,7 @@ function App() {
               alt="User profile"
               className="w-8 h-8 rounded-full border border-outline-variant object-cover"
             />
-            <span className="text-sm font-bold text-on-surface hidden sm:inline">Profile</span>
+            <span className="text-sm font-bold text-on-surface hidden sm:inline">Profil</span>
           </button>
         </div>
       </header>
@@ -196,13 +196,13 @@ function App() {
 
           <div className="flex flex-col items-center md:items-end gap-6">
             <div className="flex flex-wrap justify-center gap-6 text-xs md:text-sm font-semibold text-on-surface-variant">
-              <button onClick={() => setActiveTab('about')} className="hover:text-primary transition-colors cursor-pointer">About Us</button>
-              <button onClick={() => showToast('Halaman "Support" segera hadir')} className="hover:text-primary transition-colors cursor-pointer">Support</button>
-              <button onClick={() => showToast('Halaman "Privacy Policy" segera hadir')} className="hover:text-primary transition-colors cursor-pointer">Privacy Policy</button>
-              <button onClick={() => showToast('Halaman "Terms of Service" segera hadir')} className="hover:text-primary transition-colors cursor-pointer">Terms of Service</button>
+              <button onClick={() => setActiveTab('about')} className="hover:text-primary transition-colors cursor-pointer">Tentang Kami</button>
+              <button onClick={() => showToast('Halaman "Bantuan" segera hadir')} className="hover:text-primary transition-colors cursor-pointer">Bantuan</button>
+              <button onClick={() => showToast('Halaman "Kebijakan Privasi" segera hadir')} className="hover:text-primary transition-colors cursor-pointer">Kebijakan Privasi</button>
+              <button onClick={() => showToast('Halaman "Syarat dan Ketentuan" segera hadir')} className="hover:text-primary transition-colors cursor-pointer">Syarat dan Ketentuan</button>
             </div>
             <p className="text-[10px] md:text-xs text-on-surface-variant/80">
-              © 2026 CookPlan All rights reserved.
+              © 2026 CookPlan Hak Cipta Dilindungi.
             </p>
           </div>
         </div>

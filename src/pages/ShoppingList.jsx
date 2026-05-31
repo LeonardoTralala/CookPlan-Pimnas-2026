@@ -256,7 +256,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                 {/* Progress belanja */}
                 <div className="mb-6">
                   <div className="flex justify-between text-xs font-semibold text-on-surface-variant mb-2">
-                    <span>Progress belanja</span>
+                    <span>Progres belanja</span>
                     <span>
                       {checkedCount} dari {totalItems} akan dibeli
                     </span>

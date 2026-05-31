@@ -1,7 +1,7 @@
 import { Logo } from "./Logo.jsx";
 import { usePlan } from "../hooks/usePlan.js";
 
-const links = ["About Us", "Support", "Privacy Policy", "Terms of Service"];
+const links = ["Tentang Kami", "Bantuan", "Kebijakan Privasi", "Syarat dan Ketentuan"];
 
 export function Footer() {
   const { showToast } = usePlan();
@@ -24,7 +24,7 @@ export function Footer() {
           ))}
         </div>
         <p className="font-label-sm text-label-sm text-on-surface-variant/60">
-          ©2026 CookPlan All rights reserved.
+          ©2026 CookPlan Hak Cipta Dilindungi.
         </p>
       </div>
     </footer>

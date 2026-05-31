@@ -3,27 +3,27 @@
 const TEAM_MEMBERS = [
   {
     name: 'Alex Roihan',
-    role: 'Team Leader',
+    role: 'Ketua Tim',
     desc: 'Mengatur visi proyek dan menjaga seluruh tim tetap selaras dengan misi utama kami.'
   },
   {
     name: 'Sarah Devina',
-    role: 'Lead Developer',
+    role: 'Developer Utama',
     desc: 'Menerjemahkan data nutrisi yang kompleks menjadi pengalaman pengguna yang cepat dan mulus.'
   },
   {
     name: 'Budi Santoso',
-    role: 'Marketing & UI',
+    role: 'Pemasaran & UI',
     desc: 'Membangun identitas visual dan memastikan suara kami sampai pada yang paling membutuhkan.'
   },
   {
     name: 'Diana Larasati',
-    role: 'UI/UX Designer',
+    role: 'Desainer UI/UX',
     desc: 'Memastikan setiap interaksi terasa alami dan menyenangkan bagi pengguna kami.'
   },
   {
     name: 'Kevin Pratama',
-    role: 'Operations',
+    role: 'Operasional',
     desc: 'Menjaga roda tetap berputar dan memastikan kelancaran layanan yang kami berikan.'
   }
 ];

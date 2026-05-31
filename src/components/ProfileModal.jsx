@@ -28,7 +28,7 @@ export function ProfileModal({ onClose }) {
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-on-surface-variant">Status Paket:</span>
-              <span className="font-bold text-secondary">Free Tier (Gratis)</span>
+              <span className="font-bold text-secondary">Gratis</span>
             </div>
           </div>
           <button
