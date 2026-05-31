@@ -1,6 +1,8 @@
 import { Logo } from "./Logo.jsx";
 import { usePlan } from "../hooks/usePlan.js";
 
+import { Link } from "react-router-dom";
+
 const links = ["Tentang Kami", "Bantuan", "Kebijakan Privasi", "Syarat dan Ketentuan"];
 
 export function Footer() {
@@ -13,15 +15,28 @@ export function Footer() {
           <Logo className="h-9 w-auto" />
         </div>
         <div className="flex flex-wrap justify-center gap-6 md:gap-8">
-          {links.map((label) => (
-            <button
-              key={label}
-              onClick={() => showToast(`Halaman "${label}" segera hadir`)}
-              className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
-            >
-              {label}
-            </button>
-          ))}
+          {links.map((label) => {
+            if (label === "Tentang Kami") {
+              return (
+                <Link
+                  key={label}
+                  to="/about"
+                  className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
+                >
+                  {label}
+                </Link>
+              );
+            }
+            return (
+              <button
+                key={label}
+                onClick={() => showToast(`Halaman "${label}" segera hadir`)}
+                className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
         <p className="font-label-sm text-label-sm text-on-surface-variant/60">
           ©2026 CookPlan Hak Cipta Dilindungi.
