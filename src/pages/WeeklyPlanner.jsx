@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
 import { usePlan } from '../hooks/usePlan.js';
 
@@ -44,6 +44,18 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
   const [pickerSearch, setPickerSearch] = useState('');
   const [pickerSelectedRecipe, setPickerSelectedRecipe] = useState(null);
   const [pickerServings, setPickerServings] = useState(2);
+
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && pickerTarget) {
+        setPickerTarget(null);
+        setPickerSelectedRecipe(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [pickerTarget]);
 
   const weekDates = useMemo(() => getWeekDates(), []);
 
@@ -134,7 +146,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                 <div className="flex flex-col gap-4 mt-16">
                   {MEALS.map((meal) => (
                     <div key={meal.key} className="h-40 flex items-center justify-end pr-4 text-right">
-                      <span className="text-xs font-semibold text-outline uppercase tracking-widest">
+                      <span className="text-xs font-semibold text-on-surface uppercase tracking-widest">
                         {meal.label}
                       </span>
                     </div>
@@ -146,7 +158,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                   <div key={day.key} className="flex flex-col gap-4">
                     {/* Header tanggal */}
                     <div className="text-center pb-4">
-                      <div className="text-xs font-semibold text-outline mb-1 uppercase tracking-wide">
+                      <div className="text-xs font-semibold text-on-surface mb-1 uppercase tracking-wide">
                         {day.short}
                       </div>
                       <div className="text-2xl font-bold text-on-surface">{weekDates[dayIdx]}</div>
@@ -189,9 +201,10 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                                 showToast(`Berhasil menghapus menu dari ${mealLabel} hari ${day.key}`);
                               }}
                               title="Hapus dari rencana"
+                              aria-label={`Hapus ${slot.title} dari ${mealLabel} hari ${day.key}`}
                               className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
                             >
-                              <span className="material-symbols-outlined text-lg">delete</span>
+                              <span className="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
                             </button>
                           </div>
                         );
@@ -297,8 +310,20 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
 
       {/* ---------------- Recipe Picker Modal ---------------- */}
       {pickerTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
+          onClick={() => {
+            setPickerTarget(null);
+            setPickerSelectedRecipe(null);
+          }}
+        >
+          <div 
+            className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-picker-title"
+          >
             {/* Content Based on Selection */}
             {!pickerSelectedRecipe ? (
               <>
@@ -309,10 +334,11 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       setPickerSelectedRecipe(null);
                     }}
                     className="absolute right-4 top-4 w-9 h-9 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                    aria-label="Tutup pencarian resep"
                   >
-                    <span className="material-symbols-outlined text-lg">close</span>
+                    <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
                   </button>
-                  <h3 className="text-xl font-bold text-primary mb-1 flex items-center gap-1.5 pr-10">
+                  <h3 id="modal-picker-title" className="text-xl font-bold text-primary mb-1 flex items-center gap-1.5 pr-10">
                     <span className="material-symbols-outlined text-2xl">restaurant_menu</span>
                     Pilih Resep
                   </h3>
@@ -381,11 +407,12 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       setPickerSelectedRecipe(null);
                     }}
                     className="absolute right-4 top-4 w-9 h-9 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                    aria-label="Tutup pengaturan porsi"
                   >
-                    <span className="material-symbols-outlined text-lg">close</span>
+                    <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
                   </button>
 
-                  <h3 className="text-xl font-bold text-primary mb-2 flex items-center gap-1.5">
+                  <h3 id="modal-picker-title" className="text-xl font-bold text-primary mb-2 flex items-center gap-1.5">
                     <span className="material-symbols-outlined text-2xl">group</span>
                     Atur Jumlah Porsi
                   </h3>
@@ -397,22 +424,24 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
 
                   {/* Servings Stepper */}
                   <div className="space-y-1.5 mb-8">
-                    <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block">
+                    <label className="text-xs font-bold text-on-surface uppercase tracking-wider block">
                       Jumlah Porsi (Servings)
                     </label>
                     <div className="flex items-center gap-4 bg-secondary-container/20 border border-outline-variant p-2 rounded-2xl justify-between">
                       <button
                         onClick={() => setPickerServings(Math.max(1, pickerServings - 1))}
                         className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                        aria-label="Kurangi porsi"
                       >
-                        <span className="material-symbols-outlined text-lg">remove</span>
+                        <span className="material-symbols-outlined text-lg" aria-hidden="true">remove</span>
                       </button>
-                      <span className="font-extrabold text-lg text-primary">{pickerServings} Porsi</span>
+                      <span className="font-extrabold text-lg text-primary" aria-live="polite">{pickerServings} Porsi</span>
                       <button
                         onClick={() => setPickerServings(pickerServings + 1)}
                         className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                        aria-label="Tambah porsi"
                       >
-                        <span className="material-symbols-outlined text-lg">add</span>
+                        <span className="material-symbols-outlined text-lg" aria-hidden="true">add</span>
                       </button>
                     </div>
                   </div>

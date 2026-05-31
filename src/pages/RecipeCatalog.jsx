@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
 import { usePlan } from '../hooks/usePlan.js';
 
@@ -23,6 +23,19 @@ function RecipeCatalog({ onAddToPlan }) {
     { value: 'lunch', label: 'Makan Siang' },
     { value: 'dinner', label: 'Makan Malam' }
   ];
+
+  // Handle Escape key to close modals
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (selectedRecipeForPlan) setSelectedRecipeForPlan(null);
+        else if (selectedRecipeForDetail) setSelectedRecipeForDetail(null);
+        else if (showAdvancedFilters) setShowAdvancedFilters(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedRecipeForDetail, selectedRecipeForPlan, showAdvancedFilters]);
 
   // Toggle quick filter tag
   const handleToggleFilter = (filterName) => {
@@ -141,8 +154,9 @@ function RecipeCatalog({ onAddToPlan }) {
             <button
               onClick={() => setSearchQuery('')}
               className="absolute right-6 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors"
+              aria-label="Hapus pencarian"
             >
-              <span className="material-symbols-outlined text-lg">close</span>
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
             </button>
           )}
         </div>
@@ -217,10 +231,19 @@ function RecipeCatalog({ onAddToPlan }) {
         {/* Sliding Panel / Advanced Filters Section */}
         {showAdvancedFilters && (
           <div className="max-w-2xl mx-auto mt-6 p-6 bg-white border border-outline-variant rounded-3xl shadow-sm animate-fade-in text-left">
-            <h4 className="font-bold text-primary mb-4 flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-xl">tune</span>
-              Batasan Memasak & Budget
-            </h4>
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-bold text-primary flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-xl">tune</span>
+                Batasan Memasak & Budget
+              </h4>
+              <button
+                onClick={() => setShowAdvancedFilters(false)}
+                className="w-8 h-8 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                aria-label="Tutup pengaturan filter"
+              >
+                <span className="material-symbols-outlined text-base" aria-hidden="true">close</span>
+              </button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Max Cooking Time Slider */}
               <div className="space-y-2">
@@ -326,8 +349,9 @@ function RecipeCatalog({ onAddToPlan }) {
                       }}
                       className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md shrink-0 cursor-pointer"
                       title="Tambah ke Rencana Mingguan"
+                      aria-label="Tambah ke Rencana Mingguan"
                     >
-                      <span className="material-symbols-outlined text-xl">add</span>
+                      <span className="material-symbols-outlined text-xl" aria-hidden="true">add</span>
                     </button>
                   </div>
 
@@ -365,14 +389,24 @@ function RecipeCatalog({ onAddToPlan }) {
 
       {/* -------------------- DETAIL RESEP MODAL -------------------- */}
       {selectedRecipeForDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
+          onClick={() => setSelectedRecipeForDetail(null)}
+        >
+          <div 
+            className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-recipe-title"
+          >
             {/* Header Close button */}
             <button
               onClick={() => setSelectedRecipeForDetail(null)}
               className="absolute right-4 top-4 z-10 w-9 h-9 rounded-full bg-slate-950/60 text-white flex items-center justify-center hover:bg-slate-950 transition-colors shadow-md cursor-pointer"
+              aria-label="Tutup detail resep"
             >
-              <span className="material-symbols-outlined text-lg">close</span>
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
             </button>
 
             {/* Scrollable Container */}
@@ -396,7 +430,7 @@ function RecipeCatalog({ onAddToPlan }) {
                       </span>
                     ))}
                   </div>
-                  <h3 className="text-2xl md:text-3xl font-extrabold">{selectedRecipeForDetail.title}</h3>
+                  <h3 id="modal-recipe-title" className="text-2xl md:text-3xl font-extrabold">{selectedRecipeForDetail.title}</h3>
                 </div>
               </div>
 
@@ -412,7 +446,7 @@ function RecipeCatalog({ onAddToPlan }) {
                     <span className="material-symbols-outlined text-primary text-2xl mb-1 block">
                       schedule
                     </span>
-                    <span className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">
+                    <span className="text-[10px] uppercase font-bold text-on-surface tracking-wider block">
                       Waktu Masak
                     </span>
                     <span className="text-sm font-bold text-primary">
@@ -423,7 +457,7 @@ function RecipeCatalog({ onAddToPlan }) {
                     <span className="material-symbols-outlined text-primary text-2xl mb-1 block">
                       whatshot
                     </span>
-                    <span className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">
+                    <span className="text-[10px] uppercase font-bold text-on-surface tracking-wider block">
                       Kalori
                     </span>
                     <span className="text-sm font-bold text-primary">
@@ -434,7 +468,7 @@ function RecipeCatalog({ onAddToPlan }) {
                     <span className="material-symbols-outlined text-primary text-2xl mb-1 block">
                       payments
                     </span>
-                    <span className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">
+                    <span className="text-[10px] uppercase font-bold text-on-surface tracking-wider block">
                       Estimasi Harga
                     </span>
                     <span className="text-sm font-bold text-primary">
@@ -509,17 +543,27 @@ function RecipeCatalog({ onAddToPlan }) {
 
       {/* -------------------- ADD TO PLAN MODAL -------------------- */}
       {selectedRecipeForPlan && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl border border-outline-variant relative">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
+          onClick={() => setSelectedRecipeForPlan(null)}
+        >
+          <div 
+            className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl border border-outline-variant relative"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-plan-title"
+          >
             {/* Close Button */}
             <button
               onClick={() => setSelectedRecipeForPlan(null)}
               className="absolute right-4 top-4 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
+              aria-label="Tutup form rencana menu"
             >
-              <span className="material-symbols-outlined">close</span>
+              <span className="material-symbols-outlined" aria-hidden="true">close</span>
             </button>
 
-            <h3 className="text-xl font-bold text-primary mb-2 flex items-center gap-1.5">
+            <h3 id="modal-plan-title" className="text-xl font-bold text-primary mb-2 flex items-center gap-1.5">
               <span className="material-symbols-outlined text-2xl">calendar_today</span>
               Atur Menu Mingguan
             </h3>
@@ -531,7 +575,7 @@ function RecipeCatalog({ onAddToPlan }) {
             <div className="space-y-5">
               {/* Meal Type Selection */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block">
+                <label className="text-xs font-bold text-on-surface uppercase tracking-wider block">
                   Pilih Jenis Makan
                 </label>
                 <select
@@ -549,7 +593,7 @@ function RecipeCatalog({ onAddToPlan }) {
 
               {/* Day Selection */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block">
+                <label className="text-xs font-bold text-on-surface uppercase tracking-wider block">
                   Pilih Hari Memasak
                 </label>
                 <select
@@ -567,22 +611,24 @@ function RecipeCatalog({ onAddToPlan }) {
 
               {/* Servings Stepper */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block">
+                <label className="text-xs font-bold text-on-surface uppercase tracking-wider block">
                   Jumlah Porsi (Servings)
                 </label>
                 <div className="flex items-center gap-4 bg-secondary-container/20 border border-outline-variant p-2 rounded-2xl justify-between">
                   <button
                     onClick={() => setPlanServings(Math.max(1, planServings - 1))}
                     className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                    aria-label="Kurangi porsi"
                   >
-                    <span className="material-symbols-outlined text-lg">remove</span>
+                    <span className="material-symbols-outlined text-lg" aria-hidden="true">remove</span>
                   </button>
-                  <span className="font-extrabold text-lg text-primary">{planServings} Porsi</span>
+                  <span className="font-extrabold text-lg text-primary" aria-live="polite">{planServings} Porsi</span>
                   <button
                     onClick={() => setPlanServings(planServings + 1)}
                     className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                    aria-label="Tambah porsi"
                   >
-                    <span className="material-symbols-outlined text-lg">add</span>
+                    <span className="material-symbols-outlined text-lg" aria-hidden="true">add</span>
                   </button>
                 </div>
               </div>

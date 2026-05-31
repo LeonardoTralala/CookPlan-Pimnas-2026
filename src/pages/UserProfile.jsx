@@ -55,7 +55,7 @@ function UserProfile() {
             );
           })}
           <div className="pt-6 mt-6 border-t border-outline-variant">
-            <h3 className="text-xs font-semibold text-outline mb-3 px-4 uppercase tracking-widest">
+            <h3 className="text-xs font-semibold text-on-surface mb-3 px-4 uppercase tracking-widest">
               Bantuan &amp; Legal
             </h3>
             <button
@@ -150,8 +150,9 @@ function UserProfile() {
                 <button
                   onClick={() => soon('Tambah Koleksi Resep')}
                   className="flex items-center justify-center p-2 bg-surface-cream text-primary rounded-full hover:bg-surface-variant transition-colors cursor-pointer"
+                  aria-label="Tambah koleksi resep"
                 >
-                  <span className="material-symbols-outlined">add</span>
+                  <span className="material-symbols-outlined" aria-hidden="true">add</span>
                 </button>
               </div>
             </div>
@@ -194,8 +195,9 @@ function UserProfile() {
                       <button
                         onClick={() => soon('Hapus dari Tersimpan')}
                         className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-md rounded-full text-error hover:bg-white transition-colors cursor-pointer"
+                        aria-label="Hapus resep tersimpan"
                       >
-                        <span className="material-symbols-outlined fill text-[20px]">favorite</span>
+                        <span className="material-symbols-outlined fill text-[20px]" aria-hidden="true">favorite</span>
                       </button>
                     </div>
                     <p className="text-sm font-medium text-on-surface line-clamp-1">{recipe.title}</p>
@@ -226,8 +228,9 @@ function UserProfile() {
                 <button
                   onClick={() => soon('Putuskan Akun Google')}
                   className="text-outline hover:text-error transition-colors cursor-pointer"
+                  aria-label="Putuskan akun Google"
                 >
-                  <span className="material-symbols-outlined">link_off</span>
+                  <span className="material-symbols-outlined" aria-hidden="true">link_off</span>
                 </button>
               </div>
               {/* Phone */}
@@ -244,8 +247,9 @@ function UserProfile() {
                 <button
                   onClick={() => soon('Ubah Nomor Telepon')}
                   className="text-primary hover:text-surface-tint transition-colors cursor-pointer"
+                  aria-label="Ubah nomor telepon"
                 >
-                  <span className="material-symbols-outlined">edit</span>
+                  <span className="material-symbols-outlined" aria-hidden="true">edit</span>
                 </button>
               </div>
               {/* WhatsApp */}
