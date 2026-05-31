@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Logo } from "./Logo.jsx";
-import { ProfileModal } from "./ProfileModal.jsx";
 import { usePlan } from "../hooks/usePlan.js";
 import { scrollToSection, scrollToTop } from "../utils/scroll.js";
 
@@ -8,7 +7,6 @@ import { scrollToSection, scrollToTop } from "../utils/scroll.js";
 // `onNavigate(tab)` routes into the app tabs; falls back to in-page scrolling.
 export function Navbar({ onNavigate }) {
   const { addedRecipes, showToast } = usePlan();
-  const [showProfileModal, setShowProfileModal] = useState(false);
 
   const goCatalog = () => (onNavigate ? onNavigate("catalog") : scrollToSection("recipes"));
   const goPlanner = () => (onNavigate ? onNavigate("planner") : scrollToSection("how-it-works"));
@@ -59,16 +57,18 @@ export function Navbar({ onNavigate }) {
 
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setShowProfileModal(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md active:scale-95 duration-150 ease-in-out cursor-pointer"
+            onClick={() => onNavigate && onNavigate("profile")}
+            className="flex items-center gap-2 cursor-pointer hover:bg-secondary-container/20 p-1 rounded-full pr-3 transition-all"
           >
-            <span className="material-symbols-outlined text-sm">person</span>
-            <span className="hidden sm:inline">Profil</span>
+            <img
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6odIuOL3lOpT9KvOC3lLPVT9QUV5V0_ERHx_tm4JbQgrxb4YQ-3YA71v9MPggK9PKLK8GwLCrY58zvY2thnXRYIWZx_MKNu9T1unG1Loy-2z6TZjGTMM-Q2bC7lbTKVG_QQU2S_zKpH4kBECNu-_g_a8TxyfbpbYzlykIJEoGOVpfZFinQPBWE34Nvl7WSNewV3llUb5Xn4162z2Az3_VgWDc2t81tIMwMAQXKpjk_WSIyzTknKRzKQp6-MDp4YcBAzS12o2LGrDD"
+              alt="User profile"
+              className="w-8 h-8 rounded-full border border-outline-variant object-cover"
+            />
+            <span className="text-sm font-bold text-on-surface hidden sm:inline">Profil</span>
           </button>
         </div>
       </nav>
-
-      {showProfileModal && <ProfileModal onClose={() => setShowProfileModal(false)} />}
     </header>
   );
 }
