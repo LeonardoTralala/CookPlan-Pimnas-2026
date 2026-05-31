@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
+import { usePlan } from '../hooks/usePlan.js';
 
 // Hari (key data) + label singkat untuk header kolom
 const DAYS = [
@@ -36,6 +37,8 @@ function getWeekDates() {
 
 
 function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onGenerateShoppingList }) {
+  const { showToast } = usePlan();
+
   // Slot yang sedang diisi: { day, meal } | null
   const [pickerTarget, setPickerTarget] = useState(null);
   const [pickerSearch, setPickerSearch] = useState('');
@@ -92,6 +95,10 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
   const handleConfirmAdd = () => {
     if (!pickerTarget || !pickerSelectedRecipe) return;
     onSetSlot(pickerSelectedRecipe, pickerTarget.day, pickerTarget.meal, pickerServings);
+    
+    const mealLabel = MEALS.find((m) => m.key === pickerTarget.meal)?.label || pickerTarget.meal;
+    showToast(`Berhasil menambahkan ${pickerSelectedRecipe.title} ke menu ${mealLabel} hari ${pickerTarget.day}!`);
+
     setPickerTarget(null);
     setPickerSearch('');
     setPickerSelectedRecipe(null);
@@ -99,6 +106,11 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
 
   const handleCancelPick = () => {
     setPickerSelectedRecipe(null);
+  };
+
+  const handleGenerateShoppingList = () => {
+    showToast('Daftar belanja berhasil dibuat berdasarkan rencana makan Anda!');
+    onGenerateShoppingList();
   };
 
   return (
@@ -171,7 +183,11 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                             </div>
                             {/* Tombol hapus */}
                             <button
-                              onClick={() => onRemoveSlot(day.key, meal.key)}
+                              onClick={() => {
+                                onRemoveSlot(day.key, meal.key);
+                                const mealLabel = MEALS.find((m) => m.key === meal.key)?.label || meal.key;
+                                showToast(`Berhasil menghapus menu dari ${mealLabel} hari ${day.key}`);
+                              }}
                               title="Hapus dari rencana"
                               className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
                             >
@@ -269,7 +285,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
       {/* ---------------- Bottom Action Bar ---------------- */}
       <div className="fixed bottom-0 left-0 right-0 z-40 p-4 md:p-6 bg-gradient-to-t from-[#FBFAF9] via-[#FBFAF9]/95 to-transparent flex justify-center pointer-events-none">
         <button
-          onClick={onGenerateShoppingList}
+          onClick={handleGenerateShoppingList}
           className="pointer-events-auto bg-primary hover:bg-primary-container text-white px-8 py-4 rounded-full shadow-2xl shadow-primary/30 flex items-center gap-3 transition-all active:scale-95 group cursor-pointer"
         >
           <span className="material-symbols-outlined group-hover:rotate-12 transition-transform">
