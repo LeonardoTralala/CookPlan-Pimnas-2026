@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import { LandingPage } from './pages/LandingPage.jsx';
 import RecipeCatalog from './pages/RecipeCatalog';
 import WeeklyPlanner from './pages/WeeklyPlanner';
@@ -29,7 +30,8 @@ function isValidPlanShape(plan) {
 
 function App() {
   const { showToast } = usePlan();
-  const [activeTab, setActiveTab] = useState('overview');
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [weeklyPlan, setWeeklyPlan] = useState(() => {
     const saved = localStorage.getItem('weeklyPlan');
@@ -77,67 +79,67 @@ function App() {
     });
   };
 
-  if (activeTab === 'overview') {
-    return <LandingPage onNavigate={setActiveTab} />;
+  if (location.pathname === '/') {
+    return <LandingPage onNavigate={(path) => navigate(path === 'overview' ? '/' : `/${path}`)} />;
   }
 
   return (
     <div className="min-h-screen bg-[#FBFAF9] flex flex-col font-sans selection:bg-[#4E6B2F] selection:text-white">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-[#FBFAF9] border-b border-outline-variant px-6 md:px-12 py-4 flex items-center justify-between">
-        <div
-          onClick={() => setActiveTab('overview')}
+        <Link
+          to="/"
           className="flex items-center gap-3 cursor-pointer select-none"
         >
           <img src="/cookplan-logo.svg" alt="CookPlan Logo" className="w-8 h-8 shrink-0" />
-        </div>
+        </Link>
 
         <nav className="flex items-center gap-6 md:gap-8 overflow-x-auto whitespace-nowrap py-1">
-          <button
-            onClick={() => setActiveTab('catalog')}
+          <Link
+            to="/catalog"
             className={`pb-1 text-sm transition-colors cursor-pointer ${
-              activeTab === 'catalog'
+              location.pathname === '/catalog'
                 ? 'text-primary font-bold border-b-2 border-primary'
                 : 'text-on-surface-variant hover:text-primary font-semibold'
             }`}
           >
             Katalog
-          </button>
-          <button
-            onClick={() => setActiveTab('planner')}
+          </Link>
+          <Link
+            to="/planner"
             className={`pb-1 text-sm transition-colors cursor-pointer ${
-              activeTab === 'planner'
+              location.pathname === '/planner'
                 ? 'text-primary font-bold border-b-2 border-primary'
                 : 'text-on-surface-variant hover:text-primary font-semibold'
             }`}
           >
             Rencana Masak
-          </button>
-          <button
-            onClick={() => setActiveTab('shopping')}
+          </Link>
+          <Link
+            to="/shopping"
             className={`pb-1 text-sm transition-colors cursor-pointer ${
-              activeTab === 'shopping'
+              location.pathname === '/shopping'
                 ? 'text-primary font-bold border-b-2 border-primary'
                 : 'text-on-surface-variant hover:text-primary font-semibold'
             }`}
           >
             Daftar Belanja
-          </button>
-          <button
-            onClick={() => setActiveTab('profile')}
+          </Link>
+          <Link
+            to="/profile"
             className={`pb-1 text-sm transition-colors cursor-pointer ${
-              activeTab === 'profile'
+              location.pathname === '/profile'
                 ? 'text-primary font-bold border-b-2 border-primary'
                 : 'text-on-surface-variant hover:text-primary font-semibold'
             }`}
           >
             Profil
-          </button>
+          </Link>
         </nav>
 
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => setActiveTab('profile')}
+          <Link
+            to="/profile"
             className="flex items-center gap-2 cursor-pointer hover:bg-secondary-container/20 p-1 rounded-full pr-3 transition-all"
           >
             <img
@@ -146,40 +148,38 @@ function App() {
               className="w-8 h-8 rounded-full border border-outline-variant object-cover"
             />
             <span className="text-sm font-bold text-on-surface hidden sm:inline">Profil</span>
-          </button>
+          </Link>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col justify-center bg-[#FBFAF9] text-on-surface">
-        {activeTab === 'catalog' && (
-          <RecipeCatalog onAddToPlan={handleSetSlot} />
-        )}
-
-        {activeTab === 'planner' && (
-          <WeeklyPlanner
-            weeklyPlan={weeklyPlan}
-            onSetSlot={handleSetSlot}
-            onRemoveSlot={handleRemoveSlot}
-            onGoToCatalog={() => setActiveTab('catalog')}
-            onGenerateShoppingList={() => setActiveTab('shopping')}
+        <Routes>
+          <Route path="/catalog" element={<RecipeCatalog onAddToPlan={handleSetSlot} />} />
+          <Route 
+            path="/planner" 
+            element={
+              <WeeklyPlanner
+                weeklyPlan={weeklyPlan}
+                onSetSlot={handleSetSlot}
+                onRemoveSlot={handleRemoveSlot}
+                onGoToCatalog={() => navigate('/catalog')}
+                onGenerateShoppingList={() => navigate('/shopping')}
+              />
+            } 
           />
-        )}
-
-        {activeTab === 'shopping' && (
-          <ShoppingList
-            weeklyPlan={weeklyPlan}
-            onGoToPlanner={() => setActiveTab('planner')}
+          <Route 
+            path="/shopping" 
+            element={
+              <ShoppingList
+                weeklyPlan={weeklyPlan}
+                onGoToPlanner={() => navigate('/planner')}
+              />
+            } 
           />
-        )}
-
-        {activeTab === 'profile' && (
-          <UserProfile />
-        )}
-
-        {activeTab === 'about' && (
-          <TeamProfile />
-        )}
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/about" element={<TeamProfile />} />
+        </Routes>
       </main>
 
       {/* Footer */}
@@ -196,7 +196,7 @@ function App() {
 
           <div className="flex flex-col items-center md:items-end gap-6">
             <div className="flex flex-wrap justify-center gap-6 text-xs md:text-sm font-semibold text-on-surface-variant">
-              <button onClick={() => setActiveTab('about')} className="hover:text-primary transition-colors cursor-pointer">Tentang Kami</button>
+              <Link to="/about" className="hover:text-primary transition-colors cursor-pointer">Tentang Kami</Link>
               <button onClick={() => showToast('Halaman "Bantuan" segera hadir')} className="hover:text-primary transition-colors cursor-pointer">Bantuan</button>
               <button onClick={() => showToast('Halaman "Kebijakan Privasi" segera hadir')} className="hover:text-primary transition-colors cursor-pointer">Kebijakan Privasi</button>
               <button onClick={() => showToast('Halaman "Syarat dan Ketentuan" segera hadir')} className="hover:text-primary transition-colors cursor-pointer">Syarat dan Ketentuan</button>
