@@ -197,11 +197,10 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                             <button
                               onClick={() => {
                                 onRemoveSlot(day.key, meal.key);
-                                const mealLabel = MEALS.find((m) => m.key === meal.key)?.label || meal.key;
-                                showToast(`Berhasil menghapus menu dari ${mealLabel} hari ${day.key}`);
+                                showToast(`Berhasil menghapus menu dari ${meal.label} hari ${day.key}`);
                               }}
                               title="Hapus dari rencana"
-                              aria-label={`Hapus ${slot.title} dari ${mealLabel} hari ${day.key}`}
+                              aria-label={`Hapus ${slot.title} dari ${meal.label} hari ${day.key}`}
                               className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
                             >
                               <span className="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
