@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Navbar } from "../components/Navbar.jsx";
 import { Hero } from "../components/Hero.jsx";
 import { HowItWorks } from "../components/HowItWorks.jsx";
@@ -14,20 +13,14 @@ import { Toast } from "../components/Toast.jsx";
 // nav links & CTAs jump into the app's tabs (catalog/planner/profile); when it
 // is omitted the buttons fall back to in-page smooth scrolling.
 export function LandingPage({ onNavigate }) {
-  const [searchQuery, setSearchQuery] = useState("");
-
   return (
     <div className="font-body-md text-on-surface bg-canvas-white min-h-screen flex flex-col antialiased">
-      <Navbar
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        onNavigate={onNavigate}
-      />
+      <Navbar onNavigate={onNavigate} />
       <main className="flex-grow">
         <Hero onNavigate={onNavigate} />
         <HowItWorks />
         <WhyCookPlan />
-        <FeaturedRecipes searchQuery={searchQuery} onNavigate={onNavigate} />
+        <FeaturedRecipes onNavigate={onNavigate} />
         <FinalCTA onNavigate={onNavigate} />
       </main>
       <Footer />

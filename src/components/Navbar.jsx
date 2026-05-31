@@ -6,20 +6,12 @@ import { scrollToSection, scrollToTop } from "../utils/scroll.js";
 
 // Sticky top navigation: brand, section links, search, shopping counter & profile.
 // `onNavigate(tab)` routes into the app tabs; falls back to in-page scrolling.
-export function Navbar({ searchQuery, onSearchChange, onNavigate }) {
+export function Navbar({ onNavigate }) {
   const { addedRecipes, showToast } = usePlan();
-  const [showSearchInput, setShowSearchInput] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
 
   const goCatalog = () => (onNavigate ? onNavigate("catalog") : scrollToSection("recipes"));
   const goPlanner = () => (onNavigate ? onNavigate("planner") : scrollToSection("how-it-works"));
-
-  const toggleSearch = () => {
-    setShowSearchInput((open) => {
-      if (open) onSearchChange("");
-      return !open;
-    });
-  };
 
   const handleShoppingList = () => {
     if (addedRecipes.length > 0) {
@@ -66,23 +58,6 @@ export function Navbar({ searchQuery, onSearchChange, onNavigate }) {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="relative flex items-center">
-            {showSearchInput && (
-              <input
-                type="text"
-                placeholder="Cari resep..."
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                className="px-4 py-1.5 pr-8 border border-outline rounded-full text-sm focus:outline-none focus:ring-1 focus:ring-primary w-40 sm:w-48 animate-fade-in"
-              />
-            )}
-            <button
-              onClick={toggleSearch}
-              className="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all cursor-pointer"
-            >
-              {showSearchInput ? "close" : "search"}
-            </button>
-          </div>
           <button
             onClick={() => setShowProfileModal(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md active:scale-95 duration-150 ease-in-out cursor-pointer"

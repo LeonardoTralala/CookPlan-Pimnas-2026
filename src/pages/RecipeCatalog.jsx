@@ -349,7 +349,10 @@ function RecipeCatalog({ onAddToPlan }) {
         {/* Load More Button */}
         {filteredRecipes.length > 0 && (
           <div className="mt-16 text-center">
-            <button className="px-8 py-3 rounded-full border border-secondary text-secondary font-bold hover:bg-secondary-container/20 transition-all cursor-pointer">
+            <button
+              onClick={() => showToast('Lebih banyak resep akan segera ditambahkan!')}
+              className="px-8 py-3 rounded-full border border-secondary text-secondary font-bold hover:bg-secondary-container/20 transition-all cursor-pointer"
+            >
               Load More Recipes
             </button>
           </div>

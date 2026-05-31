@@ -6,6 +6,7 @@ import UserProfile from './pages/UserProfile';
 import TeamProfile from './pages/TeamProfile';
 import ShoppingList from './pages/ShoppingList';
 import { Toast } from './components/Toast.jsx';
+import { usePlan } from './hooks/usePlan.js';
 
 const DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 const MEAL_TYPES = ['breakfast', 'lunch', 'dinner'];
@@ -27,6 +28,7 @@ function isValidPlanShape(plan) {
 }
 
 function App() {
+  const { showToast } = usePlan();
   const [activeTab, setActiveTab] = useState('overview');
 
   const [weeklyPlan, setWeeklyPlan] = useState(() => {
@@ -195,9 +197,9 @@ function App() {
           <div className="flex flex-col items-center md:items-end gap-6">
             <div className="flex flex-wrap justify-center gap-6 text-xs md:text-sm font-semibold text-on-surface-variant">
               <button onClick={() => setActiveTab('about')} className="hover:text-primary transition-colors cursor-pointer">About Us</button>
-              <a href="#" className="hover:text-primary transition-colors">Support</a>
-              <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
+              <button onClick={() => showToast('Halaman "Support" segera hadir')} className="hover:text-primary transition-colors cursor-pointer">Support</button>
+              <button onClick={() => showToast('Halaman "Privacy Policy" segera hadir')} className="hover:text-primary transition-colors cursor-pointer">Privacy Policy</button>
+              <button onClick={() => showToast('Halaman "Terms of Service" segera hadir')} className="hover:text-primary transition-colors cursor-pointer">Terms of Service</button>
             </div>
             <p className="text-[10px] md:text-xs text-on-surface-variant/80">
               © 2026 CookPlan All rights reserved.
