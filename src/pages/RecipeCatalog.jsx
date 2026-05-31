@@ -6,8 +6,8 @@ function RecipeCatalog({ onAddToPlan }) {
   const { showToast } = usePlan();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
-  const [maxTime, setMaxTime] = useState(60); // default max 60 minutes
-  const [maxPrice, setMaxPrice] = useState(50000); // default max 50,000 IDR
+  const [maxTime, setMaxTime] = useState(120); // default max 120 minutes
+  const [priceCategory, setPriceCategory] = useState('Semua'); // 'Semua', 'Hemat', 'Standar', 'Premium'
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [selectedRecipeForDetail, setSelectedRecipeForDetail] = useState(null);
   const [selectedRecipeForPlan, setSelectedRecipeForPlan] = useState(null);
@@ -33,12 +33,11 @@ function RecipeCatalog({ onAddToPlan }) {
     }
   };
 
-  // Reset all filters
   const handleResetFilters = () => {
     setSearchQuery('');
     setActiveFilters([]);
     setMaxTime(120);
-    setMaxPrice(60000);
+    setPriceCategory('Semua');
   };
 
   // Filter recipes based on search query, quick filters, and advanced criteria
@@ -77,12 +76,14 @@ function RecipeCatalog({ onAddToPlan }) {
       // 3. Max Cooking Time
       if (recipe.readyInMinutes > maxTime) return false;
 
-      // 4. Max Price
-      if (recipe.priceIdr > maxPrice) return false;
+      // 4. Price Category
+      if (priceCategory === 'Hemat' && recipe.priceIdr >= 15000) return false;
+      if (priceCategory === 'Standar' && (recipe.priceIdr < 15000 || recipe.priceIdr > 30000)) return false;
+      if (priceCategory === 'Premium' && recipe.priceIdr <= 30000) return false;
 
       return true;
     });
-  }, [searchQuery, activeFilters, maxTime, maxPrice]);
+  }, [searchQuery, activeFilters, maxTime, priceCategory]);
 
   // Handle confirming "Add to Plan"
   const handleConfirmAddToPlan = () => {
@@ -202,7 +203,7 @@ function RecipeCatalog({ onAddToPlan }) {
             Filter
           </button>
 
-          {(searchQuery || activeFilters.length > 0 || maxTime < 120 || maxPrice < 60000) && (
+          {(searchQuery || activeFilters.length > 0 || maxTime < 120 || priceCategory !== 'Semua') && (
             <button
               onClick={handleResetFilters}
               className="text-xs md:text-sm font-bold text-red-600 hover:text-red-800 transition-colors flex items-center gap-1 cursor-pointer pl-2"
@@ -242,24 +243,27 @@ function RecipeCatalog({ onAddToPlan }) {
                 </div>
               </div>
 
-              {/* Max Price Slider */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs font-semibold text-on-surface-variant">
-                  <span>Harga Bahan Maksimal</span>
-                  <span className="text-primary font-bold">{formatRupiah(maxPrice)}</span>
+              {/* Price Category Filter */}
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-on-surface-variant">
+                  Kategori Harga (per porsi)
                 </div>
-                <input
-                  type="range"
-                  min="15000"
-                  max="60000"
-                  step="1000"
-                  className="w-full h-1.5 bg-secondary-container rounded-lg appearance-none cursor-pointer accent-primary"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(Number(e.target.value))}
-                />
-                <div className="flex justify-between text-[10px] text-on-surface-variant">
-                  <span>Rp 15k</span>
-                  <span>Rp 60k</span>
+                <div className="flex flex-wrap gap-2">
+                  {['Semua', 'Hemat', 'Standar', 'Premium'].map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setPriceCategory(cat)}
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer ${
+                        priceCategory === cat
+                          ? 'bg-primary text-white border-primary shadow-sm'
+                          : 'bg-white text-on-surface-variant border-outline-variant hover:bg-secondary-container/30'
+                      }`}
+                    >
+                      {cat === 'Hemat' ? 'Hemat (< Rp 15k)' : 
+                       cat === 'Standar' ? 'Standar (Rp 15k - 30k)' : 
+                       cat === 'Premium' ? 'Premium (> Rp 30k)' : 'Semua'}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
