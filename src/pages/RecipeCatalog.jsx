@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
+import { usePlan } from '../hooks/usePlan.js';
 
 function RecipeCatalog({ onAddToPlan }) {
+  const { showToast } = usePlan();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
   const [maxTime, setMaxTime] = useState(60); // default max 60 minutes
@@ -101,7 +103,7 @@ function RecipeCatalog({ onAddToPlan }) {
     setPlanServings(2);
 
     // Show alert
-    alert(`Berhasil menambahkan "${recipeTitle}" (${planServings} porsi) ke ${mealLabel} hari ${planDay}!`);
+    showToast(`Berhasil menambahkan "${recipeTitle}" (${planServings} porsi) ke ${mealLabel} hari ${planDay}!`);
   };
 
   // Utility to format price to Rupiah

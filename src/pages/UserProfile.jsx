@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
+import { usePlan } from '../hooks/usePlan.js';
 
 // Item navigasi pada sidebar Settings (desktop)
 const SETTINGS_NAV = [
@@ -14,9 +15,9 @@ const SETTINGS_NAV = [
 
 const RECIPE_FILTERS = ['All Recipes', 'Quick Breakfast', 'Vegetarian Favorites', 'Traditional Dinner'];
 
-const soon = (fitur) => alert(`Fitur ${fitur} sedang dikembangkan oleh rekan tim!`);
-
 function UserProfile() {
+  const { showToast } = usePlan();
+  const soon = (fitur) => showToast(`Fitur ${fitur} sedang dikembangkan oleh rekan tim!`);
   const [activeNav, setActiveNav] = useState('saved');
   const [activeFilter, setActiveFilter] = useState('All Recipes');
   const [savedSearch, setSavedSearch] = useState('');

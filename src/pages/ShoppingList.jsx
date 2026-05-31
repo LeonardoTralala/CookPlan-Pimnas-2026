@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
+import { usePlan } from '../hooks/usePlan.js';
 
 // Porsi dasar resep di mockRecipes (takaran bahan ditulis untuk ~2 porsi)
 const BASE_SERVINGS = 2;
@@ -102,6 +103,7 @@ function buildShoppingList(weeklyPlan) {
 function ShoppingList({ weeklyPlan, onGoToPlanner }) {
   // Bahan yang sudah dicentang (sudah dibeli): kumpulan id item
   const [checkedItems, setCheckedItems] = useState(() => new Set());
+  const { showToast } = usePlan();
 
   const { sections, totalItems, estimatedCost } = useMemo(
     () => buildShoppingList(weeklyPlan),
@@ -288,7 +290,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
 
                 <button
                   onClick={() =>
-                    alert('Fitur pembayaran & pengantaran akan terhubung dengan produsen lokal!')
+                    showToast('Fitur pembayaran & pengantaran akan terhubung dengan produsen lokal!')
                   }
                   className="w-full bg-primary-container text-on-primary py-4 rounded-full font-bold hover:shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2 group cursor-pointer"
                 >
@@ -310,7 +312,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
               {/* Kartu ajakan jadi supplier CookPlan (gaya urgensi/FOMO) */}
               <button
                 onClick={() =>
-                  alert('Pendaftaran supplier CookPlan akan segera dibuka untuk produsen & petani lokal!')
+                  showToast('Pendaftaran supplier CookPlan akan segera dibuka untuk produsen & petani lokal!')
                 }
                 className="w-full text-left relative overflow-hidden rounded-[2rem] h-60 bg-primary group cursor-pointer shadow-md"
               >
