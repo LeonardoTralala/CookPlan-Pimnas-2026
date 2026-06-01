@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
+import { BookOpen, Calendar, ShoppingCart, User } from 'lucide-react';
 import { LandingPage } from './pages/LandingPage.jsx';
 import RecipeCatalog from './pages/RecipeCatalog';
 import WeeklyPlanner from './pages/WeeklyPlanner';
@@ -94,7 +95,7 @@ function App() {
           <img src="/cookplan-logo.svg" alt="CookPlan Logo" className="w-8 h-8 shrink-0" />
         </Link>
 
-        <nav className="flex items-center gap-6 md:gap-8 overflow-x-auto whitespace-nowrap py-1">
+        <nav className="hidden md:flex items-center gap-6 md:gap-8 py-1">
           <Link
             to="/catalog"
             className={`pb-1 text-sm transition-colors cursor-pointer ${
@@ -137,7 +138,7 @@ function App() {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-4">
           <Link
             to="/profile"
             className="flex items-center gap-2 cursor-pointer hover:bg-secondary-container/20 p-1 rounded-full pr-3 transition-all"
@@ -182,8 +183,48 @@ function App() {
         </Routes>
       </main>
 
+      {/* Bottom Navigation (Mobile) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#FBFAF9] border-t border-outline-variant flex items-center justify-around px-2 py-2">
+        <Link
+          to="/catalog"
+          className={`flex flex-col items-center gap-1 p-2 ${
+            location.pathname === '/catalog' ? 'text-primary' : 'text-on-surface-variant'
+          }`}
+        >
+          <BookOpen size={24} className={location.pathname === '/catalog' ? 'fill-primary/20' : ''} />
+          <span className="text-[10px] font-semibold">Katalog</span>
+        </Link>
+        <Link
+          to="/planner"
+          className={`flex flex-col items-center gap-1 p-2 ${
+            location.pathname === '/planner' ? 'text-primary' : 'text-on-surface-variant'
+          }`}
+        >
+          <Calendar size={24} className={location.pathname === '/planner' ? 'fill-primary/20' : ''} />
+          <span className="text-[10px] font-semibold">Rencana</span>
+        </Link>
+        <Link
+          to="/shopping"
+          className={`flex flex-col items-center gap-1 p-2 ${
+            location.pathname === '/shopping' ? 'text-primary' : 'text-on-surface-variant'
+          }`}
+        >
+          <ShoppingCart size={24} className={location.pathname === '/shopping' ? 'fill-primary/20' : ''} />
+          <span className="text-[10px] font-semibold">Belanja</span>
+        </Link>
+        <Link
+          to="/profile"
+          className={`flex flex-col items-center gap-1 p-2 ${
+            location.pathname === '/profile' ? 'text-primary' : 'text-on-surface-variant'
+          }`}
+        >
+          <User size={24} className={location.pathname === '/profile' ? 'fill-primary/20' : ''} />
+          <span className="text-[10px] font-semibold">Profil</span>
+        </Link>
+      </nav>
+
       {/* Footer */}
-      <footer className="bg-[#D9DFB0]/50 border-t border-outline-variant py-12 px-6 md:px-16 text-on-surface">
+      <footer className="bg-[#D9DFB0]/50 border-t border-outline-variant py-12 pb-24 md:pb-12 px-6 md:px-16 text-on-surface">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
           <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-sm">
             <div className="flex items-center gap-3 mb-4">
