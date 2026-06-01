@@ -144,7 +144,10 @@ function RecipeCatalog({ onAddToPlan }) {
             search
           </span>
           <input
-            type="text"
+            type="search"
+            inputMode="search"
+            enterKeyHint="search"
+            autoComplete="off"
             className="w-full pl-14 pr-6 py-4 rounded-full border border-outline-variant bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary shadow-sm transition-all text-base font-medium"
             placeholder="Cari resep sehat untuk keluarga..."
             value={searchQuery}
@@ -581,7 +584,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 <select
                   value={planMeal}
                   onChange={(e) => setPlanMeal(e.target.value)}
-                  className="w-full p-3 rounded-2xl border border-outline-variant bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-sm font-semibold text-on-surface"
+                  className="w-full p-3 rounded-2xl border border-outline-variant bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-base font-semibold text-on-surface"
                 >
                   {mealOptions.map((meal) => (
                     <option key={meal.value} value={meal.value}>
@@ -599,7 +602,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 <select
                   value={planDay}
                   onChange={(e) => setPlanDay(e.target.value)}
-                  className="w-full p-3 rounded-2xl border border-outline-variant bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-sm font-semibold text-on-surface"
+                  className="w-full p-3 rounded-2xl border border-outline-variant bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-base font-semibold text-on-surface"
                 >
                   {daysOfWeek.map((day) => (
                     <option key={day} value={day}>

@@ -351,12 +351,15 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       search
                     </span>
                     <input
-                      type="text"
+                      type="search"
+                      inputMode="search"
+                      enterKeyHint="search"
+                      autoComplete="off"
                       autoFocus
                       value={pickerSearch}
                       onChange={(e) => setPickerSearch(e.target.value)}
                       placeholder="Cari resep..."
-                      className="w-full pl-11 pr-4 py-2.5 rounded-full border border-outline-variant bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm font-medium"
+                      className="w-full pl-11 pr-4 py-2.5 rounded-full border border-outline-variant bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-base font-medium"
                     />
                   </div>
                 </div>
