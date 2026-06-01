@@ -128,7 +128,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
   };
 
   return (
-    <div className="bg-canvas-white min-h-screen text-on-surface pb-28">
+    <div className="bg-canvas-white min-h-screen text-on-surface pb-40 md:pb-28">
       <main className="max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-12">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* ---------------- Planner Grid ---------------- */}
@@ -330,7 +330,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
       </main>
 
       {/* ---------------- Bottom Action Bar ---------------- */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 md:p-6 bg-gradient-to-t from-[#FBFAF9] via-[#FBFAF9]/95 to-transparent flex justify-center pointer-events-none">
+      <div className="fixed bottom-above-nav md:bottom-0 left-0 right-0 z-40 p-4 md:p-6 md:pb-safe-6 bg-gradient-to-t from-canvas-white via-canvas-white/95 to-transparent flex justify-center pointer-events-none">
         <button
           onClick={handleGenerateShoppingList}
           className="pointer-events-auto bg-primary hover:bg-primary-container text-white px-8 py-4 rounded-full shadow-2xl shadow-primary/30 flex items-center gap-3 transition-all active:scale-95 group cursor-pointer"

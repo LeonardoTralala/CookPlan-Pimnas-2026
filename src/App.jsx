@@ -54,7 +54,7 @@ function App() {
       </main>
 
       {/* Bottom Navigation (Mobile) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-canvas-white border-t border-outline-variant flex items-center justify-around px-2 py-2">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-canvas-white/95 backdrop-blur-md border-t border-outline-variant flex items-center justify-around px-2 pt-2 pb-safe-2">
         <Link
           to="/catalog"
           className={`flex flex-col items-center gap-1 p-2 ${

@@ -125,3 +125,17 @@ body {
     box-shadow: 0 12px 24px -4px rgba(44, 58, 30, 0.12);
   }
 }
+
+/* iOS safe-area utilities – gunakan viewport-fit=cover di meta viewport */
+@utility pb-safe-2 {
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+}
+@utility pb-safe-4 {
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+}
+@utility pb-safe-6 {
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+}
+@utility bottom-above-nav {
+  bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+}
