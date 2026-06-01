@@ -129,7 +129,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
 
   return (
     <div className="bg-canvas-white min-h-screen text-on-surface pb-40 md:pb-28">
-      <main className="max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-12">
+      <main className="max-w-container-max mx-auto px-5 md:px-10 py-8 md:py-12">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* ---------------- Planner Grid ---------------- */}
           <div className="flex-1 min-w-0">

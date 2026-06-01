@@ -35,7 +35,7 @@ function UserProfile() {
 
   return (
     <div className="bg-canvas-white text-on-surface min-h-screen">
-      <div className="w-full max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-6">
+      <div className="w-full max-w-container-max mx-auto px-5 md:px-10 py-8 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* ---------------- Sidebar Settings (desktop) ---------------- */}
         <aside className="hidden md:block col-span-3 space-y-2 sticky top-[100px] self-start">
           <h2 className="font-headline-md text-headline-md text-primary mb-6">Pengaturan</h2>

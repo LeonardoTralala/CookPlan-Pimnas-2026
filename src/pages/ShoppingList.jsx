@@ -126,7 +126,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
   if (totalItems === 0) {
     return (
       <div className="bg-canvas-white min-h-screen text-on-surface">
-        <main className="max-w-6xl mx-auto px-5 md:px-10 py-16 md:py-24 flex flex-col items-center text-center animate-fade-in">
+        <main className="max-w-container-max mx-auto px-5 md:px-10 py-16 md:py-24 flex flex-col items-center text-center animate-fade-in">
           <div className="w-24 h-24 rounded-full bg-surface-cream flex items-center justify-center mb-6">
             <span className="material-symbols-outlined text-primary text-5xl">shopping_cart</span>
           </div>
@@ -152,7 +152,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
   // ---------------- Daftar Belanja ----------------
   return (
     <div className="bg-canvas-white min-h-screen text-on-surface">
-      <main className="max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-12">
+      <main className="max-w-container-max mx-auto px-5 md:px-10 py-8 md:py-12">
         {/* Header */}
         <header className="mb-10 max-w-3xl animate-fade-in">
           <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-3 leading-tight">

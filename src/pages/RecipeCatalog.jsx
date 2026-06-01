@@ -137,7 +137,7 @@ function RecipeCatalog({ onAddToPlan }) {
   return (
     <div className="bg-canvas-white min-h-screen font-sans text-on-surface pb-24">
       {/* Hero header */}
-      <section className="pt-16 pb-8 px-6 max-w-6xl mx-auto text-center">
+      <section className="pt-16 pb-8 px-6 max-w-container-max mx-auto text-center">
         <h2 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-8">
           Inspirasi Masakan Hari Ini
         </h2>
@@ -299,7 +299,7 @@ function RecipeCatalog({ onAddToPlan }) {
       </section>
 
       {/* Catalog Grid */}
-      <section className="px-6 max-w-6xl mx-auto">
+      <section className="px-6 max-w-container-max mx-auto">
         {filteredRecipes.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border border-outline-variant p-8">
             <span className="material-symbols-outlined text-6xl text-outline-variant mb-4">

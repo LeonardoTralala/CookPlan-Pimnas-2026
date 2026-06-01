@@ -95,7 +95,7 @@ function App() {
 
       {/* Footer */}
       <footer className="bg-surface-cream/50 border-t border-outline-variant py-12 pb-24 md:pb-12 px-6 md:px-16 text-on-surface">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
+        <div className="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
           <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-sm">
             <div className="flex items-center gap-3 mb-4">
               <img src="/cookplan-logo.svg" alt="CookPlan Logo" className="w-8 h-8 shrink-0" />
