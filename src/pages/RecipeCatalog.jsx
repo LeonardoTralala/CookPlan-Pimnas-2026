@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
 import { usePlan } from '../hooks/usePlan.js';
+import { Modal } from '../components/Modal.jsx';
 
 function RecipeCatalog({ onAddToPlan }) {
   const { showToast } = usePlan();
@@ -396,16 +397,10 @@ function RecipeCatalog({ onAddToPlan }) {
       </section>
 
       {/* -------------------- DETAIL RESEP MODAL -------------------- */}
-      {selectedRecipeForDetail && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
-          onClick={() => setSelectedRecipeForDetail(null)}
-        >
+      <Modal isOpen={!!selectedRecipeForDetail} onClose={() => setSelectedRecipeForDetail(null)}>
+        {selectedRecipeForDetail && (
           <div 
             className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
             aria-labelledby="modal-recipe-title"
           >
             {/* Header Close button */}
@@ -546,20 +541,14 @@ function RecipeCatalog({ onAddToPlan }) {
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
 
       {/* -------------------- ADD TO PLAN MODAL -------------------- */}
-      {selectedRecipeForPlan && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
-          onClick={() => setSelectedRecipeForPlan(null)}
-        >
+      <Modal isOpen={!!selectedRecipeForPlan} onClose={() => setSelectedRecipeForPlan(null)}>
+        {selectedRecipeForPlan && (
           <div 
             className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl border border-outline-variant relative"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
             aria-labelledby="modal-plan-title"
           >
             {/* Close Button */}
@@ -659,8 +648,8 @@ function RecipeCatalog({ onAddToPlan }) {
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </div>
   );
 }

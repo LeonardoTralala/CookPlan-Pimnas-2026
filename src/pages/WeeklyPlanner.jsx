@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
 import { usePlan } from '../hooks/usePlan.js';
+import { Modal } from '../components/Modal.jsx';
 
 // Hari (key data) + label singkat untuk header kolom
 const DAYS = [
@@ -329,19 +330,16 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
       </div>
 
       {/* ---------------- Recipe Picker Modal ---------------- */}
-      {pickerTarget && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
-          onClick={() => {
-            setPickerTarget(null);
-            setPickerSelectedRecipe(null);
-          }}
-        >
+      <Modal 
+        isOpen={!!pickerTarget} 
+        onClose={() => {
+          setPickerTarget(null);
+          setPickerSelectedRecipe(null);
+        }}
+      >
+        {pickerTarget && (
           <div 
             className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
             aria-labelledby="modal-picker-title"
           >
             {/* Content Based on Selection */}
@@ -486,8 +484,8 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
               </>
             )}
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </div>
   );
 }

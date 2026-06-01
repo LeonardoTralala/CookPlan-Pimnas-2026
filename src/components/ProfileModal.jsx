@@ -1,11 +1,12 @@
 import { usePlan } from "../hooks/usePlan.js";
+import { Modal } from "./Modal.jsx";
 
 // Lightweight account preview modal opened from the navbar Profile pill.
 export function ProfileModal({ onClose }) {
   const { addedRecipes, showToast } = usePlan();
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <Modal isOpen={true} onClose={onClose}>
       <div className="bg-canvas-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-outline-variant/30 relative">
         <button
           onClick={onClose}
@@ -42,6 +43,6 @@ export function ProfileModal({ onClose }) {
           </button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }
