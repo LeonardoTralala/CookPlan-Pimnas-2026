@@ -153,7 +153,7 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col justify-center bg-[#FBFAF9] text-on-surface">
+      <main id="main-content" tabIndex={-1} className="flex-1 flex flex-col justify-center bg-[#FBFAF9] text-on-surface focus:outline-none">
         <Routes>
           <Route path="/catalog" element={<RecipeCatalog onAddToPlan={handleSetSlot} />} />
           <Route 
