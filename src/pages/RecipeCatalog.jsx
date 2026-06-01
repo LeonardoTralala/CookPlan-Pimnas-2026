@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
 import { usePlan } from '../hooks/usePlan.js';
+import { ModalSheet } from '../components/ModalSheet.jsx';
 
 function RecipeCatalog({ onAddToPlan }) {
   const { showToast } = usePlan();
@@ -392,17 +393,11 @@ function RecipeCatalog({ onAddToPlan }) {
 
       {/* -------------------- DETAIL RESEP MODAL -------------------- */}
       {selectedRecipeForDetail && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
-          onClick={() => setSelectedRecipeForDetail(null)}
+        <ModalSheet
+          onClose={() => setSelectedRecipeForDetail(null)}
+          labelledBy="modal-recipe-title"
+          panelClassName="overflow-hidden max-w-2xl max-h-[90vh] md:max-h-[85vh] flex flex-col"
         >
-          <div 
-            className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-recipe-title"
-          >
             {/* Header Close button */}
             <button
               onClick={() => setSelectedRecipeForDetail(null)}
@@ -540,23 +535,16 @@ function RecipeCatalog({ onAddToPlan }) {
                 Tambah ke Rencana
               </button>
             </div>
-          </div>
-        </div>
+        </ModalSheet>
       )}
 
       {/* -------------------- ADD TO PLAN MODAL -------------------- */}
       {selectedRecipeForPlan && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
-          onClick={() => setSelectedRecipeForPlan(null)}
+        <ModalSheet
+          onClose={() => setSelectedRecipeForPlan(null)}
+          labelledBy="modal-plan-title"
+          panelClassName="max-w-sm max-h-[90vh] overflow-y-auto p-6 md:p-8"
         >
-          <div 
-            className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl border border-outline-variant relative"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-plan-title"
-          >
             {/* Close Button */}
             <button
               onClick={() => setSelectedRecipeForPlan(null)}
@@ -653,8 +641,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 Konfirmasi
               </button>
             </div>
-          </div>
-        </div>
+        </ModalSheet>
       )}
     </div>
   );
