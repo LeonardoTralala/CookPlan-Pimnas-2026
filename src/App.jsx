@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import { LandingPage } from './pages/LandingPage.jsx';
+import { PreRegister } from './pages/PreRegister.jsx';
 import RecipeCatalog from './pages/RecipeCatalog';
 import WeeklyPlanner from './pages/WeeklyPlanner';
 import UserProfile from './pages/UserProfile';
@@ -81,6 +82,10 @@ function App() {
 
   if (location.pathname === '/') {
     return <LandingPage onNavigate={(path) => navigate(path === 'overview' ? '/' : `/${path}`)} />;
+  }
+
+  if (location.pathname === '/register') {
+    return <PreRegister onNavigate={(path) => navigate(path === 'overview' ? '/' : `/${path}`)} />;
   }
 
   return (

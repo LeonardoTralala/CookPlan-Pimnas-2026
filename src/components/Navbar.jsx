@@ -57,6 +57,12 @@ export function Navbar({ onNavigate }) {
 
         <div className="flex items-center gap-4">
           <button
+            onClick={() => onNavigate && onNavigate("register")}
+            className="hidden sm:inline-flex px-5 py-2 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg transition-shadow cursor-pointer font-semibold"
+          >
+            Daftar Gratis
+          </button>
+          <button
             onClick={() => onNavigate && onNavigate("profile")}
             className="flex items-center gap-2 cursor-pointer hover:bg-secondary-container/20 p-1 rounded-full pr-3 transition-all"
           >
