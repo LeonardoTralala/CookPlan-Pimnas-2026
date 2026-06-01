@@ -139,3 +139,26 @@ body {
 @utility bottom-above-nav {
   bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
 }
+
+/* Respek preferensi pengguna: kurangi/hilangkan motion */
+@media (prefers-reduced-motion: reduce) {
+  /* Rule universal menangkap semua utilitas Tailwind (transition-*, animate-*, hover:scale-*) */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* image-reveal: tahan transform hover agar skala tidak muncul sama sekali */
+  .image-reveal,
+  .image-reveal:hover {
+    transform: none;
+  }
+
+  /* fade-in: langsung muncul di state akhir tanpa geser */
+  @keyframes fade-in {
+    from { opacity: 1; transform: none; }
+    to   { opacity: 1; transform: none; }
+  }
+}
