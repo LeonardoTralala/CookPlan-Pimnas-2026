@@ -134,7 +134,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
           {/* ---------------- Planner Grid ---------------- */}
           <div className="flex-1 min-w-0">
             <div className="mb-6 md:mb-8">
-              <h1 className="text-3xl md:text-[40px] font-extrabold text-primary tracking-tight mb-2 leading-tight">
+              <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-2 leading-tight">
                 Rencana Masak Mingguan
               </h1>
               <p className="text-on-surface-variant text-base md:text-lg">
@@ -256,7 +256,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
           <aside className="lg:w-80 shrink-0 flex flex-col gap-6">
             {/* Recommended for you */}
             <div className="bg-surface-cream/40 border border-outline-variant rounded-[32px] p-6">
-              <h3 className="text-xl font-bold text-primary mb-2">Rekomendasi untuk Anda</h3>
+              <h3 className="font-headline-md text-headline-md text-primary mb-2">Rekomendasi untuk Anda</h3>
               <p className="text-on-surface-variant text-sm mb-6">
                 Rekomendasi pilihan berdasarkan tren populer dan riwayat pesanan Anda.
               </p>
@@ -289,7 +289,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
 
             {/* Weekly Progress */}
             <div className="bg-primary-container text-on-primary-container rounded-[32px] p-6">
-              <h3 className="text-xl font-bold mb-2">Progres Mingguan</h3>
+              <h3 className="font-headline-md text-headline-md mb-2">Progres Mingguan</h3>
               <p className="text-on-primary-container/80 text-sm mb-6">
                 {stats.filled} dari {TOTAL_SLOTS} slot makan terisi.
               </p>
@@ -356,7 +356,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                   >
                     <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
                   </button>
-                  <h3 id="modal-picker-title" className="text-xl font-bold text-primary mb-1 flex items-center gap-1.5 pr-10">
+                  <h3 id="modal-picker-title" className="font-headline-md text-headline-md text-primary mb-1 flex items-center gap-1.5 pr-10">
                     <span className="material-symbols-outlined text-2xl">restaurant_menu</span>
                     Pilih Resep
                   </h3>
@@ -430,7 +430,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                     <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
                   </button>
 
-                  <h3 id="modal-picker-title" className="text-xl font-bold text-primary mb-2 flex items-center gap-1.5">
+                  <h3 id="modal-picker-title" className="font-headline-md text-headline-md text-primary mb-2 flex items-center gap-1.5">
                     <span className="material-symbols-outlined text-2xl">group</span>
                     Atur Jumlah Porsi
                   </h3>

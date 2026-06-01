@@ -40,7 +40,7 @@ function TeamProfile() {
     <div className="bg-canvas-white text-on-surface min-h-screen">
       {/* ---------------- Hero ---------------- */}
       <section className="w-full max-w-6xl mx-auto px-5 md:px-10 py-16 md:py-24 text-center flex flex-col items-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-primary max-w-3xl mb-6 leading-tight">
+        <h1 className="font-headline-xl text-headline-lg md:text-headline-xl tracking-tight text-primary max-w-3xl mb-6 leading-tight">
           Menyederhanakan Perencanaan Makan untuk Pikiran yang Sibuk
         </h1>
         <p className="text-lg text-on-surface-variant max-w-2xl mb-12 leading-relaxed">
@@ -60,7 +60,7 @@ function TeamProfile() {
       <section className="w-full bg-surface-container-lowest py-16 md:py-24">
         <div className="max-w-6xl mx-auto px-5 md:px-10">
           <div className="mb-12 text-center md:text-left">
-            <h2 className="text-3xl md:text-4xl font-bold text-on-surface mb-4">Kenali Tim Kami</h2>
+            <h2 className="font-headline-lg text-headline-md md:text-headline-lg text-on-surface mb-4">Kenali Tim Kami</h2>
             <p className="text-base text-on-surface-variant">
               Para individu penuh semangat yang membangun asisten dapur favorit Anda berikutnya.
             </p>
@@ -78,7 +78,7 @@ function TeamProfile() {
                     account_circle
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-on-surface mb-2">{member.name}</h3>
+                <h3 className="font-headline-md text-headline-md text-on-surface mb-2">{member.name}</h3>
                 <span className="text-sm font-semibold text-primary bg-surface-container-low px-4 py-1 rounded-full mb-4">
                   {member.role}
                 </span>
@@ -105,7 +105,7 @@ function TeamProfile() {
                   Dosen Pembimbing
                 </span>
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-on-surface mb-4">{ADVISOR.name}</h2>
+              <h2 className="font-headline-md text-headline-md md:text-headline-lg text-on-surface mb-4">{ADVISOR.name}</h2>
               <p className="text-lg text-on-surface-variant mb-6 max-w-2xl leading-relaxed italic">
                 &ldquo;{ADVISOR.quote}&rdquo;
               </p>

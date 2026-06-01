@@ -130,7 +130,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
           <div className="w-24 h-24 rounded-full bg-surface-cream flex items-center justify-center mb-6">
             <span className="material-symbols-outlined text-primary text-5xl">shopping_cart</span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-primary mb-3 tracking-tight">
+          <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary mb-3 tracking-tight">
             Daftar Belanja Masih Kosong
           </h1>
           <p className="text-on-surface-variant text-base md:text-lg max-w-md mb-8">
@@ -155,7 +155,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
       <main className="max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-12">
         {/* Header */}
         <header className="mb-10 max-w-3xl animate-fade-in">
-          <h1 className="text-3xl md:text-[40px] font-extrabold text-primary tracking-tight mb-3 leading-tight">
+          <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-3 leading-tight">
             Daftar Belanja Kamu
           </h1>
           <p className="text-on-surface-variant text-base md:text-lg">
@@ -174,7 +174,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                   <span className="material-symbols-outlined text-primary text-3xl">
                     {section.meta.icon}
                   </span>
-                  <h2 className="text-2xl font-bold text-on-surface">{section.meta.label}</h2>
+                  <h2 className="font-headline-md text-headline-md text-on-surface">{section.meta.label}</h2>
                   <span className="ml-auto text-sm font-semibold text-outline">
                     {section.items.length} bahan
                   </span>
@@ -251,7 +251,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
             <div className="sticky top-24 space-y-6">
               {/* Ringkasan pesanan */}
               <div className="bg-surface-cream p-7 md:p-8 rounded-[2rem] shadow-sm">
-                <h3 className="text-2xl font-bold text-primary mb-6">Ringkasan Pesanan</h3>
+                <h3 className="font-headline-md text-headline-md text-primary mb-6">Ringkasan Pesanan</h3>
 
                 {/* Progress belanja */}
                 <div className="mb-6">
@@ -340,7 +340,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                   <p className="text-xs uppercase tracking-widest mb-1 opacity-80">
                     Khusus Petani &amp; Produsen Lokal
                   </p>
-                  <h4 className="text-xl font-bold mb-3 leading-tight">
+                  <h4 className="font-headline-md text-headline-md mb-3 leading-tight">
                     Jadi Supplier Resmi CookPlan Hari Ini
                   </h4>
                   <div className="inline-flex items-center gap-1.5 bg-white text-primary px-4 py-2 rounded-full text-sm font-bold group-hover:gap-2.5 transition-all">

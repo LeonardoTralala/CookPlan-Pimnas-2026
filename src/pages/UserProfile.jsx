@@ -37,7 +37,7 @@ function UserProfile() {
       <div className="w-full max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* ---------------- Sidebar Settings (desktop) ---------------- */}
         <aside className="hidden md:block col-span-3 space-y-2 sticky top-[100px] self-start">
-          <h2 className="text-2xl font-bold text-primary mb-6">Pengaturan</h2>
+          <h2 className="font-headline-md text-headline-md text-primary mb-6">Pengaturan</h2>
           {SETTINGS_NAV.map((item) => {
             const active = activeNav === item.id;
             return (
@@ -93,7 +93,7 @@ function UserProfile() {
             </div>
 
             <div className="flex-grow text-center md:text-left space-y-2 mt-2 md:mt-4">
-              <h1 className="text-3xl md:text-[40px] font-extrabold text-primary tracking-tight leading-tight">
+              <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight leading-tight">
                 Brokoli
               </h1>
               <p className="text-lg text-on-surface-variant">brokoli@example.com</p>
@@ -131,7 +131,7 @@ function UserProfile() {
           {/* Saved Recipes */}
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
+              <h3 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant pb-2 inline-block">
                 Resep Tersimpan
               </h3>
               <div className="flex gap-2 w-full md:w-auto">
@@ -222,7 +222,7 @@ function UserProfile() {
 
           {/* Connected Accounts */}
           <section className="space-y-6">
-            <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
+            <h3 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant pb-2 inline-block">
               Akun Terhubung
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -287,7 +287,7 @@ function UserProfile() {
 
           {/* Account Security */}
           <section className="space-y-6 pt-4">
-            <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
+            <h3 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant pb-2 inline-block">
               Keamanan Akun
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -330,7 +330,7 @@ function UserProfile() {
 
           {/* Subscription Management */}
           <section className="space-y-6 pt-4">
-            <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
+            <h3 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant pb-2 inline-block">
               Manajemen Langganan
             </h3>
             <div className="p-6 rounded-2xl border border-outline-variant bg-surface-container-lowest flex flex-col md:flex-row items-center justify-between gap-6">
@@ -339,7 +339,7 @@ function UserProfile() {
                   <span className="material-symbols-outlined text-[32px] fill">card_membership</span>
                 </div>
                 <div className="space-y-1 text-center md:text-left">
-                  <p className="text-2xl font-bold text-primary">Paket Pro</p>
+                  <p className="font-headline-md text-headline-md text-primary">Paket Pro</p>
                   <p className="text-base text-on-surface-variant">
                     Langganan Anda diperpanjang pada 15 April 2026
                   </p>

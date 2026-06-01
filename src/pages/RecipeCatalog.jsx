@@ -135,7 +135,7 @@ function RecipeCatalog({ onAddToPlan }) {
     <div className="bg-[#FBFAF9] min-h-screen font-sans text-on-surface pb-24">
       {/* Hero header */}
       <section className="pt-16 pb-8 px-6 max-w-6xl mx-auto text-center">
-        <h2 className="text-4xl md:text-[40px] font-extrabold text-primary tracking-tight mb-8">
+        <h2 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-8">
           Inspirasi Masakan Hari Ini
         </h2>
 
@@ -302,7 +302,7 @@ function RecipeCatalog({ onAddToPlan }) {
             <span className="material-symbols-outlined text-6xl text-outline-variant mb-4">
               sentiment_dissatisfied
             </span>
-            <h3 className="text-xl font-bold text-on-surface mb-2">Resep Tidak Ditemukan</h3>
+            <h3 className="font-headline-md text-headline-md text-on-surface mb-2">Resep Tidak Ditemukan</h3>
             <p className="text-on-surface-variant text-sm max-w-md mx-auto">
               Maaf, kami tidak dapat menemukan resep yang sesuai dengan kriteria pencarian dan filter Anda. Silakan coba atur ulang filter.
             </p>
@@ -347,7 +347,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 {/* Content Section */}
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div className="flex justify-between items-center gap-3 mb-4">
-                    <h3 className="font-headline-md text-headline-md text-on-surface font-bold text-lg md:text-xl hover:text-primary transition-colors leading-tight line-clamp-2">
+                    <h3 className="font-headline-md text-headline-md text-on-surface hover:text-primary transition-colors leading-tight line-clamp-2">
                       {recipe.title}
                     </h3>
                     {/* Add Button */}
@@ -433,7 +433,7 @@ function RecipeCatalog({ onAddToPlan }) {
                       </span>
                     ))}
                   </div>
-                  <h3 id="modal-recipe-title" className="text-2xl md:text-3xl font-extrabold">{selectedRecipeForDetail.title}</h3>
+                  <h3 id="modal-recipe-title" className="font-headline-lg text-headline-md md:text-headline-lg">{selectedRecipeForDetail.title}</h3>
                 </div>
               </div>
 
@@ -560,7 +560,7 @@ function RecipeCatalog({ onAddToPlan }) {
               <span className="material-symbols-outlined" aria-hidden="true">close</span>
             </button>
 
-            <h3 id="modal-plan-title" className="text-xl font-bold text-primary mb-2 flex items-center gap-1.5">
+            <h3 id="modal-plan-title" className="font-headline-md text-headline-md text-primary mb-2 flex items-center gap-1.5">
               <span className="material-symbols-outlined text-2xl">calendar_today</span>
               Atur Menu Mingguan
             </h3>

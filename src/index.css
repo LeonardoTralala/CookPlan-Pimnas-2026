@@ -34,9 +34,9 @@
 
   /* ---- Font families ---- */
   --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
-  --font-headline-xl: "Poppins", sans-serif;
-  --font-headline-lg: "Poppins", sans-serif;
-  --font-headline-md: "Poppins", sans-serif;
+  --font-headline-xl: "Plus Jakarta Sans", sans-serif;
+  --font-headline-lg: "Plus Jakarta Sans", sans-serif;
+  --font-headline-md: "Plus Jakarta Sans", sans-serif;
   --font-body-lg: "Inter", sans-serif;
   --font-body-md: "Inter", sans-serif;
   --font-label-md: "Inter", sans-serif;
