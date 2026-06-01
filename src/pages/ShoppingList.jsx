@@ -318,12 +318,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
               >
                 <div
                   className="absolute inset-0 z-0 transition-transform duration-700 group-hover:scale-110"
-                  style={{
-                    backgroundImage:
-                      'url("https://lh3.googleusercontent.com/aida-public/AB6AXuAEvZ-TlNqcDpzxdxHecdSRfyLC6mKa15k9Qz7s190PVi2hPH1zT0--8qCZNakpIOefczKIiJ0JBDymTyLs2ahOBuJVZeVFNuHlhIqNBUSC9FN9tEw2mCsLlwjVe_U4cE0ILGNnAPHcOecA7TNZYUaBBWO8oNyLXq7kE13GjGjyrBNdVRmXl_Q0bhHp-cuL_kmT6yWkjQzuAglWAdq49H-NAhC1ULlC4dF5Hl8I9qZiBOAK6UipL-m8CP6CmRw8zz_WVX0Gbgv5EGHJ")',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                  }}
+                  style={{ background: 'linear-gradient(135deg, #4a7c2e 0%, #2d5218 55%, #1a3410 100%)' }}
                 ></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/40 to-transparent z-10"></div>
 

@@ -334,6 +334,8 @@ function RecipeCatalog({ onAddToPlan }) {
                   <img
                     src={recipe.imageUrl}
                     alt={recipe.title}
+                    loading="lazy"
+                    onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   {/* Badges Overlay */}
@@ -419,6 +421,8 @@ function RecipeCatalog({ onAddToPlan }) {
                 <img
                   src={selectedRecipeForDetail.imageUrl}
                   alt={selectedRecipeForDetail.title}
+                  loading="lazy"
+                  onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>

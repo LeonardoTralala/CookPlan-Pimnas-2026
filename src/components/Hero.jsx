@@ -39,6 +39,8 @@ export function Hero({ onNavigate }) {
             className="relative w-full h-[320px] sm:h-[500px] object-cover rounded-3xl shadow-xl image-reveal"
             alt="Hidangan masakan rumahan sehat khas Indonesia yang menggugah selera"
             src={heroImage}
+            loading="eager"
+            onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
           />
         </div>
       </div>

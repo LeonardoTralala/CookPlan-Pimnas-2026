@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
 import { usePlan } from '../hooks/usePlan.js';
+import { AVATAR_URL } from '../utils/userConfig.js';
 
 // Item navigasi pada sidebar Settings (desktop)
 const SETTINGS_NAV = [
@@ -82,7 +83,7 @@ function UserProfile() {
             <div className="relative group cursor-pointer" onClick={() => soon('Ubah Foto Profil')}>
               <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-surface-cream bg-surface-variant flex items-center justify-center shadow-sm">
                 <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6odIuOL3lOpT9KvOC3lLPVT9QUV5V0_ERHx_tm4JbQgrxb4YQ-3YA71v9MPggK9PKLK8GwLCrY58zvY2thnXRYIWZx_MKNu9T1unG1Loy-2z6TZjGTMM-Q2bC7lbTKVG_QQU2S_zKpH4kBECNu-_g_a8TxyfbpbYzlykIJEoGOVpfZFinQPBWE34Nvl7WSNewV3llUb5Xn4162z2Az3_VgWDc2t81tIMwMAQXKpjk_WSIyzTknKRzKQp6-MDp4YcBAzS12o2LGrDD"
+                  src={AVATAR_URL}
                   alt="Brokoli"
                   className="w-full h-full object-cover"
                 />
@@ -202,6 +203,8 @@ function UserProfile() {
                       <img
                         src={recipe.imageUrl}
                         alt={recipe.title}
+                        loading="lazy"
+                        onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <button

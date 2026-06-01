@@ -12,6 +12,8 @@ export function RecipeCard({ recipe }) {
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
             alt={recipe.name}
             src={recipe.image}
+            loading="lazy"
+            onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
           />
           <div className="absolute top-4 left-4">
             <span className="px-3 py-1 bg-surface-container-low/90 backdrop-blur-sm text-on-surface text-label-sm font-label-sm rounded-full font-semibold">

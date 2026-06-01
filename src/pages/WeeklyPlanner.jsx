@@ -199,6 +199,8 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                             <img
                               src={slot.imageUrl}
                               alt={slot.title}
+                              loading="lazy"
+                              onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
                               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
@@ -267,6 +269,8 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       <img
                         src={recipe.imageUrl}
                         alt={recipe.title}
+                        loading="lazy"
+                        onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform"
                       />
                     </div>
@@ -401,6 +405,8 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                             <img
                               src={recipe.imageUrl}
                               alt={recipe.title}
+                              loading="lazy"
+                              onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform"
                             />
                           </div>
