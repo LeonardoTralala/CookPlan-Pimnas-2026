@@ -36,13 +36,16 @@ export function RecipeCard({ recipe }) {
       <div className="p-6 pt-0">
         <button
           onClick={() => toggleRecipeInPlan(recipe)}
-          className={`w-full py-3 rounded-full font-label-md text-label-md transition-colors cursor-pointer border font-semibold ${
+          className={`w-full py-3 rounded-full font-label-md text-label-md transition-colors cursor-pointer border font-semibold flex items-center justify-center gap-1.5 ${
             added
               ? "bg-primary border-primary text-white hover:bg-primary/95"
               : "border-primary text-primary hover:bg-primary hover:text-white"
           }`}
         >
-          {added ? "Ditambahkan ✓" : "Tambah ke Rencana"}
+          {added && (
+            <span className="material-symbols-outlined text-lg" aria-hidden="true">check</span>
+          )}
+          {added ? "Ditambahkan" : "Tambah ke Rencana"}
         </button>
       </div>
     </div>
