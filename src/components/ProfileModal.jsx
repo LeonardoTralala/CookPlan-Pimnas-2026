@@ -7,7 +7,7 @@ export function ProfileModal({ onClose }) {
 
   return (
     <Modal isOpen={true} onClose={onClose}>
-      <div className="bg-canvas-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-outline-variant/30 relative">
+      <div className="bg-canvas-white rounded-panel p-8 max-w-sm w-full shadow-2xl border border-outline-variant/30 relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full cursor-pointer"

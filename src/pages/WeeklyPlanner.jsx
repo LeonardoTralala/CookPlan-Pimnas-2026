@@ -87,8 +87,8 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
 
   const budgetColor = {
     Low: 'text-success-green',
-    Medium: 'text-amber-300',
-    High: 'text-red-300'
+    Medium: 'text-warning',
+    High: 'text-error-light'
   }[stats.budgetImpact];
 
   // Resep untuk picker (difilter pencarian)
@@ -128,7 +128,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
   };
 
   return (
-    <div className="bg-[#FBFAF9] min-h-screen text-on-surface pb-28">
+    <div className="bg-canvas-white min-h-screen text-on-surface pb-28">
       <main className="max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-12">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* ---------------- Planner Grid ---------------- */}
@@ -206,7 +206,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                                 {slot.title}
                               </span>
                               <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                                <div className="flex items-center gap-1 bg-black/50 backdrop-blur-md px-2 py-0.5 rounded-full text-white/95 shadow-sm border border-white/10">
+                                <div className="flex items-center gap-1 bg-on-surface/50 backdrop-blur-md px-2 py-0.5 rounded-full text-white/95 shadow-sm border border-white/10">
                                   <span className="material-symbols-outlined text-[12px]">schedule</span>
                                   <span className="text-[9px] font-bold tracking-wide">{slot.readyInMinutes}m</span>
                                 </div>
@@ -224,7 +224,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                               }}
                               title="Hapus dari rencana"
                               aria-label={`Hapus ${slot.title} dari ${meal.label} hari ${day.key}`}
-                              className="absolute top-2 right-2 w-11 h-11 rounded-full bg-black/50 hover:bg-red-600 text-white flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all cursor-pointer"
+                              className="absolute top-2 right-2 w-11 h-11 rounded-full bg-on-surface/50 hover:bg-error text-white flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all cursor-pointer"
                             >
                               <span className="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
                             </button>
@@ -255,7 +255,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
           {/* ---------------- Sidebar ---------------- */}
           <aside className="lg:w-80 shrink-0 flex flex-col gap-6">
             {/* Recommended for you */}
-            <div className="bg-surface-cream/40 border border-outline-variant rounded-[32px] p-6">
+            <div className="bg-surface-cream/40 border border-outline-variant rounded-panel p-6">
               <h3 className="font-headline-md text-headline-md text-primary mb-2">Rekomendasi untuk Anda</h3>
               <p className="text-on-surface-variant text-sm mb-6">
                 Rekomendasi pilihan berdasarkan tren populer dan riwayat pesanan Anda.
@@ -288,7 +288,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
             </div>
 
             {/* Weekly Progress */}
-            <div className="bg-primary-container text-on-primary-container rounded-[32px] p-6">
+            <div className="bg-primary-container text-on-primary-container rounded-panel p-6">
               <h3 className="font-headline-md text-headline-md mb-2">Progres Mingguan</h3>
               <p className="text-on-primary-container/80 text-sm mb-6">
                 {stats.filled} dari {TOTAL_SLOTS} slot makan terisi.
@@ -339,7 +339,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
       >
         {pickerTarget && (
           <div 
-            className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
+            className="bg-white rounded-panel overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
             aria-labelledby="modal-picker-title"
           >
             {/* Content Based on Selection */}

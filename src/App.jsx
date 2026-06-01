@@ -20,11 +20,11 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FBFAF9] flex flex-col font-sans selection:bg-[#4E6B2F] selection:text-white">
+    <div className="min-h-screen bg-canvas-white flex flex-col font-sans selection:bg-primary-container selection:text-white">
       <Navbar />
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col justify-center bg-[#FBFAF9] text-on-surface">
+      <main className="flex-1 flex flex-col justify-center bg-canvas-white text-on-surface">
         <Routes>
           <Route path="/catalog" element={<RecipeCatalog onAddToPlan={setSlot} />} />
           <Route
@@ -54,7 +54,7 @@ function App() {
       </main>
 
       {/* Bottom Navigation (Mobile) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#FBFAF9] border-t border-outline-variant flex items-center justify-around px-2 py-2">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-canvas-white border-t border-outline-variant flex items-center justify-around px-2 py-2">
         <Link
           to="/catalog"
           className={`flex flex-col items-center gap-1 p-2 ${
@@ -94,7 +94,7 @@ function App() {
       </nav>
 
       {/* Footer */}
-      <footer className="bg-[#D9DFB0]/50 border-t border-outline-variant py-12 pb-24 md:pb-12 px-6 md:px-16 text-on-surface">
+      <footer className="bg-surface-cream/50 border-t border-outline-variant py-12 pb-24 md:pb-12 px-6 md:px-16 text-on-surface">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
           <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-sm">
             <div className="flex items-center gap-3 mb-4">

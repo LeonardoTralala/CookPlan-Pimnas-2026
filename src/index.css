@@ -61,6 +61,13 @@
   --text-label-sm: 0.75rem;
   --text-label-sm--line-height: 1.4;
 
+  /* ---- Border radius scale ---- */
+  --radius-panel: 2rem;      /* 32px – modals, sidebar panels, featured cards */
+
+  /* ---- Semantic colors ---- */
+  --color-warning: #f59e0b;       /* amber-500 – medium-severity states */
+  --color-error-light: #fca5a5;   /* rose-300 – error text on dark/emphasis bg */
+
   /* ---- Layout spacing ---- */
   --spacing-container-max: 1280px;
   --spacing-margin-mobile: 20px;

@@ -250,7 +250,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
           <div className="lg:col-span-4">
             <div className="sticky top-24 space-y-6">
               {/* Ringkasan pesanan */}
-              <div className="bg-surface-cream p-7 md:p-8 rounded-[2rem] shadow-sm">
+              <div className="bg-surface-cream p-7 md:p-8 rounded-panel shadow-sm">
                 <h3 className="font-headline-md text-headline-md text-primary mb-6">Ringkasan Pesanan</h3>
 
                 {/* Progress belanja */}
@@ -314,7 +314,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                 onClick={() =>
                   showToast('Pendaftaran supplier CookPlan akan segera dibuka untuk produsen & petani lokal!')
                 }
-                className="w-full text-left relative overflow-hidden rounded-[2rem] h-60 bg-primary group cursor-pointer shadow-md"
+                className="w-full text-left relative overflow-hidden rounded-panel h-60 bg-primary group cursor-pointer shadow-md"
               >
                 <div
                   className="absolute inset-0 z-0 transition-transform duration-700 group-hover:scale-110"

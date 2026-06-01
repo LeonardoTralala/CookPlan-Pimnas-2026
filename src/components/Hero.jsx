@@ -34,7 +34,7 @@ export function Hero({ onNavigate }) {
           </div>
         </div>
         <div className="relative group">
-          <div className="absolute -inset-4 bg-primary/5 rounded-[40px] blur-3xl group-hover:bg-primary/10 transition-colors"></div>
+          <div className="absolute -inset-4 bg-primary/5 rounded-panel blur-3xl group-hover:bg-primary/10 transition-colors"></div>
           <img
             className="relative w-full h-[320px] sm:h-[500px] object-cover rounded-3xl shadow-xl image-reveal"
             alt="Hidangan masakan rumahan sehat khas Indonesia yang menggugah selera"

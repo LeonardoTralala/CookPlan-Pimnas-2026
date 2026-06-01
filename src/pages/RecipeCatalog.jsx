@@ -132,7 +132,7 @@ function RecipeCatalog({ onAddToPlan }) {
   };
 
   return (
-    <div className="bg-[#FBFAF9] min-h-screen font-sans text-on-surface pb-24">
+    <div className="bg-canvas-white min-h-screen font-sans text-on-surface pb-24">
       {/* Hero header */}
       <section className="pt-16 pb-8 px-6 max-w-6xl mx-auto text-center">
         <h2 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-8">
@@ -221,7 +221,7 @@ function RecipeCatalog({ onAddToPlan }) {
           {(searchQuery || activeFilters.length > 0 || maxTime < 120 || priceCategory !== 'Semua') && (
             <button
               onClick={handleResetFilters}
-              className="text-xs md:text-sm font-bold text-red-600 hover:text-red-800 transition-colors flex items-center gap-1 cursor-pointer pl-2"
+              className="text-xs md:text-sm font-bold text-error hover:text-error/80 transition-colors flex items-center gap-1 cursor-pointer pl-2"
             >
               <span className="material-symbols-outlined text-base">restart_alt</span>
               Atur Ulang
@@ -318,7 +318,7 @@ function RecipeCatalog({ onAddToPlan }) {
             {filteredRecipes.map((recipe) => (
               <div
                 key={recipe.id}
-                className="recipe-card-shadow bg-[#e2f4cb] rounded-[32px] overflow-hidden group cursor-pointer hover:-translate-y-1 transition-all duration-300 flex flex-col focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary"
+                className="recipe-card-shadow bg-surface-container rounded-3xl overflow-hidden group cursor-pointer hover:-translate-y-1 transition-all duration-300 flex flex-col focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary"
                 onClick={() => setSelectedRecipeForDetail(recipe)}
                 role="button"
                 tabIndex={0}
@@ -400,13 +400,13 @@ function RecipeCatalog({ onAddToPlan }) {
       <Modal isOpen={!!selectedRecipeForDetail} onClose={() => setSelectedRecipeForDetail(null)}>
         {selectedRecipeForDetail && (
           <div 
-            className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
+            className="bg-white rounded-panel overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
             aria-labelledby="modal-recipe-title"
           >
             {/* Header Close button */}
             <button
               onClick={() => setSelectedRecipeForDetail(null)}
-              className="absolute right-4 top-4 z-10 w-11 h-11 rounded-full bg-slate-950/60 text-white flex items-center justify-center hover:bg-slate-950 transition-colors shadow-md cursor-pointer"
+              className="absolute right-4 top-4 z-10 w-11 h-11 rounded-full bg-on-surface/60 text-white flex items-center justify-center hover:bg-on-surface transition-colors shadow-md cursor-pointer"
               aria-label="Tutup detail resep"
             >
               <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
@@ -548,7 +548,7 @@ function RecipeCatalog({ onAddToPlan }) {
       <Modal isOpen={!!selectedRecipeForPlan} onClose={() => setSelectedRecipeForPlan(null)}>
         {selectedRecipeForPlan && (
           <div 
-            className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl border border-outline-variant relative"
+            className="bg-white rounded-panel p-6 md:p-8 max-w-sm w-full shadow-2xl border border-outline-variant relative"
             aria-labelledby="modal-plan-title"
           >
             {/* Close Button */}
