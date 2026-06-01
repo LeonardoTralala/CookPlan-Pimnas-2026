@@ -4,7 +4,7 @@ import { usePlan } from '../hooks/usePlan.js';
 import { Modal } from '../components/Modal.jsx';
 
 function RecipeCatalog({ onAddToPlan }) {
-  const { showToast } = usePlan();
+  const { showToast, weeklyPlan } = usePlan();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
   const [maxTime, setMaxTime] = useState(120); // default max 120 minutes
@@ -130,6 +130,9 @@ function RecipeCatalog({ onAddToPlan }) {
       maximumFractionDigits: 0
     }).format(num);
   };
+
+  // Slot yang sudah terisi pada kombinasi hari+jenis makan yang dipilih saat ini
+  const existingSlot = selectedRecipeForPlan ? (weeklyPlan?.[planDay]?.[planMeal] ?? null) : null;
 
   return (
     <div className="bg-canvas-white min-h-screen font-sans text-on-surface pb-24">
@@ -635,8 +638,18 @@ function RecipeCatalog({ onAddToPlan }) {
               </div>
             </div>
 
+            {/* Peringatan slot sudah terisi */}
+            {existingSlot && (
+              <div className="mt-5 flex items-start gap-2.5 p-3 rounded-2xl bg-warning/10 border border-warning/30">
+                <span className="material-symbols-outlined text-base text-warning shrink-0 mt-0.5" aria-hidden="true">warning</span>
+                <p className="text-xs font-medium text-on-surface-variant leading-snug">
+                  Slot <strong className="text-on-surface">{mealOptions.find((m) => m.value === planMeal)?.label}</strong> hari <strong className="text-on-surface">{planDay}</strong> sudah terisi dengan <strong className="text-on-surface">{existingSlot.title}</strong>. Konfirmasi akan menggantikan resep tersebut.
+                </p>
+              </div>
+            )}
+
             {/* Action buttons */}
-            <div className="mt-8 flex gap-3">
+            <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setSelectedRecipeForPlan(null)}
                 className="flex-1 py-3 border border-outline-variant text-on-surface-variant hover:bg-secondary-container/20 rounded-full font-bold text-sm transition-colors cursor-pointer"
@@ -647,8 +660,8 @@ function RecipeCatalog({ onAddToPlan }) {
                 onClick={handleConfirmAddToPlan}
                 className="flex-1 py-3 bg-primary text-white hover:bg-primary-container rounded-full font-bold text-sm transition-all shadow-md cursor-pointer flex items-center justify-center gap-1"
               >
-                <span className="material-symbols-outlined text-lg">check</span>
-                Konfirmasi
+                <span className="material-symbols-outlined text-lg">{existingSlot ? 'swap_horiz' : 'check'}</span>
+                {existingSlot ? 'Ganti Menu' : 'Konfirmasi'}
               </button>
             </div>
           </div>
