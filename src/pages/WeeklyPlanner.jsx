@@ -201,7 +201,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                               }}
                               title="Hapus dari rencana"
                               aria-label={`Hapus ${slot.title} dari ${meal.label} hari ${day.key}`}
-                              className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+                              className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 hover:bg-red-600 text-white flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all cursor-pointer"
                             >
                               <span className="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
                             </button>
