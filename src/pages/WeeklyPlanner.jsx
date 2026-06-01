@@ -38,7 +38,7 @@ function getWeekDates() {
 
 
 function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onGenerateShoppingList }) {
-  const { showToast } = usePlan();
+  const { showToast, restoreSlot } = usePlan();
 
   // Slot yang sedang diisi: { day, meal } | null
   const [pickerTarget, setPickerTarget] = useState(null);
@@ -221,8 +221,17 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                             {/* Tombol hapus */}
                             <button
                               onClick={() => {
+                                const savedSlot = weeklyPlan[day.key][meal.key];
                                 onRemoveSlot(day.key, meal.key);
-                                showToast(`Berhasil menghapus menu dari ${meal.label} hari ${day.key}`);
+                                showToast(
+                                  `Menu dihapus dari ${meal.label} hari ${day.key}`,
+                                  {
+                                    onUndo: () => {
+                                      restoreSlot(day.key, meal.key, savedSlot);
+                                      showToast('Menu dikembalikan');
+                                    }
+                                  }
+                                );
                               }}
                               title="Hapus dari rencana"
                               aria-label={`Hapus ${slot.title} dari ${meal.label} hari ${day.key}`}

@@ -22,7 +22,7 @@ function isValidPlanShape(plan) {
 
 export function PlanProvider({ children }) {
   const [addedRecipes, setAddedRecipes] = useState([]);
-  const [toastMessage, setToastMessage] = useState("");
+  const [toast, setToast] = useState({ message: "", onUndo: null });
 
   const [weeklyPlan, setWeeklyPlan] = useState(() => {
     const saved = localStorage.getItem('weeklyPlan');
@@ -37,15 +37,15 @@ export function PlanProvider({ children }) {
     return createEmptyPlan();
   });
 
-  const showToast = useCallback((message) => {
-    setToastMessage(message);
+  const showToast = useCallback((message, options = {}) => {
+    setToast({ message, onUndo: options.onUndo ?? null });
   }, []);
 
   useEffect(() => {
-    if (!toastMessage) return undefined;
-    const timer = setTimeout(() => setToastMessage(""), 3000);
+    if (!toast.message) return undefined;
+    const timer = setTimeout(() => setToast({ message: "", onUndo: null }), 3000);
     return () => clearTimeout(timer);
-  }, [toastMessage]);
+  }, [toast.message]);
 
   const isInPlan = useCallback(
     (recipeId) => addedRecipes.some((r) => r.id === recipeId),
@@ -99,6 +99,17 @@ export function PlanProvider({ children }) {
     });
   }, []);
 
+  const restoreSlot = useCallback((day, mealType, slotData) => {
+    setWeeklyPlan((prev) => {
+      const updated = {
+        ...prev,
+        [day]: { ...prev[day], [mealType]: slotData }
+      };
+      localStorage.setItem('weeklyPlan', JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+
   // Jumlah slot terisi di seluruh rencana mingguan – dipakai badge Navbar
   const plannedCount = useMemo(() => {
     let count = 0;
@@ -111,13 +122,14 @@ export function PlanProvider({ children }) {
 
   const value = {
     addedRecipes,
-    toastMessage,
+    toast,
     showToast,
     isInPlan,
     toggleRecipeInPlan,
     weeklyPlan,
     setSlot,
     removeSlot,
+    restoreSlot,
     plannedCount,
   };
 
