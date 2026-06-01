@@ -185,7 +185,19 @@ function UserProfile() {
             ) : (
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredSaved.map((recipe) => (
-                  <div key={recipe.id} className="group cursor-pointer">
+                  <div
+                    key={recipe.id}
+                    className="group cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary rounded-2xl"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => soon('Detail Resep')}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        soon('Detail Resep');
+                      }
+                    }}
+                  >
                     <div className="relative aspect-video rounded-2xl overflow-hidden mb-3 recipe-card-shadow">
                       <img
                         src={recipe.imageUrl}

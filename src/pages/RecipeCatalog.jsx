@@ -317,8 +317,16 @@ function RecipeCatalog({ onAddToPlan }) {
             {filteredRecipes.map((recipe) => (
               <div
                 key={recipe.id}
-                className="recipe-card-shadow bg-[#e2f4cb] rounded-[32px] overflow-hidden group cursor-pointer hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                className="recipe-card-shadow bg-[#e2f4cb] rounded-[32px] overflow-hidden group cursor-pointer hover:-translate-y-1 transition-all duration-300 flex flex-col focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary"
                 onClick={() => setSelectedRecipeForDetail(recipe)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedRecipeForDetail(recipe);
+                  }
+                }}
               >
                 {/* Image Section */}
                 <div className="relative h-64 overflow-hidden">
