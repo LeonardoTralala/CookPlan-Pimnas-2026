@@ -216,7 +216,7 @@ function UserProfile() {
                       </button>
                     </div>
                     <p className="text-sm font-medium text-on-surface line-clamp-1">{recipe.title}</p>
-                    <p className="text-xs text-outline">{recipe.readyInMinutes} mnt</p>
+                    <p className="text-xs text-on-surface-variant">{recipe.readyInMinutes} mnt</p>
                   </div>
                 ))}
               </div>
@@ -275,7 +275,7 @@ function UserProfile() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-on-surface-variant">WhatsApp</p>
-                    <p className="text-xs text-outline">Belum terhubung</p>
+                    <p className="text-xs text-on-surface-variant">Belum terhubung</p>
                   </div>
                 </div>
                 <button

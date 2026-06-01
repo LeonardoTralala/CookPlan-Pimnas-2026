@@ -246,7 +246,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                             setPickerTarget({ day: day.key, meal: meal.key });
                             setPickerSearch('');
                           }}
-                          className="h-40 border-2 border-dashed border-outline-variant rounded-3xl flex flex-col items-center justify-center gap-2 text-outline hover:border-primary hover:text-primary transition-all bg-white/50 group cursor-pointer w-full"
+                          className="h-40 border-2 border-dashed border-outline-variant rounded-3xl flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:border-primary hover:text-primary transition-all bg-white/50 group cursor-pointer w-full"
                         >
                           <span className="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform">
                             add_circle
@@ -287,7 +287,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       <h4 className="font-bold text-sm text-on-surface leading-tight line-clamp-1">
                         {recipe.title}
                       </h4>
-                      <span className="text-xs text-outline">{recommendCaptions[idx]}</span>
+                      <span className="text-xs text-on-surface-variant">{recommendCaptions[idx]}</span>
                     </div>
                   </div>
                 ))}
