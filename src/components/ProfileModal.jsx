@@ -3,7 +3,7 @@ import { Modal } from "./Modal.jsx";
 
 // Lightweight account preview modal opened from the navbar Profile pill.
 export function ProfileModal({ onClose }) {
-  const { addedRecipes, showToast } = usePlan();
+  const { plannedCount, showToast } = usePlan();
 
   return (
     <Modal isOpen={true} onClose={onClose}>
@@ -25,7 +25,7 @@ export function ProfileModal({ onClose }) {
           <div className="w-full border-t border-outline-variant/30 pt-4 space-y-2 text-left">
             <div className="flex justify-between text-sm">
               <span className="text-on-surface-variant">Menu di Rencana:</span>
-              <span className="font-bold text-primary">{addedRecipes.length} resep</span>
+              <span className="font-bold text-primary">{plannedCount} resep</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-on-surface-variant">Status Paket:</span>
