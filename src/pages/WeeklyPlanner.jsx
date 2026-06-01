@@ -223,7 +223,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                               }}
                               title="Hapus dari rencana"
                               aria-label={`Hapus ${slot.title} dari ${meal.label} hari ${day.key}`}
-                              className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 hover:bg-red-600 text-white flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all cursor-pointer"
+                              className="absolute top-2 right-2 w-11 h-11 rounded-full bg-black/50 hover:bg-red-600 text-white flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all cursor-pointer"
                             >
                               <span className="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
                             </button>
@@ -353,7 +353,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       setPickerTarget(null);
                       setPickerSelectedRecipe(null);
                     }}
-                    className="absolute right-4 top-4 w-9 h-9 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                    className="absolute right-4 top-4 w-11 h-11 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
                     aria-label="Tutup pencarian resep"
                   >
                     <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
@@ -426,7 +426,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       setPickerTarget(null);
                       setPickerSelectedRecipe(null);
                     }}
-                    className="absolute right-4 top-4 w-9 h-9 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                    className="absolute right-4 top-4 w-11 h-11 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
                     aria-label="Tutup pengaturan porsi"
                   >
                     <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
@@ -450,7 +450,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                     <div className="flex items-center gap-4 bg-secondary-container/20 border border-outline-variant p-2 rounded-2xl justify-between">
                       <button
                         onClick={() => setPickerServings(Math.max(1, pickerServings - 1))}
-                        className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                        className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
                         aria-label="Kurangi porsi"
                       >
                         <span className="material-symbols-outlined text-lg" aria-hidden="true">remove</span>
@@ -458,7 +458,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       <span className="font-extrabold text-lg text-primary" aria-live="polite">{pickerServings} Porsi</span>
                       <button
                         onClick={() => setPickerServings(pickerServings + 1)}
-                        className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                        className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
                         aria-label="Tambah porsi"
                       >
                         <span className="material-symbols-outlined text-lg" aria-hidden="true">add</span>

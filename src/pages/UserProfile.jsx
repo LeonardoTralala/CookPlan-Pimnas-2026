@@ -206,7 +206,7 @@ function UserProfile() {
                       />
                       <button
                         onClick={() => soon('Hapus dari Tersimpan')}
-                        className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-md rounded-full text-error hover:bg-white transition-colors cursor-pointer"
+                        className="absolute top-2 right-2 w-11 h-11 flex items-center justify-center bg-white/80 backdrop-blur-md rounded-full text-error hover:bg-white transition-colors cursor-pointer"
                         aria-label="Hapus resep tersimpan"
                       >
                         <span className="material-symbols-outlined fill text-[20px]" aria-hidden="true">favorite</span>

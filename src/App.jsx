@@ -98,7 +98,7 @@ function App() {
         <nav className="hidden md:flex items-center gap-6 md:gap-8 py-1">
           <Link
             to="/catalog"
-            className={`pb-1 text-sm transition-colors cursor-pointer ${
+            className={`py-3 px-2 text-sm transition-colors cursor-pointer ${
               location.pathname === '/catalog'
                 ? 'text-primary font-bold border-b-2 border-primary'
                 : 'text-on-surface-variant hover:text-primary font-semibold'
@@ -108,7 +108,7 @@ function App() {
           </Link>
           <Link
             to="/planner"
-            className={`pb-1 text-sm transition-colors cursor-pointer ${
+            className={`py-3 px-2 text-sm transition-colors cursor-pointer ${
               location.pathname === '/planner'
                 ? 'text-primary font-bold border-b-2 border-primary'
                 : 'text-on-surface-variant hover:text-primary font-semibold'
@@ -118,7 +118,7 @@ function App() {
           </Link>
           <Link
             to="/shopping"
-            className={`pb-1 text-sm transition-colors cursor-pointer ${
+            className={`py-3 px-2 text-sm transition-colors cursor-pointer ${
               location.pathname === '/shopping'
                 ? 'text-primary font-bold border-b-2 border-primary'
                 : 'text-on-surface-variant hover:text-primary font-semibold'
@@ -128,7 +128,7 @@ function App() {
           </Link>
           <Link
             to="/profile"
-            className={`pb-1 text-sm transition-colors cursor-pointer ${
+            className={`py-3 px-2 text-sm transition-colors cursor-pointer ${
               location.pathname === '/profile'
                 ? 'text-primary font-bold border-b-2 border-primary'
                 : 'text-on-surface-variant hover:text-primary font-semibold'

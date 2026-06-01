@@ -238,7 +238,7 @@ function RecipeCatalog({ onAddToPlan }) {
               </h4>
               <button
                 onClick={() => setShowAdvancedFilters(false)}
-                className="w-8 h-8 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                className="w-11 h-11 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
                 aria-label="Tutup pengaturan filter"
               >
                 <span className="material-symbols-outlined text-base" aria-hidden="true">close</span>
@@ -355,7 +355,7 @@ function RecipeCatalog({ onAddToPlan }) {
                         e.stopPropagation(); // prevent opening detail modal
                         setSelectedRecipeForPlan(recipe);
                       }}
-                      className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md shrink-0 cursor-pointer"
+                      className="w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md shrink-0 cursor-pointer"
                       title="Tambah ke Rencana Mingguan"
                       aria-label="Tambah ke Rencana Mingguan"
                     >
@@ -411,7 +411,7 @@ function RecipeCatalog({ onAddToPlan }) {
             {/* Header Close button */}
             <button
               onClick={() => setSelectedRecipeForDetail(null)}
-              className="absolute right-4 top-4 z-10 w-9 h-9 rounded-full bg-slate-950/60 text-white flex items-center justify-center hover:bg-slate-950 transition-colors shadow-md cursor-pointer"
+              className="absolute right-4 top-4 z-10 w-11 h-11 rounded-full bg-slate-950/60 text-white flex items-center justify-center hover:bg-slate-950 transition-colors shadow-md cursor-pointer"
               aria-label="Tutup detail resep"
             >
               <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
@@ -625,7 +625,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 <div className="flex items-center gap-4 bg-secondary-container/20 border border-outline-variant p-2 rounded-2xl justify-between">
                   <button
                     onClick={() => setPlanServings(Math.max(1, planServings - 1))}
-                    className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                    className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
                     aria-label="Kurangi porsi"
                   >
                     <span className="material-symbols-outlined text-lg" aria-hidden="true">remove</span>
@@ -633,7 +633,7 @@ function RecipeCatalog({ onAddToPlan }) {
                   <span className="font-extrabold text-lg text-primary" aria-live="polite">{planServings} Porsi</span>
                   <button
                     onClick={() => setPlanServings(planServings + 1)}
-                    className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                    className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
                     aria-label="Tambah porsi"
                   >
                     <span className="material-symbols-outlined text-lg" aria-hidden="true">add</span>
