@@ -132,7 +132,7 @@ function RecipeCatalog({ onAddToPlan }) {
   };
 
   return (
-    <div className="bg-[#FBFAF9] min-h-screen font-sans text-on-surface pb-24">
+    <div className="bg-[#FBFAF9] min-h-dvh font-sans text-on-surface pb-24">
       {/* Hero header */}
       <section className="pt-16 pb-8 px-6 max-w-6xl mx-auto text-center">
         <h2 className="text-4xl md:text-[40px] font-extrabold text-primary tracking-tight mb-8">
@@ -396,7 +396,7 @@ function RecipeCatalog({ onAddToPlan }) {
         <ModalSheet
           onClose={() => setSelectedRecipeForDetail(null)}
           labelledBy="modal-recipe-title"
-          panelClassName="overflow-hidden max-w-2xl max-h-[90vh] md:max-h-[85vh] flex flex-col"
+          panelClassName="overflow-hidden max-w-2xl max-h-[90dvh] md:max-h-[85dvh] flex flex-col"
         >
             {/* Header Close button */}
             <button
@@ -543,7 +543,7 @@ function RecipeCatalog({ onAddToPlan }) {
         <ModalSheet
           onClose={() => setSelectedRecipeForPlan(null)}
           labelledBy="modal-plan-title"
-          panelClassName="max-w-sm max-h-[90vh] overflow-y-auto p-6 md:p-8"
+          panelClassName="max-w-sm max-h-[90dvh] overflow-y-auto p-6 md:p-8"
         >
             {/* Close Button */}
             <button

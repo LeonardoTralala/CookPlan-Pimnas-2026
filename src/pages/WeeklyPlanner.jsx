@@ -127,7 +127,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
   };
 
   return (
-    <div className="bg-[#FBFAF9] min-h-screen text-on-surface pb-28">
+    <div className="bg-[#FBFAF9] min-h-dvh text-on-surface pb-28">
       <main className="max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-12">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* ---------------- Planner Grid ---------------- */}
@@ -316,7 +316,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
             setPickerSelectedRecipe(null);
           }}
           labelledBy="modal-picker-title"
-          panelClassName="overflow-hidden max-w-2xl max-h-[90vh] md:max-h-[85vh] flex flex-col"
+          panelClassName="overflow-hidden max-w-2xl max-h-[90dvh] md:max-h-[85dvh] flex flex-col"
         >
             {/* Content Based on Selection */}
             {!pickerSelectedRecipe ? (

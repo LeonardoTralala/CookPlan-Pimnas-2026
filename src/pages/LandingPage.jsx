@@ -14,7 +14,7 @@ import { Toast } from "../components/Toast.jsx";
 // is omitted the buttons fall back to in-page smooth scrolling.
 export function LandingPage({ onNavigate }) {
   return (
-    <div className="font-body-md text-on-surface bg-canvas-white min-h-screen flex flex-col antialiased">
+    <div className="font-body-md text-on-surface bg-canvas-white min-h-dvh flex flex-col antialiased">
       <Navbar onNavigate={onNavigate} />
       <main className="flex-grow">
         <Hero onNavigate={onNavigate} />

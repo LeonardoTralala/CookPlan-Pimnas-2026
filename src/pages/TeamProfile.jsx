@@ -37,7 +37,7 @@ const ADVISOR = {
 
 function TeamProfile() {
   return (
-    <div className="bg-canvas-white text-on-surface min-h-screen">
+    <div className="bg-canvas-white text-on-surface min-h-dvh">
       {/* ---------------- Hero ---------------- */}
       <section className="w-full max-w-6xl mx-auto px-5 md:px-10 py-16 md:py-24 text-center flex flex-col items-center">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-primary max-w-3xl mb-6 leading-tight">

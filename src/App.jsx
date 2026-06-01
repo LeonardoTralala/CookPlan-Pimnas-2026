@@ -84,7 +84,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FBFAF9] flex flex-col font-sans selection:bg-[#4E6B2F] selection:text-white">
+    <div className="min-h-dvh bg-[#FBFAF9] flex flex-col font-sans selection:bg-[#4E6B2F] selection:text-white">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-[#FBFAF9] border-b border-outline-variant px-6 md:px-12 py-4 flex items-center justify-between">
         <Link
