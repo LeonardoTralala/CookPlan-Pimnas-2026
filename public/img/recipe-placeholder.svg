@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="533" viewBox="0 0 800 533">
+  <rect width="800" height="533" fill="#e2f4cb"/>
+  <!-- plate silhouette -->
+  <ellipse cx="400" cy="290" rx="130" ry="78" fill="none" stroke="#4e6b2f" stroke-width="10" opacity="0.25"/>
+  <ellipse cx="400" cy="290" rx="90" ry="54" fill="#4e6b2f" opacity="0.12"/>
+  <!-- fork -->
+  <line x1="320" y1="175" x2="320" y2="370" stroke="#375219" stroke-width="7" stroke-linecap="round" opacity="0.3"/>
+  <line x1="308" y1="175" x2="308" y2="225" stroke="#375219" stroke-width="5" stroke-linecap="round" opacity="0.2"/>
+  <line x1="332" y1="175" x2="332" y2="225" stroke="#375219" stroke-width="5" stroke-linecap="round" opacity="0.2"/>
+  <!-- knife -->
+  <line x1="480" y1="175" x2="480" y2="370" stroke="#375219" stroke-width="7" stroke-linecap="round" opacity="0.3"/>
+  <path d="M480 175 Q495 210 480 240" fill="none" stroke="#375219" stroke-width="5" opacity="0.2"/>
+  <!-- label -->
+  <text x="400" y="470" font-family="Plus Jakarta Sans, sans-serif" font-size="22" fill="#44483d" text-anchor="middle" opacity="0.45">Gambar Resep</text>
+</svg>

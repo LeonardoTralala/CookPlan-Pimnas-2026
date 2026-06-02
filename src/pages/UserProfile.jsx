@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
 import { usePlan } from '../hooks/usePlan.js';
+import { AVATAR_URL } from '../utils/userConfig.js';
 
 // Item navigasi pada sidebar Settings (desktop)
 const SETTINGS_NAV = [
@@ -33,11 +34,11 @@ function UserProfile() {
   }, [savedRecipes, savedSearch]);
 
   return (
-    <div className="bg-canvas-white text-on-surface min-h-screen">
-      <div className="w-full max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-6">
+    <div className="bg-canvas-white text-on-surface min-h-dvh">
+      <div className="w-full max-w-container-max mx-auto px-5 md:px-10 py-8 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* ---------------- Sidebar Settings (desktop) ---------------- */}
         <aside className="hidden md:block col-span-3 space-y-2 sticky top-[100px] self-start">
-          <h2 className="text-2xl font-bold text-primary mb-6">Pengaturan</h2>
+          <h2 className="font-headline-md text-headline-md text-primary mb-6">Pengaturan</h2>
           {SETTINGS_NAV.map((item) => {
             const active = activeNav === item.id;
             return (
@@ -82,7 +83,7 @@ function UserProfile() {
             <div className="relative group cursor-pointer" onClick={() => soon('Ubah Foto Profil')}>
               <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-surface-cream bg-surface-variant flex items-center justify-center shadow-sm">
                 <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6odIuOL3lOpT9KvOC3lLPVT9QUV5V0_ERHx_tm4JbQgrxb4YQ-3YA71v9MPggK9PKLK8GwLCrY58zvY2thnXRYIWZx_MKNu9T1unG1Loy-2z6TZjGTMM-Q2bC7lbTKVG_QQU2S_zKpH4kBECNu-_g_a8TxyfbpbYzlykIJEoGOVpfZFinQPBWE34Nvl7WSNewV3llUb5Xn4162z2Az3_VgWDc2t81tIMwMAQXKpjk_WSIyzTknKRzKQp6-MDp4YcBAzS12o2LGrDD"
+                  src={AVATAR_URL}
                   alt="Brokoli"
                   className="w-full h-full object-cover"
                 />
@@ -93,7 +94,7 @@ function UserProfile() {
             </div>
 
             <div className="flex-grow text-center md:text-left space-y-2 mt-2 md:mt-4">
-              <h1 className="text-3xl md:text-[40px] font-extrabold text-primary tracking-tight leading-tight">
+              <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight leading-tight">
                 Brokoli
               </h1>
               <p className="text-lg text-on-surface-variant">brokoli@example.com</p>
@@ -131,7 +132,7 @@ function UserProfile() {
           {/* Saved Recipes */}
           <section className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
+              <h3 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant pb-2 inline-block">
                 Resep Tersimpan
               </h3>
               <div className="flex gap-2 w-full md:w-auto">
@@ -185,23 +186,37 @@ function UserProfile() {
             ) : (
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredSaved.map((recipe) => (
-                  <div key={recipe.id} className="group cursor-pointer">
+                  <div
+                    key={recipe.id}
+                    className="group cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary rounded-2xl"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => soon('Detail Resep')}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        soon('Detail Resep');
+                      }
+                    }}
+                  >
                     <div className="relative aspect-video rounded-2xl overflow-hidden mb-3 recipe-card-shadow">
                       <img
                         src={recipe.imageUrl}
                         alt={recipe.title}
+                        loading="lazy"
+                        onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <button
                         onClick={() => soon('Hapus dari Tersimpan')}
-                        className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-md rounded-full text-error hover:bg-white transition-colors cursor-pointer"
+                        className="absolute top-2 right-2 w-11 h-11 flex items-center justify-center bg-white/80 backdrop-blur-md rounded-full text-error hover:bg-white transition-colors cursor-pointer"
                         aria-label="Hapus resep tersimpan"
                       >
                         <span className="material-symbols-outlined fill text-[20px]" aria-hidden="true">favorite</span>
                       </button>
                     </div>
                     <p className="text-sm font-medium text-on-surface line-clamp-1">{recipe.title}</p>
-                    <p className="text-xs text-outline">{recipe.readyInMinutes} mnt</p>
+                    <p className="text-xs text-on-surface-variant">{recipe.readyInMinutes} mnt</p>
                   </div>
                 ))}
               </div>
@@ -210,7 +225,7 @@ function UserProfile() {
 
           {/* Connected Accounts */}
           <section className="space-y-6">
-            <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
+            <h3 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant pb-2 inline-block">
               Akun Terhubung
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -260,7 +275,7 @@ function UserProfile() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-on-surface-variant">WhatsApp</p>
-                    <p className="text-xs text-outline">Belum terhubung</p>
+                    <p className="text-xs text-on-surface-variant">Belum terhubung</p>
                   </div>
                 </div>
                 <button
@@ -275,7 +290,7 @@ function UserProfile() {
 
           {/* Account Security */}
           <section className="space-y-6 pt-4">
-            <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
+            <h3 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant pb-2 inline-block">
               Keamanan Akun
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -318,7 +333,7 @@ function UserProfile() {
 
           {/* Subscription Management */}
           <section className="space-y-6 pt-4">
-            <h3 className="text-2xl font-bold text-on-surface border-b border-outline-variant pb-2 inline-block">
+            <h3 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant pb-2 inline-block">
               Manajemen Langganan
             </h3>
             <div className="p-6 rounded-2xl border border-outline-variant bg-surface-container-lowest flex flex-col md:flex-row items-center justify-between gap-6">
@@ -327,7 +342,7 @@ function UserProfile() {
                   <span className="material-symbols-outlined text-[32px] fill">card_membership</span>
                 </div>
                 <div className="space-y-1 text-center md:text-left">
-                  <p className="text-2xl font-bold text-primary">Paket Pro</p>
+                  <p className="font-headline-md text-headline-md text-primary">Paket Pro</p>
                   <p className="text-base text-on-surface-variant">
                     Langganan Anda diperpanjang pada 15 April 2026
                   </p>

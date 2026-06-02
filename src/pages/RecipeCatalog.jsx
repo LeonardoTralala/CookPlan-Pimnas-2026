@@ -1,9 +1,10 @@
 import { useState, useMemo, useEffect } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
 import { usePlan } from '../hooks/usePlan.js';
+import { ModalSheet } from '../components/ModalSheet.jsx';
 
 function RecipeCatalog({ onAddToPlan }) {
-  const { showToast } = usePlan();
+  const { showToast, weeklyPlan } = usePlan();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
   const [maxTime, setMaxTime] = useState(120); // default max 120 minutes
@@ -130,11 +131,14 @@ function RecipeCatalog({ onAddToPlan }) {
     }).format(num);
   };
 
+  // Slot yang sudah terisi pada kombinasi hari+jenis makan yang dipilih saat ini
+  const existingSlot = selectedRecipeForPlan ? (weeklyPlan?.[planDay]?.[planMeal] ?? null) : null;
+
   return (
-    <div className="bg-[#FBFAF9] min-h-screen font-sans text-on-surface pb-24">
+    <div className="bg-canvas-white min-h-dvh font-sans text-on-surface pb-24">
       {/* Hero header */}
-      <section className="pt-16 pb-8 px-6 max-w-6xl mx-auto text-center">
-        <h2 className="text-4xl md:text-[40px] font-extrabold text-primary tracking-tight mb-8">
+      <section className="pt-16 pb-8 px-6 max-w-container-max mx-auto text-center">
+        <h2 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-8">
           Inspirasi Masakan Hari Ini
         </h2>
 
@@ -144,7 +148,10 @@ function RecipeCatalog({ onAddToPlan }) {
             search
           </span>
           <input
-            type="text"
+            type="search"
+            inputMode="search"
+            enterKeyHint="search"
+            autoComplete="off"
             className="w-full pl-14 pr-6 py-4 rounded-full border border-outline-variant bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary shadow-sm transition-all text-base font-medium"
             placeholder="Cari resep sehat untuk keluarga..."
             value={searchQuery}
@@ -220,7 +227,7 @@ function RecipeCatalog({ onAddToPlan }) {
           {(searchQuery || activeFilters.length > 0 || maxTime < 120 || priceCategory !== 'Semua') && (
             <button
               onClick={handleResetFilters}
-              className="text-xs md:text-sm font-bold text-red-600 hover:text-red-800 transition-colors flex items-center gap-1 cursor-pointer pl-2"
+              className="text-xs md:text-sm font-bold text-error hover:text-error/80 transition-colors flex items-center gap-1 cursor-pointer pl-2"
             >
               <span className="material-symbols-outlined text-base">restart_alt</span>
               Atur Ulang
@@ -238,31 +245,39 @@ function RecipeCatalog({ onAddToPlan }) {
               </h4>
               <button
                 onClick={() => setShowAdvancedFilters(false)}
-                className="w-8 h-8 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                className="w-11 h-11 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
                 aria-label="Tutup pengaturan filter"
               >
                 <span className="material-symbols-outlined text-base" aria-hidden="true">close</span>
               </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Max Cooking Time Slider */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs font-semibold text-on-surface-variant">
-                  <span>Waktu Masak Maksimal</span>
-                  <span className="text-primary font-bold">{maxTime} menit</span>
+              {/* Max Cooking Time Filter — chip rentang bertingkat agar mudah dipilih dengan jari
+                  (slider lama butuh presisi tinggi di layar sentuh). value 120 = tanpa batas. */}
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-on-surface-variant">
+                  Waktu Masak Maksimal
                 </div>
-                <input
-                  type="range"
-                  min="15"
-                  max="120"
-                  step="5"
-                  className="w-full h-1.5 bg-secondary-container rounded-lg appearance-none cursor-pointer accent-primary"
-                  value={maxTime}
-                  onChange={(e) => setMaxTime(Number(e.target.value))}
-                />
-                <div className="flex justify-between text-[10px] text-on-surface-variant">
-                  <span>15 mnt</span>
-                  <span>120 mnt</span>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { label: '≤ 15 mnt', value: 15 },
+                    { label: '≤ 30 mnt', value: 30 },
+                    { label: '≤ 45 mnt', value: 45 },
+                    { label: '≤ 60 mnt', value: 60 },
+                    { label: 'Semua', value: 120 }
+                  ].map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setMaxTime(opt.value)}
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer ${
+                        maxTime === opt.value
+                          ? 'bg-primary text-white border-primary shadow-sm'
+                          : 'bg-white text-on-surface-variant border-outline-variant hover:bg-secondary-container/30'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -295,13 +310,13 @@ function RecipeCatalog({ onAddToPlan }) {
       </section>
 
       {/* Catalog Grid */}
-      <section className="px-6 max-w-6xl mx-auto">
+      <section className="px-6 max-w-container-max mx-auto">
         {filteredRecipes.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border border-outline-variant p-8">
-            <span className="material-symbols-outlined text-6xl text-outline-variant mb-4">
+            <span className="material-symbols-outlined text-5xl md:text-6xl text-outline-variant mb-4">
               sentiment_dissatisfied
             </span>
-            <h3 className="text-xl font-bold text-on-surface mb-2">Resep Tidak Ditemukan</h3>
+            <h3 className="font-headline-md text-headline-md text-on-surface mb-2">Resep Tidak Ditemukan</h3>
             <p className="text-on-surface-variant text-sm max-w-md mx-auto">
               Maaf, kami tidak dapat menemukan resep yang sesuai dengan kriteria pencarian dan filter Anda. Silakan coba atur ulang filter.
             </p>
@@ -317,14 +332,24 @@ function RecipeCatalog({ onAddToPlan }) {
             {filteredRecipes.map((recipe) => (
               <div
                 key={recipe.id}
-                className="recipe-card-shadow bg-[#e2f4cb] rounded-[32px] overflow-hidden group cursor-pointer hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                className="recipe-card-shadow bg-surface-container rounded-3xl overflow-hidden group cursor-pointer hover:-translate-y-1 transition-all duration-300 flex flex-col focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary"
                 onClick={() => setSelectedRecipeForDetail(recipe)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedRecipeForDetail(recipe);
+                  }
+                }}
               >
                 {/* Image Section */}
-                <div className="relative h-64 overflow-hidden">
+                <div className="relative h-40 sm:h-52 md:h-64 overflow-hidden">
                   <img
                     src={recipe.imageUrl}
                     alt={recipe.title}
+                    loading="lazy"
+                    onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   {/* Badges Overlay */}
@@ -336,9 +361,9 @@ function RecipeCatalog({ onAddToPlan }) {
                 </div>
 
                 {/* Content Section */}
-                <div className="p-6 flex-1 flex flex-col justify-between">
+                <div className="p-4 md:p-6 flex-1 flex flex-col justify-between">
                   <div className="flex justify-between items-center gap-3 mb-4">
-                    <h3 className="font-headline-md text-headline-md text-on-surface font-bold text-lg md:text-xl hover:text-primary transition-colors leading-tight line-clamp-2">
+                    <h3 className="font-headline-md text-headline-md text-on-surface hover:text-primary transition-colors leading-tight line-clamp-2">
                       {recipe.title}
                     </h3>
                     {/* Add Button */}
@@ -347,7 +372,7 @@ function RecipeCatalog({ onAddToPlan }) {
                         e.stopPropagation(); // prevent opening detail modal
                         setSelectedRecipeForPlan(recipe);
                       }}
-                      className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md shrink-0 cursor-pointer"
+                      className="w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md shrink-0 cursor-pointer"
                       title="Tambah ke Rencana Mingguan"
                       aria-label="Tambah ke Rencana Mingguan"
                     >
@@ -389,21 +414,15 @@ function RecipeCatalog({ onAddToPlan }) {
 
       {/* -------------------- DETAIL RESEP MODAL -------------------- */}
       {selectedRecipeForDetail && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
-          onClick={() => setSelectedRecipeForDetail(null)}
+        <ModalSheet
+          onClose={() => setSelectedRecipeForDetail(null)}
+          labelledBy="modal-recipe-title"
+          panelClassName="overflow-hidden max-w-2xl max-h-[90dvh] md:max-h-[85dvh] flex flex-col"
         >
-          <div 
-            className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-recipe-title"
-          >
             {/* Header Close button */}
             <button
               onClick={() => setSelectedRecipeForDetail(null)}
-              className="absolute right-4 top-4 z-10 w-9 h-9 rounded-full bg-slate-950/60 text-white flex items-center justify-center hover:bg-slate-950 transition-colors shadow-md cursor-pointer"
+              className="absolute right-4 top-4 z-10 w-11 h-11 rounded-full bg-on-surface/60 text-white flex items-center justify-center hover:bg-on-surface transition-colors shadow-md cursor-pointer"
               aria-label="Tutup detail resep"
             >
               <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
@@ -416,6 +435,8 @@ function RecipeCatalog({ onAddToPlan }) {
                 <img
                   src={selectedRecipeForDetail.imageUrl}
                   alt={selectedRecipeForDetail.title}
+                  loading="lazy"
+                  onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -430,7 +451,7 @@ function RecipeCatalog({ onAddToPlan }) {
                       </span>
                     ))}
                   </div>
-                  <h3 id="modal-recipe-title" className="text-2xl md:text-3xl font-extrabold">{selectedRecipeForDetail.title}</h3>
+                  <h3 id="modal-recipe-title" className="font-headline-lg text-headline-md md:text-headline-lg">{selectedRecipeForDetail.title}</h3>
                 </div>
               </div>
 
@@ -537,23 +558,16 @@ function RecipeCatalog({ onAddToPlan }) {
                 Tambah ke Rencana
               </button>
             </div>
-          </div>
-        </div>
+        </ModalSheet>
       )}
 
       {/* -------------------- ADD TO PLAN MODAL -------------------- */}
       {selectedRecipeForPlan && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
-          onClick={() => setSelectedRecipeForPlan(null)}
+        <ModalSheet
+          onClose={() => setSelectedRecipeForPlan(null)}
+          labelledBy="modal-plan-title"
+          panelClassName="max-w-sm max-h-[90dvh] overflow-y-auto p-6 md:p-8"
         >
-          <div 
-            className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl border border-outline-variant relative"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-plan-title"
-          >
             {/* Close Button */}
             <button
               onClick={() => setSelectedRecipeForPlan(null)}
@@ -563,7 +577,7 @@ function RecipeCatalog({ onAddToPlan }) {
               <span className="material-symbols-outlined" aria-hidden="true">close</span>
             </button>
 
-            <h3 id="modal-plan-title" className="text-xl font-bold text-primary mb-2 flex items-center gap-1.5">
+            <h3 id="modal-plan-title" className="font-headline-md text-headline-md text-primary mb-2 flex items-center gap-1.5">
               <span className="material-symbols-outlined text-2xl">calendar_today</span>
               Atur Menu Mingguan
             </h3>
@@ -581,7 +595,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 <select
                   value={planMeal}
                   onChange={(e) => setPlanMeal(e.target.value)}
-                  className="w-full p-3 rounded-2xl border border-outline-variant bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-sm font-semibold text-on-surface"
+                  className="w-full p-3 rounded-2xl border border-outline-variant bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-base font-semibold text-on-surface"
                 >
                   {mealOptions.map((meal) => (
                     <option key={meal.value} value={meal.value}>
@@ -599,7 +613,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 <select
                   value={planDay}
                   onChange={(e) => setPlanDay(e.target.value)}
-                  className="w-full p-3 rounded-2xl border border-outline-variant bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-sm font-semibold text-on-surface"
+                  className="w-full p-3 rounded-2xl border border-outline-variant bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-base font-semibold text-on-surface"
                 >
                   {daysOfWeek.map((day) => (
                     <option key={day} value={day}>
@@ -617,7 +631,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 <div className="flex items-center gap-4 bg-secondary-container/20 border border-outline-variant p-2 rounded-2xl justify-between">
                   <button
                     onClick={() => setPlanServings(Math.max(1, planServings - 1))}
-                    className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                    className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
                     aria-label="Kurangi porsi"
                   >
                     <span className="material-symbols-outlined text-lg" aria-hidden="true">remove</span>
@@ -625,7 +639,7 @@ function RecipeCatalog({ onAddToPlan }) {
                   <span className="font-extrabold text-lg text-primary" aria-live="polite">{planServings} Porsi</span>
                   <button
                     onClick={() => setPlanServings(planServings + 1)}
-                    className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                    className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
                     aria-label="Tambah porsi"
                   >
                     <span className="material-symbols-outlined text-lg" aria-hidden="true">add</span>
@@ -634,8 +648,18 @@ function RecipeCatalog({ onAddToPlan }) {
               </div>
             </div>
 
+            {/* Peringatan slot sudah terisi */}
+            {existingSlot && (
+              <div className="mt-5 flex items-start gap-2.5 p-3 rounded-2xl bg-warning/10 border border-warning/30">
+                <span className="material-symbols-outlined text-base text-warning shrink-0 mt-0.5" aria-hidden="true">warning</span>
+                <p className="text-xs font-medium text-on-surface-variant leading-snug">
+                  Slot <strong className="text-on-surface">{mealOptions.find((m) => m.value === planMeal)?.label}</strong> hari <strong className="text-on-surface">{planDay}</strong> sudah terisi dengan <strong className="text-on-surface">{existingSlot.title}</strong>. Konfirmasi akan menggantikan resep tersebut.
+                </p>
+              </div>
+            )}
+
             {/* Action buttons */}
-            <div className="mt-8 flex gap-3">
+            <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setSelectedRecipeForPlan(null)}
                 className="flex-1 py-3 border border-outline-variant text-on-surface-variant hover:bg-secondary-container/20 rounded-full font-bold text-sm transition-colors cursor-pointer"
@@ -646,12 +670,11 @@ function RecipeCatalog({ onAddToPlan }) {
                 onClick={handleConfirmAddToPlan}
                 className="flex-1 py-3 bg-primary text-white hover:bg-primary-container rounded-full font-bold text-sm transition-all shadow-md cursor-pointer flex items-center justify-center gap-1"
               >
-                <span className="material-symbols-outlined text-lg">check</span>
-                Konfirmasi
+                <span className="material-symbols-outlined text-lg">{existingSlot ? 'swap_horiz' : 'check'}</span>
+                {existingSlot ? 'Ganti Menu' : 'Konfirmasi'}
               </button>
             </div>
-          </div>
-        </div>
+        </ModalSheet>
       )}
     </div>
   );
