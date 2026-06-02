@@ -122,18 +122,21 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
   const totalCost = estimatedCost + (totalItems > 0 ? DELIVERY_FEE : 0);
   const checkedCount = checkedItems.size;
 
+  const handleCheckout = () =>
+    showToast('Fitur pembayaran & pengantaran akan terhubung dengan produsen lokal!');
+
   // ---------------- Empty State ----------------
   if (totalItems === 0) {
     return (
-      <div className="bg-canvas-white min-h-screen text-on-surface">
-        <main className="max-w-6xl mx-auto px-5 md:px-10 py-16 md:py-24 flex flex-col items-center text-center animate-fade-in">
+      <div className="bg-canvas-white min-h-dvh text-on-surface">
+        <main className="max-w-container-max mx-auto px-5 md:px-10 section-padding flex flex-col items-center text-center animate-fade-in">
           <div className="w-24 h-24 rounded-full bg-surface-cream flex items-center justify-center mb-6">
-            <span className="material-symbols-outlined text-primary text-5xl">shopping_cart</span>
+            <span className="material-symbols-outlined text-primary text-5xl md:text-6xl">shopping_cart</span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-primary mb-3 tracking-tight">
+          <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary mb-3 tracking-tight">
             Daftar Belanja Masih Kosong
           </h1>
-          <p className="text-on-surface-variant text-base md:text-lg max-w-md mb-8">
+          <p className="text-on-surface-variant text-body-lg max-w-md mb-8">
             Susun dulu menu masakanmu di Rencana Mingguan. Bahan-bahan akan otomatis terkumpul
             di sini, dikelompokkan rapi per kategori.
           </p>
@@ -151,14 +154,14 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
 
   // ---------------- Daftar Belanja ----------------
   return (
-    <div className="bg-canvas-white min-h-screen text-on-surface">
-      <main className="max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-12">
+    <div className="bg-canvas-white min-h-dvh text-on-surface">
+      <main className="max-w-container-max mx-auto px-5 md:px-10 py-8 md:py-12 pb-28 lg:pb-12">
         {/* Header */}
         <header className="mb-10 max-w-3xl animate-fade-in">
-          <h1 className="text-3xl md:text-[40px] font-extrabold text-primary tracking-tight mb-3 leading-tight">
+          <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-3 leading-tight">
             Daftar Belanja Kamu
           </h1>
-          <p className="text-on-surface-variant text-base md:text-lg">
+          <p className="text-on-surface-variant text-body-lg">
             Bahan-bahan segar dari pertanian lokal yang siap untuk menu masakan minggu ini.
             Optimalkan nutrisi keluarga Anda dengan bahan organik pilihan.
           </p>
@@ -174,7 +177,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                   <span className="material-symbols-outlined text-primary text-3xl">
                     {section.meta.icon}
                   </span>
-                  <h2 className="text-2xl font-bold text-on-surface">{section.meta.label}</h2>
+                  <h2 className="font-headline-md text-headline-md text-on-surface">{section.meta.label}</h2>
                   <span className="ml-auto text-sm font-semibold text-outline">
                     {section.items.length} bahan
                   </span>
@@ -250,8 +253,8 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
           <div className="lg:col-span-4">
             <div className="sticky top-24 space-y-6">
               {/* Ringkasan pesanan */}
-              <div className="bg-surface-cream p-7 md:p-8 rounded-[2rem] shadow-sm">
-                <h3 className="text-2xl font-bold text-primary mb-6">Ringkasan Pesanan</h3>
+              <div className="bg-surface-cream p-7 md:p-8 rounded-panel shadow-sm">
+                <h3 className="font-headline-md text-headline-md text-primary mb-6">Ringkasan Pesanan</h3>
 
                 {/* Progress belanja */}
                 <div className="mb-6">
@@ -289,9 +292,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                 </div>
 
                 <button
-                  onClick={() =>
-                    showToast('Fitur pembayaran & pengantaran akan terhubung dengan produsen lokal!')
-                  }
+                  onClick={handleCheckout}
                   className="w-full bg-primary-container text-on-primary py-4 rounded-full font-bold hover:shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2 group cursor-pointer"
                 >
                   <span>Bayar &amp; Antar</span>
@@ -314,16 +315,11 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                 onClick={() =>
                   showToast('Pendaftaran supplier CookPlan akan segera dibuka untuk produsen & petani lokal!')
                 }
-                className="w-full text-left relative overflow-hidden rounded-[2rem] h-60 bg-primary group cursor-pointer shadow-md"
+                className="w-full text-left relative overflow-hidden rounded-panel h-60 bg-primary group cursor-pointer shadow-md"
               >
                 <div
                   className="absolute inset-0 z-0 transition-transform duration-700 group-hover:scale-110"
-                  style={{
-                    backgroundImage:
-                      'url("https://lh3.googleusercontent.com/aida-public/AB6AXuAEvZ-TlNqcDpzxdxHecdSRfyLC6mKa15k9Qz7s190PVi2hPH1zT0--8qCZNakpIOefczKIiJ0JBDymTyLs2ahOBuJVZeVFNuHlhIqNBUSC9FN9tEw2mCsLlwjVe_U4cE0ILGNnAPHcOecA7TNZYUaBBWO8oNyLXq7kE13GjGjyrBNdVRmXl_Q0bhHp-cuL_kmT6yWkjQzuAglWAdq49H-NAhC1ULlC4dF5Hl8I9qZiBOAK6UipL-m8CP6CmRw8zz_WVX0Gbgv5EGHJ")',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                  }}
+                  style={{ background: 'linear-gradient(135deg, #4a7c2e 0%, #2d5218 55%, #1a3410 100%)' }}
                 ></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/40 to-transparent z-10"></div>
 
@@ -340,7 +336,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                   <p className="text-xs uppercase tracking-widest mb-1 opacity-80">
                     Khusus Petani &amp; Produsen Lokal
                   </p>
-                  <h4 className="text-xl font-bold mb-3 leading-tight">
+                  <h4 className="font-headline-md text-headline-md mb-3 leading-tight">
                     Jadi Supplier Resmi CookPlan Hari Ini
                   </h4>
                   <div className="inline-flex items-center gap-1.5 bg-white text-primary px-4 py-2 rounded-full text-sm font-bold group-hover:gap-2.5 transition-all">
@@ -355,6 +351,26 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
           </div>
         </div>
       </main>
+
+      {/* Bar total + CTA sticky khusus mobile: ringkasan & checkout selalu terjangkau
+          tanpa harus scroll melewati seluruh daftar bahan (di desktop pakai sidebar). */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-canvas-white/95 backdrop-blur border-t border-outline-variant px-5 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex items-center gap-4 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+        <div className="min-w-0">
+          <p className="text-xs text-on-surface-variant leading-none mb-1">
+            Total ({totalItems} item)
+          </p>
+          <p className="text-lg font-bold text-primary leading-none truncate">
+            {formatRupiah(totalCost)}
+          </p>
+        </div>
+        <button
+          onClick={handleCheckout}
+          className="ml-auto shrink-0 bg-primary-container text-on-primary px-6 py-3 rounded-full font-bold transition-all active:scale-[0.98] flex items-center gap-2 cursor-pointer"
+        >
+          <span>Bayar &amp; Antar</span>
+          <span className="material-symbols-outlined text-xl">shopping_cart_checkout</span>
+        </button>
+      </div>
     </div>
   );
 }

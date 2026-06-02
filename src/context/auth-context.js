@@ -1,6 +1,5 @@
 import { createContext } from "react";
 
-// Shared authentication context. Kept in its own (component-free) module so that
-// Fast Refresh works for the provider component in AuthContext.jsx — mirip pola
-// plan-context.js / PlanContext.jsx.
+// Konteks autentikasi. Dipisah ke modul tanpa komponen (seperti plan-context.js)
+// agar Fast Refresh tetap bekerja untuk komponen provider di AuthContext.jsx.
 export const AuthContext = createContext(null);

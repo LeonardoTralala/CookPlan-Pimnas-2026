@@ -1,96 +1,99 @@
-import { useState, useEffect, useCallback } from "react";
-import { supabase } from "../lib/supabaseClient.js";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { supabase } from "../lib/supabase.js";
 import { AuthContext } from "./auth-context.js";
 
-// Menyimpan state sesi Supabase (session/user) + baris `profiles` milik user,
-// dipakai header App.jsx & UserProfile.jsx, serta ProtectedRoute.
+// URL tujuan redirect untuk OAuth & email (konfirmasi / reset password).
+const SITE_URL = window.location.origin;
+
+// Deteksi apakah halaman dibuka dari tautan reset password (alur recovery).
+// Flow implicit Supabase menaruh "type=recovery" di hash URL.
+function detectRecoveryFromUrl() {
+  if (typeof window === "undefined") return false;
+  return (
+    (window.location.hash || "").includes("type=recovery") ||
+    (window.location.search || "").includes("type=recovery")
+  );
+}
+
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  // Lazy initializer membaca URL sebelum Supabase membersihkannya.
+  const [isRecovery, setIsRecovery] = useState(detectRecoveryFromUrl);
 
-  // 1. Ambil sesi awal lalu dengarkan setiap perubahan auth (login/logout/refresh).
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-      setLoading(false);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
-      setUser(newSession?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  // 2. Sinkronkan baris `profiles` tiap kali user berubah. Reference `user` hanya
-  //    berubah saat ada event auth, jadi efek ini tidak jalan tiap render.
   useEffect(() => {
     let active = true;
-    (async () => {
-      if (!user) {
-        if (active) setProfile(null);
-        return;
+
+    // Pulihkan sesi yang tersimpan saat aplikasi pertama dimuat.
+    supabase.auth.getSession().then(({ data }) => {
+      if (active) {
+        setSession(data.session ?? null);
+        setLoading(false);
       }
+    });
 
-      const { data: existing, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if (error) {
-        if (active) setProfile(null);
-        return;
-      }
-
-      let row = existing;
-      // Belum ada baris profil (mis. user baru yang konfirmasi emailnya) → buat.
-      if (!row) {
-        const { data: created } = await supabase
-          .from("profiles")
-          .insert({
-            id: user.id,
-            full_name: user.user_metadata?.full_name ?? null,
-            username: user.user_metadata?.username ?? null,
-          })
-          .select()
-          .single();
-        row = created ?? null;
-      }
-
-      if (active) setProfile(row);
-    })();
+    // Pantau perubahan sesi (login, logout, refresh token, OAuth redirect).
+    const { data: sub } = supabase.auth.onAuthStateChange((event, newSession) => {
+      if (event === "PASSWORD_RECOVERY") setIsRecovery(true);
+      setSession(newSession);
+    });
 
     return () => {
       active = false;
+      sub.subscription.unsubscribe();
     };
-  }, [user]);
+  }, []);
 
-  const signUp = useCallback(async ({ email, password, fullName, username }) => {
-    // full_name & username disimpan di user_metadata; baris `profiles` dibuat
-    // saat sesi aktif (lihat efek di atas) agar lolos RLS (auth.uid() = id).
-    return supabase.auth.signUp({
+  // Daftar akun baru. Nama disimpan ke user metadata (dipakai mengisi profiles).
+  const signUp = useCallback(({ name, email, password }) =>
+    supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName ?? null, username: username ?? null } },
-    });
-  }, []);
+      options: {
+        data: { username: name, full_name: name },
+        emailRedirectTo: `${SITE_URL}/auth`,
+      },
+    }),
+  []);
 
-  const signIn = useCallback(async ({ email, password }) => {
-    return supabase.auth.signInWithPassword({ email, password });
-  }, []);
+  const signIn = useCallback(({ email, password }) =>
+    supabase.auth.signInWithPassword({ email, password }),
+  []);
 
-  const signOut = useCallback(async () => {
-    return supabase.auth.signOut();
-  }, []);
+  const signInWithGoogle = useCallback(() =>
+    supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${SITE_URL}/catalog` },
+    }),
+  []);
 
-  const value = { session, user, profile, loading, signUp, signIn, signOut };
+  const resetPassword = useCallback((email) =>
+    supabase.auth.resetPasswordForEmail(email, { redirectTo: `${SITE_URL}/auth` }),
+  []);
+
+  // Set kata sandi baru saat user kembali dari tautan reset (sesi recovery aktif).
+  const updatePassword = useCallback((password) =>
+    supabase.auth.updateUser({ password }),
+  []);
+
+  const clearRecovery = useCallback(() => setIsRecovery(false), []);
+
+  const signOut = useCallback(() => supabase.auth.signOut(), []);
+
+  const value = useMemo(() => ({
+    session,
+    user: session?.user ?? null,
+    isAuthenticated: Boolean(session),
+    loading,
+    isRecovery,
+    signUp,
+    signIn,
+    signInWithGoogle,
+    resetPassword,
+    updatePassword,
+    clearRecovery,
+    signOut,
+  }), [session, loading, isRecovery, signUp, signIn, signInWithGoogle, resetPassword, updatePassword, clearRecovery, signOut]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

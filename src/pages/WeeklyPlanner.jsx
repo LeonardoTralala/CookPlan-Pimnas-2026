@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
 import { usePlan } from '../hooks/usePlan.js';
+import { ModalSheet } from '../components/ModalSheet.jsx';
 
 // Hari (key data) + label singkat untuk header kolom
 const DAYS = [
@@ -37,13 +38,14 @@ function getWeekDates() {
 
 
 function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onGenerateShoppingList }) {
-  const { showToast } = usePlan();
+  const { showToast, restoreSlot } = usePlan();
 
   // Slot yang sedang diisi: { day, meal } | null
   const [pickerTarget, setPickerTarget] = useState(null);
   const [pickerSearch, setPickerSearch] = useState('');
   const [pickerSelectedRecipe, setPickerSelectedRecipe] = useState(null);
   const [pickerServings, setPickerServings] = useState(2);
+  const [activeMobileDay, setActiveMobileDay] = useState(DAYS[0].key);
 
   // Handle Escape key to close modal
   useEffect(() => {
@@ -85,8 +87,8 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
 
   const budgetColor = {
     Low: 'text-success-green',
-    Medium: 'text-amber-300',
-    High: 'text-red-300'
+    Medium: 'text-warning',
+    High: 'text-error-light'
   }[stats.budgetImpact];
 
   // Resep untuk picker (difilter pencarian)
@@ -121,29 +123,47 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
   };
 
   const handleGenerateShoppingList = () => {
+    if (stats.filled === 0) return; // guard: tanpa slot terisi tidak ada yang bisa dibelanjakan
     showToast('Daftar belanja berhasil dibuat berdasarkan rencana makan Anda!');
     onGenerateShoppingList();
   };
 
   return (
-    <div className="bg-[#FBFAF9] min-h-screen text-on-surface pb-28">
-      <main className="max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-12">
+    <div className="bg-canvas-white min-h-dvh text-on-surface pb-40 md:pb-28">
+      <main className="max-w-container-max mx-auto px-5 md:px-10 py-8 md:py-12">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* ---------------- Planner Grid ---------------- */}
           <div className="flex-1 min-w-0">
-            <div className="mb-8">
-              <h1 className="text-3xl md:text-[40px] font-extrabold text-primary tracking-tight mb-2 leading-tight">
+            <div className="mb-6 md:mb-8">
+              <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-2 leading-tight">
                 Rencana Masak Mingguan
               </h1>
-              <p className="text-on-surface-variant text-base md:text-lg">
+              <p className="text-on-surface-variant text-body-lg">
                 Atur jadwal makan Anda untuk hidup yang lebih sehat dan teratur.
               </p>
             </div>
 
-            <div className="overflow-x-auto hide-scrollbar -mx-5 px-5 md:mx-0 md:px-0">
-              <div className="min-w-[1000px] grid grid-cols-8 gap-4">
-                {/* Kolom label jenis makan */}
-                <div className="flex flex-col gap-4 mt-16">
+            {/* Mobile Days Tabs */}
+            <div className="md:hidden flex overflow-x-auto hide-scrollbar gap-2 mb-6 -mx-5 px-5 pb-2">
+              {DAYS.map((day, dayIdx) => (
+                <button
+                  key={day.key}
+                  onClick={() => setActiveMobileDay(day.key)}
+                  className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-bold transition-all shadow-sm cursor-pointer ${
+                    activeMobileDay === day.key
+                      ? 'bg-primary text-white scale-105'
+                      : 'bg-white text-on-surface-variant border border-outline-variant hover:bg-surface-variant'
+                  }`}
+                >
+                  {day.short} <span className="font-medium text-xs opacity-80 ml-1">{weekDates[dayIdx]}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="overflow-x-hidden md:overflow-x-auto hide-scrollbar -mx-5 px-5 md:mx-0 md:px-0">
+              <div className="flex flex-col gap-8 md:min-w-[1000px] md:grid md:grid-cols-8 md:gap-4">
+                {/* Kolom label jenis makan (Hanya Desktop) */}
+                <div className="hidden md:flex flex-col gap-4 mt-16">
                   {MEALS.map((meal) => (
                     <div key={meal.key} className="h-40 flex items-center justify-end pr-4 text-right">
                       <span className="text-xs font-semibold text-on-surface uppercase tracking-widest">
@@ -155,27 +175,33 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
 
                 {/* Kolom per hari */}
                 {DAYS.map((day, dayIdx) => (
-                  <div key={day.key} className="flex flex-col gap-4">
+                  <div key={day.key} className={`flex-col gap-4 ${activeMobileDay === day.key ? 'flex' : 'hidden md:flex'}`}>
                     {/* Header tanggal */}
-                    <div className="text-center pb-4">
-                      <div className="text-xs font-semibold text-on-surface mb-1 uppercase tracking-wide">
-                        {day.short}
+                    <div className="text-left md:text-center pb-2 md:pb-4 border-b md:border-none border-outline-variant">
+                      <div className="text-xs font-semibold text-on-surface mb-1 uppercase tracking-wide md:block inline-block mr-2 md:mr-0">
+                        {day.short} <span className="md:hidden">- {weekDates[dayIdx]}</span>
                       </div>
-                      <div className="text-2xl font-bold text-on-surface">{weekDates[dayIdx]}</div>
+                      <div className="hidden md:block text-2xl font-bold text-on-surface">{weekDates[dayIdx]}</div>
                     </div>
 
                     {/* Slot makan */}
                     {MEALS.map((meal) => {
                       const slot = weeklyPlan?.[day.key]?.[meal.key];
-                      if (slot) {
-                        return (
+                      return (
+                        <div key={meal.key} className="flex flex-col gap-2 md:block md:gap-0">
+                          {/* Label makan untuk mobile */}
+                          <div className="md:hidden text-[10px] font-bold text-on-surface-variant uppercase tracking-widest pl-2">
+                            {meal.label}
+                          </div>
+                          {slot ? (
                           <div
-                            key={meal.key}
                             className="h-40 group relative rounded-3xl overflow-hidden recipe-card-shadow cursor-pointer"
                           >
                             <img
                               src={slot.imageUrl}
                               alt={slot.title}
+                              loading="lazy"
+                              onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
                               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
@@ -183,7 +209,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                                 {slot.title}
                               </span>
                               <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                                <div className="flex items-center gap-1 bg-black/50 backdrop-blur-md px-2 py-0.5 rounded-full text-white/95 shadow-sm border border-white/10">
+                                <div className="flex items-center gap-1 bg-on-surface/50 backdrop-blur-md px-2 py-0.5 rounded-full text-white/95 shadow-sm border border-white/10">
                                   <span className="material-symbols-outlined text-[12px]">schedule</span>
                                   <span className="text-[9px] font-bold tracking-wide">{slot.readyInMinutes}m</span>
                                 </div>
@@ -196,32 +222,40 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                             {/* Tombol hapus */}
                             <button
                               onClick={() => {
+                                const savedSlot = weeklyPlan[day.key][meal.key];
                                 onRemoveSlot(day.key, meal.key);
-                                showToast(`Berhasil menghapus menu dari ${meal.label} hari ${day.key}`);
+                                showToast(
+                                  `Menu dihapus dari ${meal.label} hari ${day.key}`,
+                                  {
+                                    onUndo: () => {
+                                      restoreSlot(day.key, meal.key, savedSlot);
+                                      showToast('Menu dikembalikan');
+                                    }
+                                  }
+                                );
                               }}
                               title="Hapus dari rencana"
                               aria-label={`Hapus ${slot.title} dari ${meal.label} hari ${day.key}`}
-                              className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+                              className="absolute top-2 right-2 w-11 h-11 rounded-full bg-on-surface/50 hover:bg-error text-white flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all cursor-pointer"
                             >
                               <span className="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
                             </button>
                           </div>
-                        );
-                      }
-                      return (
+                          ) : (
                         <button
-                          key={meal.key}
                           onClick={() => {
                             setPickerTarget({ day: day.key, meal: meal.key });
                             setPickerSearch('');
                           }}
-                          className="h-40 border-2 border-dashed border-outline-variant rounded-3xl flex flex-col items-center justify-center gap-2 text-outline hover:border-primary hover:text-primary transition-all bg-white/50 group cursor-pointer"
+                          className="h-40 border-2 border-dashed border-outline-variant rounded-3xl flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:border-primary hover:text-primary transition-all bg-white/50 group cursor-pointer w-full"
                         >
                           <span className="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform">
                             add_circle
                           </span>
                           <span className="text-xs font-semibold">Tambah Resep</span>
                         </button>
+                          )}
+                        </div>
                       );
                     })}
                   </div>
@@ -233,8 +267,8 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
           {/* ---------------- Sidebar ---------------- */}
           <aside className="lg:w-80 shrink-0 flex flex-col gap-6">
             {/* Recommended for you */}
-            <div className="bg-surface-cream/40 border border-outline-variant rounded-[32px] p-6">
-              <h3 className="text-xl font-bold text-primary mb-2">Rekomendasi untuk Anda</h3>
+            <div className="bg-surface-cream/40 border border-outline-variant rounded-panel p-6">
+              <h3 className="font-headline-md text-headline-md text-primary mb-2">Rekomendasi untuk Anda</h3>
               <p className="text-on-surface-variant text-sm mb-6">
                 Rekomendasi pilihan berdasarkan tren populer dan riwayat pesanan Anda.
               </p>
@@ -245,6 +279,8 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       <img
                         src={recipe.imageUrl}
                         alt={recipe.title}
+                        loading="lazy"
+                        onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform"
                       />
                     </div>
@@ -252,7 +288,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       <h4 className="font-bold text-sm text-on-surface leading-tight line-clamp-1">
                         {recipe.title}
                       </h4>
-                      <span className="text-xs text-outline">{recommendCaptions[idx]}</span>
+                      <span className="text-xs text-on-surface-variant">{recommendCaptions[idx]}</span>
                     </div>
                   </div>
                 ))}
@@ -266,8 +302,8 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
             </div>
 
             {/* Weekly Progress */}
-            <div className="bg-primary-container text-on-primary-container rounded-[32px] p-6">
-              <h3 className="text-xl font-bold mb-2">Progres Mingguan</h3>
+            <div className="bg-primary-container text-on-primary-container rounded-panel p-6">
+              <h3 className="font-headline-md text-headline-md mb-2">Progres Mingguan</h3>
               <p className="text-on-primary-container/80 text-sm mb-6">
                 {stats.filled} dari {TOTAL_SLOTS} slot makan terisi.
               </p>
@@ -295,34 +331,41 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
       </main>
 
       {/* ---------------- Bottom Action Bar ---------------- */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 md:p-6 bg-gradient-to-t from-[#FBFAF9] via-[#FBFAF9]/95 to-transparent flex justify-center pointer-events-none">
+      <div className="fixed bottom-above-nav md:bottom-0 left-0 right-0 z-40 p-4 md:p-6 md:pb-safe-6 bg-gradient-to-t from-canvas-white via-canvas-white/95 to-transparent flex justify-center pointer-events-none">
         <button
           onClick={handleGenerateShoppingList}
-          className="pointer-events-auto bg-primary hover:bg-primary-container text-white px-8 py-4 rounded-full shadow-2xl shadow-primary/30 flex items-center gap-3 transition-all active:scale-95 group cursor-pointer"
+          disabled={stats.filled === 0}
+          aria-disabled={stats.filled === 0}
+          title={stats.filled === 0 ? 'Isi minimal satu slot makan dulu' : undefined}
+          className={`pointer-events-auto px-8 py-4 rounded-full flex items-center gap-3 transition-all group ${
+            stats.filled === 0
+              ? 'bg-surface-container-high text-on-surface-variant cursor-not-allowed shadow-none'
+              : 'bg-primary hover:bg-primary-container text-white shadow-2xl shadow-primary/30 active:scale-95 cursor-pointer'
+          }`}
         >
-          <span className="material-symbols-outlined group-hover:rotate-12 transition-transform">
+          <span
+            className={`material-symbols-outlined transition-transform ${
+              stats.filled === 0 ? '' : 'group-hover:rotate-12'
+            }`}
+          >
             shopping_cart
           </span>
-          <span className="font-bold text-lg">Buat Daftar Belanja</span>
+          <span className="font-bold text-lg">
+            {stats.filled === 0 ? 'Isi Rencana Dulu' : 'Buat Daftar Belanja'}
+          </span>
         </button>
       </div>
 
       {/* ---------------- Recipe Picker Modal ---------------- */}
       {pickerTarget && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
-          onClick={() => {
+        <ModalSheet
+          onClose={() => {
             setPickerTarget(null);
             setPickerSelectedRecipe(null);
           }}
+          labelledBy="modal-picker-title"
+          panelClassName="overflow-hidden max-w-2xl max-h-[90dvh] md:max-h-[85dvh] flex flex-col"
         >
-          <div 
-            className="bg-white rounded-[32px] overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-picker-title"
-          >
             {/* Content Based on Selection */}
             {!pickerSelectedRecipe ? (
               <>
@@ -332,12 +375,12 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       setPickerTarget(null);
                       setPickerSelectedRecipe(null);
                     }}
-                    className="absolute right-4 top-4 w-9 h-9 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                    className="absolute right-4 top-4 w-11 h-11 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
                     aria-label="Tutup pencarian resep"
                   >
                     <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
                   </button>
-                  <h3 id="modal-picker-title" className="text-xl font-bold text-primary mb-1 flex items-center gap-1.5 pr-10">
+                  <h3 id="modal-picker-title" className="font-headline-md text-headline-md text-primary mb-1 flex items-center gap-1.5 pr-10">
                     <span className="material-symbols-outlined text-2xl">restaurant_menu</span>
                     Pilih Resep
                   </h3>
@@ -351,12 +394,15 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       search
                     </span>
                     <input
-                      type="text"
+                      type="search"
+                      inputMode="search"
+                      enterKeyHint="search"
+                      autoComplete="off"
                       autoFocus
                       value={pickerSearch}
                       onChange={(e) => setPickerSearch(e.target.value)}
                       placeholder="Cari resep..."
-                      className="w-full pl-11 pr-4 py-2.5 rounded-full border border-outline-variant bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm font-medium"
+                      className="w-full pl-11 pr-4 py-2.5 rounded-full border border-outline-variant bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-base font-medium"
                     />
                   </div>
                 </div>
@@ -382,6 +428,8 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                             <img
                               src={recipe.imageUrl}
                               alt={recipe.title}
+                              loading="lazy"
+                              onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform"
                             />
                           </div>
@@ -405,13 +453,13 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       setPickerTarget(null);
                       setPickerSelectedRecipe(null);
                     }}
-                    className="absolute right-4 top-4 w-9 h-9 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                    className="absolute right-4 top-4 w-11 h-11 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
                     aria-label="Tutup pengaturan porsi"
                   >
                     <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
                   </button>
 
-                  <h3 id="modal-picker-title" className="text-xl font-bold text-primary mb-2 flex items-center gap-1.5">
+                  <h3 id="modal-picker-title" className="font-headline-md text-headline-md text-primary mb-2 flex items-center gap-1.5">
                     <span className="material-symbols-outlined text-2xl">group</span>
                     Atur Jumlah Porsi
                   </h3>
@@ -429,7 +477,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                     <div className="flex items-center gap-4 bg-secondary-container/20 border border-outline-variant p-2 rounded-2xl justify-between">
                       <button
                         onClick={() => setPickerServings(Math.max(1, pickerServings - 1))}
-                        className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                        className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
                         aria-label="Kurangi porsi"
                       >
                         <span className="material-symbols-outlined text-lg" aria-hidden="true">remove</span>
@@ -437,7 +485,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       <span className="font-extrabold text-lg text-primary" aria-live="polite">{pickerServings} Porsi</span>
                       <button
                         onClick={() => setPickerServings(pickerServings + 1)}
-                        className="w-9 h-9 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                        className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
                         aria-label="Tambah porsi"
                       >
                         <span className="material-symbols-outlined text-lg" aria-hidden="true">add</span>
@@ -464,8 +512,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                 </div>
               </>
             )}
-          </div>
-        </div>
+        </ModalSheet>
       )}
     </div>
   );

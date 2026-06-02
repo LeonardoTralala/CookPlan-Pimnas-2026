@@ -1,12 +1,13 @@
 import { usePlan } from "../hooks/usePlan.js";
+import { Modal } from "./Modal.jsx";
 
 // Lightweight account preview modal opened from the navbar Profile pill.
 export function ProfileModal({ onClose }) {
-  const { addedRecipes, showToast } = usePlan();
+  const { plannedCount, showToast } = usePlan();
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-canvas-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-outline-variant/30 relative">
+    <Modal isOpen={true} onClose={onClose}>
+      <div className="bg-canvas-white rounded-panel p-8 max-w-sm w-full shadow-2xl border border-outline-variant/30 relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full cursor-pointer"
@@ -24,7 +25,7 @@ export function ProfileModal({ onClose }) {
           <div className="w-full border-t border-outline-variant/30 pt-4 space-y-2 text-left">
             <div className="flex justify-between text-sm">
               <span className="text-on-surface-variant">Menu di Rencana:</span>
-              <span className="font-bold text-primary">{addedRecipes.length} resep</span>
+              <span className="font-bold text-primary">{plannedCount} resep</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-on-surface-variant">Status Paket:</span>
@@ -42,6 +43,6 @@ export function ProfileModal({ onClose }) {
           </button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }
