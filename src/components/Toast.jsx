@@ -3,7 +3,7 @@ import { usePlan } from "../hooks/usePlan.js";
 // Region aria-live selalu ada di DOM agar screen reader mendeteksinya sejak awal.
 // Konten berubah saat ada pesan; sr-only menyembunyikannya secara visual saat kosong.
 export function Toast() {
-  const { toast, showToast } = usePlan();
+  const { toast } = usePlan();
 
   return (
     <div

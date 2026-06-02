@@ -1,6 +1,7 @@
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import { BookOpen, Calendar, ShoppingCart, User } from 'lucide-react';
 import { LandingPage } from './pages/LandingPage.jsx';
+import AuthPage from './pages/AuthPage.jsx';
 import RecipeCatalog from './pages/RecipeCatalog';
 import WeeklyPlanner from './pages/WeeklyPlanner';
 import UserProfile from './pages/UserProfile';
@@ -8,6 +9,7 @@ import TeamProfile from './pages/TeamProfile';
 import ShoppingList from './pages/ShoppingList';
 import { Toast } from './components/Toast.jsx';
 import { Navbar } from './components/Navbar.jsx';
+import { ProtectedRoute } from './components/ProtectedRoute.jsx';
 import { usePlan } from './hooks/usePlan.js';
 
 function App() {
@@ -19,6 +21,11 @@ function App() {
     return <LandingPage onNavigate={(path) => navigate(path === 'overview' ? '/' : `/${path}`)} />;
   }
 
+  // Halaman login/register tampil penuh tanpa navbar/footer aplikasi.
+  if (location.pathname === '/auth') {
+    return <AuthPage />;
+  }
+
   return (
     <div className="min-h-screen bg-canvas-white flex flex-col font-sans selection:bg-primary-container selection:text-white">
       <Navbar />
@@ -26,30 +33,35 @@ function App() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col justify-center bg-canvas-white text-on-surface">
         <Routes>
+          {/* Publik: katalog resep & profil tim (untuk discovery + demo) */}
           <Route path="/catalog" element={<RecipeCatalog onAddToPlan={setSlot} />} />
-          <Route
-            path="/planner"
-            element={
-              <WeeklyPlanner
-                weeklyPlan={weeklyPlan}
-                onSetSlot={setSlot}
-                onRemoveSlot={removeSlot}
-                onGoToCatalog={() => navigate('/catalog')}
-                onGenerateShoppingList={() => navigate('/shopping')}
-              />
-            }
-          />
-          <Route
-            path="/shopping"
-            element={
-              <ShoppingList
-                weeklyPlan={weeklyPlan}
-                onGoToPlanner={() => navigate('/planner')}
-              />
-            }
-          />
-          <Route path="/profile" element={<UserProfile />} />
           <Route path="/about" element={<TeamProfile />} />
+
+          {/* Wajib login: halaman dengan data milik pengguna */}
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/planner"
+              element={
+                <WeeklyPlanner
+                  weeklyPlan={weeklyPlan}
+                  onSetSlot={setSlot}
+                  onRemoveSlot={removeSlot}
+                  onGoToCatalog={() => navigate('/catalog')}
+                  onGenerateShoppingList={() => navigate('/shopping')}
+                />
+              }
+            />
+            <Route
+              path="/shopping"
+              element={
+                <ShoppingList
+                  weeklyPlan={weeklyPlan}
+                  onGoToPlanner={() => navigate('/planner')}
+                />
+              }
+            />
+            <Route path="/profile" element={<UserProfile />} />
+          </Route>
         </Routes>
       </main>
 
