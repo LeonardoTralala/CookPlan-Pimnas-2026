@@ -7,7 +7,7 @@ export function RecipeCard({ recipe }) {
   return (
     <div className="bg-surface-cream rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col justify-between">
       <div>
-        <div className="h-64 overflow-hidden relative">
+        <div className="h-40 sm:h-52 md:h-64 overflow-hidden relative">
           <img
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
             alt={recipe.name}
@@ -19,7 +19,7 @@ export function RecipeCard({ recipe }) {
             </span>
           </div>
         </div>
-        <div className="p-6">
+        <div className="p-4 md:p-6">
           <h3 className="font-headline-md text-headline-md text-primary mb-2">{recipe.name}</h3>
           <div className="flex items-center gap-4 text-on-surface-variant text-label-sm mb-4">
             <span className="flex items-center gap-1">
@@ -33,7 +33,7 @@ export function RecipeCard({ recipe }) {
           <p className="text-sm text-on-surface-variant mb-2">{recipe.desc}</p>
         </div>
       </div>
-      <div className="p-6 pt-0">
+      <div className="p-4 pt-0 md:p-6 md:pt-0">
         <button
           onClick={() => toggleRecipeInPlan(recipe)}
           className={`w-full py-3 rounded-full font-label-md text-label-md transition-colors cursor-pointer border font-semibold flex items-center justify-center gap-1.5 ${

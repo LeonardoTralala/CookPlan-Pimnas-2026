@@ -325,7 +325,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 onClick={() => setSelectedRecipeForDetail(recipe)}
               >
                 {/* Image Section */}
-                <div className="relative h-64 overflow-hidden">
+                <div className="relative h-40 sm:h-52 md:h-64 overflow-hidden">
                   <img
                     src={recipe.imageUrl}
                     alt={recipe.title}
@@ -340,7 +340,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 </div>
 
                 {/* Content Section */}
-                <div className="p-6 flex-1 flex flex-col justify-between">
+                <div className="p-4 md:p-6 flex-1 flex flex-col justify-between">
                   <div className="flex justify-between items-center gap-3 mb-4">
                     <h3 className="font-headline-md text-headline-md text-on-surface font-bold text-lg md:text-xl hover:text-primary transition-colors leading-tight line-clamp-2">
                       {recipe.title}
