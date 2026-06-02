@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 landing_page_review.md
 poles-tampilan.md
+
+# Environment
+.env
+.env.*
+!.env.example
