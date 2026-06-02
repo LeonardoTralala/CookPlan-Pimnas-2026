@@ -85,6 +85,20 @@
 body {
   background-color: #fbfaf9;
   font-family: "Inter", sans-serif;
+  /* Hilangkan delay tap ~300ms & cegah double-tap zoom tak sengaja pada tombol/elemen interaktif */
+  touch-action: manipulation;
+}
+
+/* Pastikan elemen interaktif mewarisi perilaku tap yang sama (beberapa browser tidak
+   meneruskan touch-action dari body ke kontrol form/link secara default) */
+button,
+a,
+[role="button"],
+input,
+select,
+textarea,
+label {
+  touch-action: manipulation;
 }
 
 .material-symbols-outlined {
