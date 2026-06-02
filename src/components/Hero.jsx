@@ -15,7 +15,7 @@ export function Hero({ onNavigate }) {
           <h1 className="font-headline-xl text-headline-xl text-primary leading-tight">
             Makan Sehat, Belanja Lokal, Tanpa Ribet.
           </h1>
-          <p className="font-body-lg text-base md:text-lg text-on-surface-variant max-w-lg">
+          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
             Rencanakan menu mingguanmu dan dapatkan daftar belanja otomatis dari produsen lokal favoritmu.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">

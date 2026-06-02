@@ -9,7 +9,7 @@ export function FeaturedRecipes({ onNavigate }) {
     onNavigate ? onNavigate("catalog") : showToast("Katalog lengkap resep sedang disiapkan!");
 
   return (
-    <section id="recipes" className="py-14 md:py-24 bg-canvas-white px-margin-mobile md:px-margin-desktop">
+    <section id="recipes" className="section-padding bg-canvas-white px-margin-mobile md:px-margin-desktop">
       <div className="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-end mb-10 md:mb-12 gap-6">
         <div className="max-w-xl">
           <h2 className="font-headline-lg text-headline-lg text-primary mb-4">

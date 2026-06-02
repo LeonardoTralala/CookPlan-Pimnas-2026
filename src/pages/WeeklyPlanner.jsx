@@ -136,7 +136,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
               <h1 className="text-headline-xl font-extrabold text-primary tracking-tight mb-2 leading-tight">
                 Rencana Masak Mingguan
               </h1>
-              <p className="text-on-surface-variant text-base md:text-lg">
+              <p className="text-on-surface-variant text-body-lg">
                 Atur jadwal makan Anda untuk hidup yang lebih sehat dan teratur.
               </p>
             </div>
