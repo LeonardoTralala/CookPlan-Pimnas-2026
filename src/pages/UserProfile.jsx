@@ -93,7 +93,7 @@ function UserProfile() {
             </div>
 
             <div className="flex-grow text-center md:text-left space-y-2 mt-2 md:mt-4">
-              <h1 className="text-3xl md:text-[40px] font-extrabold text-primary tracking-tight leading-tight">
+              <h1 className="text-headline-xl font-extrabold text-primary tracking-tight leading-tight">
                 Brokoli
               </h1>
               <p className="text-lg text-on-surface-variant">brokoli@example.com</p>

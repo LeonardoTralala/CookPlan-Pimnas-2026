@@ -155,7 +155,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
       <main className="max-w-6xl mx-auto px-5 md:px-10 py-8 md:py-12">
         {/* Header */}
         <header className="mb-10 max-w-3xl animate-fade-in">
-          <h1 className="text-3xl md:text-[40px] font-extrabold text-primary tracking-tight mb-3 leading-tight">
+          <h1 className="text-headline-xl font-extrabold text-primary tracking-tight mb-3 leading-tight">
             Daftar Belanja Kamu
           </h1>
           <p className="text-on-surface-variant text-base md:text-lg">

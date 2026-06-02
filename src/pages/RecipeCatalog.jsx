@@ -135,7 +135,7 @@ function RecipeCatalog({ onAddToPlan }) {
     <div className="bg-[#FBFAF9] min-h-dvh font-sans text-on-surface pb-24">
       {/* Hero header */}
       <section className="pt-16 pb-8 px-6 max-w-6xl mx-auto text-center">
-        <h2 className="text-4xl md:text-[40px] font-extrabold text-primary tracking-tight mb-8">
+        <h2 className="text-headline-xl font-extrabold text-primary tracking-tight mb-8">
           Inspirasi Masakan Hari Ini
         </h2>
 

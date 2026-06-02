@@ -133,7 +133,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
           {/* ---------------- Planner Grid ---------------- */}
           <div className="flex-1 min-w-0">
             <div className="mb-8">
-              <h1 className="text-3xl md:text-[40px] font-extrabold text-primary tracking-tight mb-2 leading-tight">
+              <h1 className="text-headline-xl font-extrabold text-primary tracking-tight mb-2 leading-tight">
                 Rencana Masak Mingguan
               </h1>
               <p className="text-on-surface-variant text-base md:text-lg">
