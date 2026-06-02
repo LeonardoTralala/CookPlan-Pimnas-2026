@@ -27,11 +27,12 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-canvas-white flex flex-col font-sans selection:bg-primary-container selection:text-white">
+    <div className="min-h-dvh bg-canvas-white flex flex-col font-sans selection:bg-primary-container selection:text-white">
       <Navbar />
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col justify-center bg-canvas-white text-on-surface">
+      <main id="main-content" tabIndex={-1} className="flex-1 flex flex-col justify-center bg-canvas-white text-on-surface focus:outline-none">
+
         <Routes>
           {/* Publik: katalog resep & profil tim (untuk discovery + demo) */}
           <Route path="/catalog" element={<RecipeCatalog onAddToPlan={setSlot} />} />

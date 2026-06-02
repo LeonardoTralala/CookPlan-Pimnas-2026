@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
 import { usePlan } from '../hooks/usePlan.js';
-import { Modal } from '../components/Modal.jsx';
+import { ModalSheet } from '../components/ModalSheet.jsx';
 
 function RecipeCatalog({ onAddToPlan }) {
   const { showToast, weeklyPlan } = usePlan();
@@ -135,7 +135,7 @@ function RecipeCatalog({ onAddToPlan }) {
   const existingSlot = selectedRecipeForPlan ? (weeklyPlan?.[planDay]?.[planMeal] ?? null) : null;
 
   return (
-    <div className="bg-canvas-white min-h-screen font-sans text-on-surface pb-24">
+    <div className="bg-canvas-white min-h-dvh font-sans text-on-surface pb-24">
       {/* Hero header */}
       <section className="pt-16 pb-8 px-6 max-w-container-max mx-auto text-center">
         <h2 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-8">
@@ -148,7 +148,10 @@ function RecipeCatalog({ onAddToPlan }) {
             search
           </span>
           <input
-            type="text"
+            type="search"
+            inputMode="search"
+            enterKeyHint="search"
+            autoComplete="off"
             className="w-full pl-14 pr-6 py-4 rounded-full border border-outline-variant bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary shadow-sm transition-all text-base font-medium"
             placeholder="Cari resep sehat untuk keluarga..."
             value={searchQuery}
@@ -302,7 +305,7 @@ function RecipeCatalog({ onAddToPlan }) {
       <section className="px-6 max-w-container-max mx-auto">
         {filteredRecipes.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border border-outline-variant p-8">
-            <span className="material-symbols-outlined text-6xl text-outline-variant mb-4">
+            <span className="material-symbols-outlined text-5xl md:text-6xl text-outline-variant mb-4">
               sentiment_dissatisfied
             </span>
             <h3 className="font-headline-md text-headline-md text-on-surface mb-2">Resep Tidak Ditemukan</h3>
@@ -333,7 +336,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 }}
               >
                 {/* Image Section */}
-                <div className="relative h-64 overflow-hidden">
+                <div className="relative h-40 sm:h-52 md:h-64 overflow-hidden">
                   <img
                     src={recipe.imageUrl}
                     alt={recipe.title}
@@ -350,7 +353,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 </div>
 
                 {/* Content Section */}
-                <div className="p-6 flex-1 flex flex-col justify-between">
+                <div className="p-4 md:p-6 flex-1 flex flex-col justify-between">
                   <div className="flex justify-between items-center gap-3 mb-4">
                     <h3 className="font-headline-md text-headline-md text-on-surface hover:text-primary transition-colors leading-tight line-clamp-2">
                       {recipe.title}
@@ -402,12 +405,12 @@ function RecipeCatalog({ onAddToPlan }) {
       </section>
 
       {/* -------------------- DETAIL RESEP MODAL -------------------- */}
-      <Modal isOpen={!!selectedRecipeForDetail} onClose={() => setSelectedRecipeForDetail(null)}>
-        {selectedRecipeForDetail && (
-          <div 
-            className="bg-white rounded-panel overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
-            aria-labelledby="modal-recipe-title"
-          >
+      {selectedRecipeForDetail && (
+        <ModalSheet
+          onClose={() => setSelectedRecipeForDetail(null)}
+          labelledBy="modal-recipe-title"
+          panelClassName="overflow-hidden max-w-2xl max-h-[90dvh] md:max-h-[85dvh] flex flex-col"
+        >
             {/* Header Close button */}
             <button
               onClick={() => setSelectedRecipeForDetail(null)}
@@ -547,17 +550,16 @@ function RecipeCatalog({ onAddToPlan }) {
                 Tambah ke Rencana
               </button>
             </div>
-          </div>
-        )}
-      </Modal>
+        </ModalSheet>
+      )}
 
       {/* -------------------- ADD TO PLAN MODAL -------------------- */}
-      <Modal isOpen={!!selectedRecipeForPlan} onClose={() => setSelectedRecipeForPlan(null)}>
-        {selectedRecipeForPlan && (
-          <div 
-            className="bg-white rounded-panel p-6 md:p-8 max-w-sm w-full shadow-2xl border border-outline-variant relative"
-            aria-labelledby="modal-plan-title"
-          >
+      {selectedRecipeForPlan && (
+        <ModalSheet
+          onClose={() => setSelectedRecipeForPlan(null)}
+          labelledBy="modal-plan-title"
+          panelClassName="max-w-sm max-h-[90dvh] overflow-y-auto p-6 md:p-8"
+        >
             {/* Close Button */}
             <button
               onClick={() => setSelectedRecipeForPlan(null)}
@@ -585,7 +587,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 <select
                   value={planMeal}
                   onChange={(e) => setPlanMeal(e.target.value)}
-                  className="w-full p-3 rounded-2xl border border-outline-variant bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-sm font-semibold text-on-surface"
+                  className="w-full p-3 rounded-2xl border border-outline-variant bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-base font-semibold text-on-surface"
                 >
                   {mealOptions.map((meal) => (
                     <option key={meal.value} value={meal.value}>
@@ -603,7 +605,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 <select
                   value={planDay}
                   onChange={(e) => setPlanDay(e.target.value)}
-                  className="w-full p-3 rounded-2xl border border-outline-variant bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-sm font-semibold text-on-surface"
+                  className="w-full p-3 rounded-2xl border border-outline-variant bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-base font-semibold text-on-surface"
                 >
                   {daysOfWeek.map((day) => (
                     <option key={day} value={day}>
@@ -664,9 +666,8 @@ function RecipeCatalog({ onAddToPlan }) {
                 {existingSlot ? 'Ganti Menu' : 'Konfirmasi'}
               </button>
             </div>
-          </div>
-        )}
-      </Modal>
+        </ModalSheet>
+      )}
     </div>
   );
 }

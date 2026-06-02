@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { mockRecipes } from '../utils/mockRecipes';
 import { usePlan } from '../hooks/usePlan.js';
-import { Modal } from '../components/Modal.jsx';
+import { ModalSheet } from '../components/ModalSheet.jsx';
 
 // Hari (key data) + label singkat untuk header kolom
 const DAYS = [
@@ -128,7 +128,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
   };
 
   return (
-    <div className="bg-canvas-white min-h-screen text-on-surface pb-40 md:pb-28">
+    <div className="bg-canvas-white min-h-dvh text-on-surface pb-40 md:pb-28">
       <main className="max-w-container-max mx-auto px-5 md:px-10 py-8 md:py-12">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* ---------------- Planner Grid ---------------- */}
@@ -137,7 +137,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
               <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-2 leading-tight">
                 Rencana Masak Mingguan
               </h1>
-              <p className="text-on-surface-variant text-base md:text-lg">
+              <p className="text-on-surface-variant text-body-lg">
                 Atur jadwal makan Anda untuk hidup yang lebih sehat dan teratur.
               </p>
             </div>
@@ -343,18 +343,15 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
       </div>
 
       {/* ---------------- Recipe Picker Modal ---------------- */}
-      <Modal 
-        isOpen={!!pickerTarget} 
-        onClose={() => {
-          setPickerTarget(null);
-          setPickerSelectedRecipe(null);
-        }}
-      >
-        {pickerTarget && (
-          <div 
-            className="bg-white rounded-panel overflow-hidden max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-outline-variant relative"
-            aria-labelledby="modal-picker-title"
-          >
+      {pickerTarget && (
+        <ModalSheet
+          onClose={() => {
+            setPickerTarget(null);
+            setPickerSelectedRecipe(null);
+          }}
+          labelledBy="modal-picker-title"
+          panelClassName="overflow-hidden max-w-2xl max-h-[90dvh] md:max-h-[85dvh] flex flex-col"
+        >
             {/* Content Based on Selection */}
             {!pickerSelectedRecipe ? (
               <>
@@ -383,12 +380,15 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                       search
                     </span>
                     <input
-                      type="text"
+                      type="search"
+                      inputMode="search"
+                      enterKeyHint="search"
+                      autoComplete="off"
                       autoFocus
                       value={pickerSearch}
                       onChange={(e) => setPickerSearch(e.target.value)}
                       placeholder="Cari resep..."
-                      className="w-full pl-11 pr-4 py-2.5 rounded-full border border-outline-variant bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm font-medium"
+                      className="w-full pl-11 pr-4 py-2.5 rounded-full border border-outline-variant bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-base font-medium"
                     />
                   </div>
                 </div>
@@ -498,9 +498,8 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                 </div>
               </>
             )}
-          </div>
-        )}
-      </Modal>
+        </ModalSheet>
+      )}
     </div>
   );
 }

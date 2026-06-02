@@ -125,15 +125,15 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
   // ---------------- Empty State ----------------
   if (totalItems === 0) {
     return (
-      <div className="bg-canvas-white min-h-screen text-on-surface">
-        <main className="max-w-container-max mx-auto px-5 md:px-10 py-16 md:py-24 flex flex-col items-center text-center animate-fade-in">
+      <div className="bg-canvas-white min-h-dvh text-on-surface">
+        <main className="max-w-container-max mx-auto px-5 md:px-10 section-padding flex flex-col items-center text-center animate-fade-in">
           <div className="w-24 h-24 rounded-full bg-surface-cream flex items-center justify-center mb-6">
-            <span className="material-symbols-outlined text-primary text-5xl">shopping_cart</span>
+            <span className="material-symbols-outlined text-primary text-5xl md:text-6xl">shopping_cart</span>
           </div>
           <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary mb-3 tracking-tight">
             Daftar Belanja Masih Kosong
           </h1>
-          <p className="text-on-surface-variant text-base md:text-lg max-w-md mb-8">
+          <p className="text-on-surface-variant text-body-lg max-w-md mb-8">
             Susun dulu menu masakanmu di Rencana Mingguan. Bahan-bahan akan otomatis terkumpul
             di sini, dikelompokkan rapi per kategori.
           </p>
@@ -151,14 +151,14 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
 
   // ---------------- Daftar Belanja ----------------
   return (
-    <div className="bg-canvas-white min-h-screen text-on-surface">
+    <div className="bg-canvas-white min-h-dvh text-on-surface">
       <main className="max-w-container-max mx-auto px-5 md:px-10 py-8 md:py-12">
         {/* Header */}
         <header className="mb-10 max-w-3xl animate-fade-in">
           <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-3 leading-tight">
             Daftar Belanja Kamu
           </h1>
-          <p className="text-on-surface-variant text-base md:text-lg">
+          <p className="text-on-surface-variant text-body-lg">
             Bahan-bahan segar dari pertanian lokal yang siap untuk menu masakan minggu ini.
             Optimalkan nutrisi keluarga Anda dengan bahan organik pilihan.
           </p>

@@ -37,9 +37,9 @@ const ADVISOR = {
 
 function TeamProfile() {
   return (
-    <div className="bg-canvas-white text-on-surface min-h-screen">
+    <div className="bg-canvas-white text-on-surface min-h-dvh">
       {/* ---------------- Hero ---------------- */}
-      <section className="w-full max-w-container-max mx-auto px-5 md:px-10 py-16 md:py-24 text-center flex flex-col items-center">
+      <section className="w-full max-w-container-max mx-auto px-5 md:px-10 section-padding text-center flex flex-col items-center">
         <h1 className="font-headline-xl text-headline-lg md:text-headline-xl tracking-tight text-primary max-w-3xl mb-6 leading-tight">
           Menyederhanakan Perencanaan Makan untuk Pikiran yang Sibuk
         </h1>
@@ -57,7 +57,7 @@ function TeamProfile() {
       </section>
 
       {/* ---------------- Meet the Team ---------------- */}
-      <section className="w-full bg-surface-container-lowest py-16 md:py-24">
+      <section className="w-full bg-surface-container-lowest section-padding">
         <div className="max-w-container-max mx-auto px-5 md:px-10">
           <div className="mb-12 text-center md:text-left">
             <h2 className="font-headline-lg text-headline-md md:text-headline-lg text-on-surface mb-4">Kenali Tim Kami</h2>
@@ -90,7 +90,7 @@ function TeamProfile() {
       </section>
 
       {/* ---------------- Project Advisor ---------------- */}
-      <section className="w-full bg-surface-container-low py-16 md:py-24 border-t border-outline-variant/30">
+      <section className="w-full bg-surface-container-low section-padding border-t border-outline-variant/30">
         <div className="max-w-container-max mx-auto px-5 md:px-10">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 bg-canvas-white rounded-3xl p-8 md:p-12 shadow-sm border border-outline-variant/50">
             <div className="w-40 h-40 md:w-48 md:h-48 flex-shrink-0 rounded-2xl bg-surface-variant flex items-center justify-center shadow-md">
