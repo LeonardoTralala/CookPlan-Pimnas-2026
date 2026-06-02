@@ -20,15 +20,15 @@ export function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="py-24 bg-canvas-white px-margin-mobile md:px-margin-desktop"
+      className="py-14 md:py-24 bg-canvas-white px-margin-mobile md:px-margin-desktop"
     >
-      <div className="max-w-container-max mx-auto text-center mb-16">
+      <div className="max-w-container-max mx-auto text-center mb-10 md:mb-16">
         <h2 className="font-headline-lg text-headline-lg text-primary mb-4">Cara Kerja CookPlan</h2>
         <p className="font-body-md text-body-md text-on-surface-variant">
           Hanya butuh 3 langkah untuk mempermudah hidup Anda.
         </p>
       </div>
-      <div className="max-w-container-max mx-auto grid md:grid-cols-3 gap-8">
+      <div className="max-w-container-max mx-auto grid md:grid-cols-3 gap-6 md:gap-8">
         {steps.map((step) => (
           <div
             key={step.title}

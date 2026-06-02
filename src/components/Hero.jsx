@@ -6,9 +6,9 @@ export function Hero({ onNavigate }) {
   const goCatalog = () => (onNavigate ? onNavigate("catalog") : scrollToSection("recipes"));
 
   return (
-    <section className="hero-gradient pt-20 pb-32">
-      <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid md:grid-cols-2 gap-12 items-center">
-        <div className="space-y-8">
+    <section className="hero-gradient pt-12 pb-16 md:pt-20 md:pb-32">
+      <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+        <div className="space-y-6 md:space-y-8">
           <span className="inline-block px-4 py-1.5 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm uppercase tracking-wider font-semibold">
             Mulai Hidup Sehat
           </span>
