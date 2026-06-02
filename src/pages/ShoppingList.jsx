@@ -122,6 +122,9 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
   const totalCost = estimatedCost + (totalItems > 0 ? DELIVERY_FEE : 0);
   const checkedCount = checkedItems.size;
 
+  const handleCheckout = () =>
+    showToast('Fitur pembayaran & pengantaran akan terhubung dengan produsen lokal!');
+
   // ---------------- Empty State ----------------
   if (totalItems === 0) {
     return (
@@ -152,7 +155,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
   // ---------------- Daftar Belanja ----------------
   return (
     <div className="bg-canvas-white min-h-dvh text-on-surface">
-      <main className="max-w-container-max mx-auto px-5 md:px-10 py-8 md:py-12">
+      <main className="max-w-container-max mx-auto px-5 md:px-10 py-8 md:py-12 pb-28 lg:pb-12">
         {/* Header */}
         <header className="mb-10 max-w-3xl animate-fade-in">
           <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-3 leading-tight">
@@ -289,9 +292,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
                 </div>
 
                 <button
-                  onClick={() =>
-                    showToast('Fitur pembayaran & pengantaran akan terhubung dengan produsen lokal!')
-                  }
+                  onClick={handleCheckout}
                   className="w-full bg-primary-container text-on-primary py-4 rounded-full font-bold hover:shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2 group cursor-pointer"
                 >
                   <span>Bayar &amp; Antar</span>
@@ -350,6 +351,26 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
           </div>
         </div>
       </main>
+
+      {/* Bar total + CTA sticky khusus mobile: ringkasan & checkout selalu terjangkau
+          tanpa harus scroll melewati seluruh daftar bahan (di desktop pakai sidebar). */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-canvas-white/95 backdrop-blur border-t border-outline-variant px-5 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex items-center gap-4 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+        <div className="min-w-0">
+          <p className="text-xs text-on-surface-variant leading-none mb-1">
+            Total ({totalItems} item)
+          </p>
+          <p className="text-lg font-bold text-primary leading-none truncate">
+            {formatRupiah(totalCost)}
+          </p>
+        </div>
+        <button
+          onClick={handleCheckout}
+          className="ml-auto shrink-0 bg-primary-container text-on-primary px-6 py-3 rounded-full font-bold transition-all active:scale-[0.98] flex items-center gap-2 cursor-pointer"
+        >
+          <span>Bayar &amp; Antar</span>
+          <span className="material-symbols-outlined text-xl">shopping_cart_checkout</span>
+        </button>
+      </div>
     </div>
   );
 }

@@ -252,24 +252,32 @@ function RecipeCatalog({ onAddToPlan }) {
               </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Max Cooking Time Slider */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs font-semibold text-on-surface-variant">
-                  <span>Waktu Masak Maksimal</span>
-                  <span className="text-primary font-bold">{maxTime} menit</span>
+              {/* Max Cooking Time Filter — chip rentang bertingkat agar mudah dipilih dengan jari
+                  (slider lama butuh presisi tinggi di layar sentuh). value 120 = tanpa batas. */}
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-on-surface-variant">
+                  Waktu Masak Maksimal
                 </div>
-                <input
-                  type="range"
-                  min="15"
-                  max="120"
-                  step="5"
-                  className="w-full h-1.5 bg-secondary-container rounded-lg appearance-none cursor-pointer accent-primary"
-                  value={maxTime}
-                  onChange={(e) => setMaxTime(Number(e.target.value))}
-                />
-                <div className="flex justify-between text-[10px] text-on-surface-variant">
-                  <span>15 mnt</span>
-                  <span>120 mnt</span>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { label: '≤ 15 mnt', value: 15 },
+                    { label: '≤ 30 mnt', value: 30 },
+                    { label: '≤ 45 mnt', value: 45 },
+                    { label: '≤ 60 mnt', value: 60 },
+                    { label: 'Semua', value: 120 }
+                  ].map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setMaxTime(opt.value)}
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer ${
+                        maxTime === opt.value
+                          ? 'bg-primary text-white border-primary shadow-sm'
+                          : 'bg-white text-on-surface-variant border-outline-variant hover:bg-secondary-container/30'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
               </div>
 
