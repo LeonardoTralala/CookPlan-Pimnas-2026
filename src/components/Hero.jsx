@@ -15,19 +15,19 @@ export function Hero({ onNavigate }) {
           <h1 className="font-headline-xl text-headline-xl text-primary leading-tight">
             Makan Sehat, Belanja Lokal, Tanpa Ribet.
           </h1>
-          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+          <p className="font-body-lg text-base md:text-lg text-on-surface-variant max-w-lg">
             Rencanakan menu mingguanmu dan dapatkan daftar belanja otomatis dari produsen lokal favoritmu.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button
               onClick={goPlanner}
-              className="px-8 py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg transition-shadow cursor-pointer font-semibold"
+              className="px-6 py-3 md:px-8 md:py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg transition-shadow cursor-pointer font-semibold"
             >
               Mulai Rencana Masak
             </button>
             <button
               onClick={goCatalog}
-              className="px-8 py-4 border-2 border-primary text-primary rounded-full font-label-md text-label-md hover:bg-primary/5 transition-colors cursor-pointer font-semibold"
+              className="px-6 py-3 md:px-8 md:py-4 border-2 border-primary text-primary rounded-full font-label-md text-label-md hover:bg-primary/5 transition-colors cursor-pointer font-semibold"
             >
               Lihat Katalog Resep
             </button>
@@ -36,7 +36,7 @@ export function Hero({ onNavigate }) {
         <div className="relative group">
           <div className="absolute -inset-4 bg-primary/5 rounded-[40px] blur-3xl group-hover:bg-primary/10 transition-colors"></div>
           <img
-            className="relative w-full h-[320px] sm:h-[500px] object-cover rounded-3xl shadow-xl image-reveal"
+            className="relative w-full h-[240px] sm:h-[400px] md:h-[500px] object-cover rounded-3xl shadow-xl image-reveal"
             alt="Hidangan masakan rumahan sehat khas Indonesia yang menggugah selera"
             src={heroImage}
           />

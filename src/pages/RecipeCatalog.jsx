@@ -302,7 +302,7 @@ function RecipeCatalog({ onAddToPlan }) {
       <section className="px-6 max-w-6xl mx-auto">
         {filteredRecipes.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border border-outline-variant p-8">
-            <span className="material-symbols-outlined text-6xl text-outline-variant mb-4">
+            <span className="material-symbols-outlined text-5xl md:text-6xl text-outline-variant mb-4">
               sentiment_dissatisfied
             </span>
             <h3 className="text-xl font-bold text-on-surface mb-2">Resep Tidak Ditemukan</h3>

@@ -128,7 +128,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
       <div className="bg-canvas-white min-h-dvh text-on-surface">
         <main className="max-w-6xl mx-auto px-5 md:px-10 py-16 md:py-24 flex flex-col items-center text-center animate-fade-in">
           <div className="w-24 h-24 rounded-full bg-surface-cream flex items-center justify-center mb-6">
-            <span className="material-symbols-outlined text-primary text-5xl">shopping_cart</span>
+            <span className="material-symbols-outlined text-primary text-5xl md:text-6xl">shopping_cart</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-extrabold text-primary mb-3 tracking-tight">
             Daftar Belanja Masih Kosong
