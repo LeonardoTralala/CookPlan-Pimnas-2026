@@ -121,6 +121,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
   };
 
   const handleGenerateShoppingList = () => {
+    if (stats.filled === 0) return; // guard: tanpa slot terisi tidak ada yang bisa dibelanjakan
     showToast('Daftar belanja berhasil dibuat berdasarkan rencana makan Anda!');
     onGenerateShoppingList();
   };
@@ -298,12 +299,25 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
       <div className="fixed bottom-0 left-0 right-0 z-40 p-4 md:p-6 bg-gradient-to-t from-[#FBFAF9] via-[#FBFAF9]/95 to-transparent flex justify-center pointer-events-none">
         <button
           onClick={handleGenerateShoppingList}
-          className="pointer-events-auto bg-primary hover:bg-primary-container text-white px-8 py-4 rounded-full shadow-2xl shadow-primary/30 flex items-center gap-3 transition-all active:scale-95 group cursor-pointer"
+          disabled={stats.filled === 0}
+          aria-disabled={stats.filled === 0}
+          title={stats.filled === 0 ? 'Isi minimal satu slot makan dulu' : undefined}
+          className={`pointer-events-auto px-8 py-4 rounded-full flex items-center gap-3 transition-all group ${
+            stats.filled === 0
+              ? 'bg-surface-container-high text-on-surface-variant cursor-not-allowed shadow-none'
+              : 'bg-primary hover:bg-primary-container text-white shadow-2xl shadow-primary/30 active:scale-95 cursor-pointer'
+          }`}
         >
-          <span className="material-symbols-outlined group-hover:rotate-12 transition-transform">
+          <span
+            className={`material-symbols-outlined transition-transform ${
+              stats.filled === 0 ? '' : 'group-hover:rotate-12'
+            }`}
+          >
             shopping_cart
           </span>
-          <span className="font-bold text-lg">Buat Daftar Belanja</span>
+          <span className="font-bold text-lg">
+            {stats.filled === 0 ? 'Isi Rencana Dulu' : 'Buat Daftar Belanja'}
+          </span>
         </button>
       </div>
 
