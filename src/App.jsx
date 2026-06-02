@@ -6,8 +6,15 @@ import WeeklyPlanner from './pages/WeeklyPlanner';
 import UserProfile from './pages/UserProfile';
 import TeamProfile from './pages/TeamProfile';
 import ShoppingList from './pages/ShoppingList';
+import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
 import { Toast } from './components/Toast.jsx';
+import { ProtectedRoute } from './components/ProtectedRoute.jsx';
 import { usePlan } from './hooks/usePlan.js';
+import { useAuth } from './hooks/useAuth.js';
+
+const FALLBACK_AVATAR =
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuD6odIuOL3lOpT9KvOC3lLPVT9QUV5V0_ERHx_tm4JbQgrxb4YQ-3YA71v9MPggK9PKLK8GwLCrY58zvY2thnXRYIWZx_MKNu9T1unG1Loy-2z6TZjGTMM-Q2bC7lbTKVG_QQU2S_zKpH4kBECNu-_g_a8TxyfbpbYzlykIJEoGOVpfZFinQPBWE34Nvl7WSNewV3llUb5Xn4162z2Az3_VgWDc2t81tIMwMAQXKpjk_WSIyzTknKRzKQp6-MDp4YcBAzS12o2LGrDD';
 
 const DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 const MEAL_TYPES = ['breakfast', 'lunch', 'dinner'];
@@ -30,8 +37,16 @@ function isValidPlanShape(plan) {
 
 function App() {
   const { showToast } = usePlan();
+  const { user, profile, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Profil';
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   const [weeklyPlan, setWeeklyPlan] = useState(() => {
     const saved = localStorage.getItem('weeklyPlan');
@@ -82,6 +97,10 @@ function App() {
   if (location.pathname === '/') {
     return <LandingPage onNavigate={(path) => navigate(path === 'overview' ? '/' : `/${path}`)} />;
   }
+
+  // Halaman auth tampil penuh tanpa header/footer aplikasi.
+  if (location.pathname === '/login') return <Login />;
+  if (location.pathname === '/register') return <Register />;
 
   return (
     <div className="min-h-screen bg-[#FBFAF9] flex flex-col font-sans selection:bg-[#4E6B2F] selection:text-white">
@@ -137,47 +156,73 @@ function App() {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <Link
             to="/profile"
             className="flex items-center gap-2 cursor-pointer hover:bg-secondary-container/20 p-1 rounded-full pr-3 transition-all"
           >
             <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6odIuOL3lOpT9KvOC3lLPVT9QUV5V0_ERHx_tm4JbQgrxb4YQ-3YA71v9MPggK9PKLK8GwLCrY58zvY2thnXRYIWZx_MKNu9T1unG1Loy-2z6TZjGTMM-Q2bC7lbTKVG_QQU2S_zKpH4kBECNu-_g_a8TxyfbpbYzlykIJEoGOVpfZFinQPBWE34Nvl7WSNewV3llUb5Xn4162z2Az3_VgWDc2t81tIMwMAQXKpjk_WSIyzTknKRzKQp6-MDp4YcBAzS12o2LGrDD"
-              alt="User profile"
+              src={profile?.avatar_url || FALLBACK_AVATAR}
+              alt={displayName}
               className="w-8 h-8 rounded-full border border-outline-variant object-cover"
             />
-            <span className="text-sm font-bold text-on-surface hidden sm:inline">Profil</span>
+            <span className="text-sm font-bold text-on-surface hidden sm:inline max-w-[10rem] truncate">{displayName}</span>
           </Link>
+          <button
+            onClick={handleLogout}
+            className="flex items-center justify-center w-9 h-9 rounded-full text-on-surface-variant hover:bg-secondary-container/20 hover:text-primary transition-colors cursor-pointer"
+            aria-label="Keluar"
+            title="Keluar"
+          >
+            <span className="material-symbols-outlined text-[22px]" aria-hidden="true">logout</span>
+          </button>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col justify-center bg-[#FBFAF9] text-on-surface">
         <Routes>
-          <Route path="/catalog" element={<RecipeCatalog onAddToPlan={handleSetSlot} />} />
-          <Route 
-            path="/planner" 
+          <Route
+            path="/catalog"
             element={
-              <WeeklyPlanner
-                weeklyPlan={weeklyPlan}
-                onSetSlot={handleSetSlot}
-                onRemoveSlot={handleRemoveSlot}
-                onGoToCatalog={() => navigate('/catalog')}
-                onGenerateShoppingList={() => navigate('/shopping')}
-              />
-            } 
+              <ProtectedRoute>
+                <RecipeCatalog onAddToPlan={handleSetSlot} />
+              </ProtectedRoute>
+            }
           />
-          <Route 
-            path="/shopping" 
+          <Route
+            path="/planner"
             element={
-              <ShoppingList
-                weeklyPlan={weeklyPlan}
-                onGoToPlanner={() => navigate('/planner')}
-              />
-            } 
+              <ProtectedRoute>
+                <WeeklyPlanner
+                  weeklyPlan={weeklyPlan}
+                  onSetSlot={handleSetSlot}
+                  onRemoveSlot={handleRemoveSlot}
+                  onGoToCatalog={() => navigate('/catalog')}
+                  onGenerateShoppingList={() => navigate('/shopping')}
+                />
+              </ProtectedRoute>
+            }
           />
-          <Route path="/profile" element={<UserProfile />} />
+          <Route
+            path="/shopping"
+            element={
+              <ProtectedRoute>
+                <ShoppingList
+                  weeklyPlan={weeklyPlan}
+                  onGoToPlanner={() => navigate('/planner')}
+                />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <UserProfile />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/about" element={<TeamProfile />} />
         </Routes>
       </main>

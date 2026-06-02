@@ -63,15 +63,15 @@ Saat ini aplikasi **100% frontend**: tidak ada backend, `@supabase/supabase-js` 
 Selesaikan langkah-langkah ini lebih dulu agar bisa mulai memanggil Supabase.
 
 ### 3.1 Buat Proyek Supabase
-- [ ] Daftar/masuk ke [supabase.com](https://supabase.com) → **New Project**.
-- [ ] Catat **Project URL** dan **anon public key** dari **Project Settings → API**.
+- [x] Daftar/masuk ke [supabase.com](https://supabase.com) → **New Project**. (Proyek "CookPlan", ref `phdbbiydrjwxlehdfubh`, region ap-northeast-1.)
+- [x] Catat **Project URL** dan **anon public key** dari **Project Settings → API**.
 
 ### 3.2 Konfigurasi Environment
-- [ ] Duplikat `.env.example` menjadi `.env`:
+- [x] Duplikat `.env.example` menjadi `.env`:
   ```bash
   cp .env.example .env
   ```
-- [ ] Isi nilai berikut di `.env`:
+- [x] Isi nilai berikut di `.env` (dipakai **publishable key** `sb_publishable_...`, praktik modern yang disarankan):
   ```env
   VITE_SUPABASE_URL=https://xxxxx.supabase.co
   VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
@@ -79,23 +79,23 @@ Selesaikan langkah-langkah ini lebih dulu agar bisa mulai memanggil Supabase.
 
 ### 3.3 ⚠️ Perbaiki `.gitignore` (Penting!)
 Saat ini `.gitignore` hanya berisi `*.local`, sehingga file `.env` polos **TIDAK terabaikan** — padahal `CONTRIBUTING.md` mengklaim sudah diabaikan.
-- [ ] Tambahkan baris berikut ke `.gitignore` agar kredensial tidak ikut ter-commit:
+- [x] Tambahkan baris berikut ke `.gitignore` agar kredensial tidak ikut ter-commit:
   ```gitignore
   # Environment
   .env
   .env.*
   !.env.example
   ```
-- [ ] Pastikan `git status` **tidak** menampilkan `.env` sebagai file baru.
+- [x] Pastikan `git status` **tidak** menampilkan `.env` sebagai file baru.
 
 ### 3.4 Pasang Library Supabase
-- [ ] Install client resmi:
+- [x] Install client resmi:
   ```bash
   npm install @supabase/supabase-js
   ```
 
 ### 3.5 Buat Klien Supabase
-- [ ] Buat folder & file `src/lib/supabaseClient.js`:
+- [x] Buat folder & file `src/lib/supabaseClient.js`:
   ```js
   import { createClient } from '@supabase/supabase-js';
 
@@ -290,13 +290,13 @@ Kerjakan berurutan. Tiap fase = satu branch + satu PR (lihat [§8](#8-branch--al
 ### Fase 1 — Autentikasi 🔴
 **Tujuan:** pengguna bisa daftar, login, logout; sesi persisten; rute aplikasi terlindungi.
 - [ ] Aktifkan Email Auth di Supabase (Authentication → Providers).
-- [ ] Buat `src/context/AuthContext.jsx` + `src/hooks/useAuth.js` (pakai `supabase.auth.getSession()` & `onAuthStateChange`).
-- [ ] Bungkus aplikasi dengan `AuthProvider` di `src/main.jsx`.
-- [ ] Buat `src/pages/Login.jsx` & `src/pages/Register.jsx`.
-- [ ] Buat `ProtectedRoute` untuk `/catalog`, `/planner`, `/shopping`, `/profile`.
-- [ ] Saat register sukses, buat baris di `profiles`.
-- [ ] Ganti data hardcoded di header `App.jsx` & `UserProfile.jsx` dengan data sesi. Tambah tombol **Logout**.
-- [ ] Landing page "Mulai Rencanakan" → arahkan ke `/login` (atau `/catalog` jika sudah login).
+- [x] Buat `src/context/AuthContext.jsx` (+ `src/context/auth-context.js`) + `src/hooks/useAuth.js` (pakai `supabase.auth.getSession()` & `onAuthStateChange`).
+- [x] Bungkus aplikasi dengan `AuthProvider` di `src/main.jsx`.
+- [x] Buat `src/pages/Login.jsx` & `src/pages/Register.jsx`.
+- [x] Buat `ProtectedRoute` (`src/components/ProtectedRoute.jsx`) untuk `/catalog`, `/planner`, `/shopping`, `/profile`.
+- [x] Saat register sukses, buat baris di `profiles` (di-`ensure` otomatis saat sesi aktif, lolos RLS).
+- [x] Ganti data hardcoded di header `App.jsx` & `UserProfile.jsx` dengan data sesi. Tambah tombol **Logout**.
+- [x] Landing page "Mulai Rencanakan" → rute terproteksi otomatis mengalihkan ke `/login` saat belum login (dan ke halaman tujuan saat sudah login).
 
 **Tabel:** `profiles`. **Selesai jika:** bisa register → logout → login, lalu refresh halaman tetap login.
 
@@ -332,7 +332,7 @@ Kerjakan berurutan. Tiap fase = satu branch + satu PR (lihat [§8](#8-branch--al
 - [ ] Tabel `subscriptions`; tampilkan status nyata di `UserProfile.jsx`.
 
 ### Fase 6 — RLS & Hardening 🔴
-- [ ] Aktifkan RLS + policy untuk semua tabel (lihat [§7](#7-keamanan-rls--kredensial)).
+- [x] Aktifkan RLS + policy untuk semua tabel (lihat [§7](#7-keamanan-rls--kredensial)). ✅ 8 policy live + advisor dibersihkan (2026-06-02).
 - [ ] Pastikan loading/error state konsisten; tambah validasi input form.
 
 ### Opsional — Midtrans Sandbox
@@ -343,6 +343,15 @@ Kerjakan berurutan. Tiap fase = satu branch + satu PR (lihat [§8](#8-branch--al
 ## 7. Keamanan: RLS & Kredensial
 
 ### 7.1 Row Level Security
+
+> [!NOTE]
+> **Status (per 2026-06-02): RLS aktif + 8 policy sudah terpasang di proyek live** (`phdbbiydrjwxlehdfubh`).
+> Versi yang diterapkan sedikit lebih ketat dari snippet di bawah, mengikuti praktik terbaik Supabase:
+> - `TO authenticated` eksplisit untuk semua policy kepemilikan (anon tak punya akses ke data user);
+> - `recipes`/`recipe_ingredients` dibaca oleh `anon, authenticated`;
+> - `auth.uid()` dibungkus `(select auth.uid())` agar dievaluasi sekali (lebih cepat).
+> Selain itu `generate_order_id()` dikunci `search_path` & `rls_auto_enable()` dicabut `EXECUTE`-nya dari publik. Sisa advisor: *leaked password protection* (opsional, aktifkan di dashboard Auth).
+
 Aktifkan RLS lalu pasang policy. Resep boleh dibaca publik; data milik pengguna hanya boleh diakses pemiliknya.
 
 ```sql

@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { mockRecipes } from '../utils/mockRecipes';
 import { usePlan } from '../hooks/usePlan.js';
+import { useAuth } from '../hooks/useAuth.js';
 
 // Item navigasi pada sidebar Settings (desktop)
 const SETTINGS_NAV = [
@@ -17,11 +19,25 @@ const RECIPE_FILTERS = ['Semua Resep', 'Sarapan Cepat', 'Favorit Vegetarian', 'M
 
 function UserProfile() {
   const { showToast } = usePlan();
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
   const soon = (fitur) => showToast(`Fitur ${fitur} sedang dikembangkan oleh rekan tim!`);
   const [activeNav, setActiveNav] = useState('saved');
   const [activeFilter, setActiveFilter] = useState('Semua Resep');
   const [savedSearch, setSavedSearch] = useState('');
   const [gender, setGender] = useState('');
+
+  // Data identitas dari sesi Supabase (gantikan data hardcoded "Brokoli").
+  const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Pengguna';
+  const email = user?.email || '';
+  const joinedAt = user?.created_at
+    ? new Date(user.created_at).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' })
+    : '';
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   // Ambil sebagian resep dari katalog sebagai "resep tersimpan" milik pengguna
   const savedRecipes = useMemo(() => mockRecipes.slice(0, 6), []);
@@ -82,8 +98,8 @@ function UserProfile() {
             <div className="relative group cursor-pointer" onClick={() => soon('Ubah Foto Profil')}>
               <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-surface-cream bg-surface-variant flex items-center justify-center shadow-sm">
                 <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6odIuOL3lOpT9KvOC3lLPVT9QUV5V0_ERHx_tm4JbQgrxb4YQ-3YA71v9MPggK9PKLK8GwLCrY58zvY2thnXRYIWZx_MKNu9T1unG1Loy-2z6TZjGTMM-Q2bC7lbTKVG_QQU2S_zKpH4kBECNu-_g_a8TxyfbpbYzlykIJEoGOVpfZFinQPBWE34Nvl7WSNewV3llUb5Xn4162z2Az3_VgWDc2t81tIMwMAQXKpjk_WSIyzTknKRzKQp6-MDp4YcBAzS12o2LGrDD"
-                  alt="Brokoli"
+                  src={profile?.avatar_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuD6odIuOL3lOpT9KvOC3lLPVT9QUV5V0_ERHx_tm4JbQgrxb4YQ-3YA71v9MPggK9PKLK8GwLCrY58zvY2thnXRYIWZx_MKNu9T1unG1Loy-2z6TZjGTMM-Q2bC7lbTKVG_QQU2S_zKpH4kBECNu-_g_a8TxyfbpbYzlykIJEoGOVpfZFinQPBWE34Nvl7WSNewV3llUb5Xn4162z2Az3_VgWDc2t81tIMwMAQXKpjk_WSIyzTknKRzKQp6-MDp4YcBAzS12o2LGrDD"}
+                  alt={displayName}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -94,21 +110,23 @@ function UserProfile() {
 
             <div className="flex-grow text-center md:text-left space-y-2 mt-2 md:mt-4">
               <h1 className="text-3xl md:text-[40px] font-extrabold text-primary tracking-tight leading-tight">
-                Brokoli
+                {displayName}
               </h1>
-              <p className="text-lg text-on-surface-variant">brokoli@example.com</p>
+              <p className="text-lg text-on-surface-variant">{email}</p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-2">
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary text-on-primary rounded-full text-xs font-semibold shadow-sm">
                   <span className="material-symbols-outlined text-[14px] fill">verified</span> Paket Pro
                 </span>
-                <span className="inline-flex items-center gap-1 px-3 py-1 bg-surface-container-lowest border border-outline-variant text-on-surface-variant rounded-full text-xs font-semibold">
-                  Bergabung Mar 2024
-                </span>
+                {joinedAt && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-surface-container-lowest border border-outline-variant text-on-surface-variant rounded-full text-xs font-semibold">
+                    Bergabung {joinedAt}
+                  </span>
+                )}
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-surface-container-low border border-outline-variant text-on-surface-variant rounded-full text-xs font-semibold">
                   <span className="material-symbols-outlined text-[14px]">wc</span>
                   Jenis Kelamin:
                   <select
-                    value={gender}
+                    value={gender || profile?.gender || ''}
                     onChange={(e) => setGender(e.target.value)}
                     className="bg-transparent border-none p-0 pr-1 focus:ring-0 text-xs font-semibold cursor-pointer outline-none"
                   >
@@ -120,12 +138,21 @@ function UserProfile() {
               </div>
             </div>
 
-            <button
-              onClick={() => soon('Edit Profil')}
-              className="hidden md:flex items-center justify-center px-6 py-3 bg-primary text-white rounded-full text-sm font-semibold hover:bg-surface-tint transition-colors shadow-sm cursor-pointer"
-            >
-              Edit Profil
-            </button>
+            <div className="flex flex-col gap-2 w-full md:w-auto">
+              <button
+                onClick={() => soon('Edit Profil')}
+                className="flex items-center justify-center px-6 py-3 bg-primary text-white rounded-full text-sm font-semibold hover:bg-surface-tint transition-colors shadow-sm cursor-pointer"
+              >
+                Edit Profil
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex items-center justify-center gap-2 px-6 py-3 border border-outline-variant text-on-surface-variant rounded-full text-sm font-semibold hover:border-error hover:text-error transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px]" aria-hidden="true">logout</span>
+                Keluar
+              </button>
+            </div>
           </section>
 
           {/* Saved Recipes */}
