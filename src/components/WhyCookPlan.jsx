@@ -33,11 +33,15 @@ export function WhyCookPlan() {
               className="w-full h-64 sm:h-80 object-cover rounded-3xl shadow-md mt-12 transition-transform hover:scale-[1.02] duration-300"
               alt="Vibrant local farmers market scene"
               src={whyImages[0]}
+              loading="lazy"
+              onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
             />
             <img
               className="w-full h-64 sm:h-80 object-cover rounded-3xl shadow-md transition-transform hover:scale-[1.02] duration-300"
               alt="Clean kitchen counter with prepped vegetables"
               src={whyImages[1]}
+              loading="lazy"
+              onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
             />
           </div>
         </div>

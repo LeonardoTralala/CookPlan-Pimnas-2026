@@ -20,21 +20,21 @@ export function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="py-24 bg-canvas-white px-margin-mobile md:px-margin-desktop"
+      className="section-padding bg-canvas-white px-margin-mobile md:px-margin-desktop"
     >
-      <div className="max-w-container-max mx-auto text-center mb-16">
+      <div className="max-w-container-max mx-auto text-center mb-10 md:mb-16">
         <h2 className="font-headline-lg text-headline-lg text-primary mb-4">Cara Kerja CookPlan</h2>
         <p className="font-body-md text-body-md text-on-surface-variant">
           Hanya butuh 3 langkah untuk mempermudah hidup Anda.
         </p>
       </div>
-      <div className="max-w-container-max mx-auto grid md:grid-cols-3 gap-8">
+      <div className="max-w-container-max mx-auto grid md:grid-cols-3 gap-6 md:gap-8">
         {steps.map((step) => (
           <div
             key={step.title}
-            className="p-8 bg-surface-container-low rounded-3xl border border-outline-variant/30 flex flex-col items-center text-center hover:shadow-md transition-shadow"
+            className="p-6 md:p-8 bg-surface-container-low rounded-3xl border border-outline-variant/30 flex flex-col items-center text-center hover:shadow-md transition-shadow"
           >
-            <div className="w-16 h-16 bg-primary-container rounded-2xl flex items-center justify-center mb-6">
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-primary-container rounded-2xl flex items-center justify-center mb-6">
               <span className="material-symbols-outlined text-on-primary-container text-3xl">
                 {step.icon}
               </span>
