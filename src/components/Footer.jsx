@@ -16,26 +16,20 @@ export function Footer() {
         </div>
         <div className="flex flex-wrap justify-center gap-6 md:gap-8">
           {links.map((label) => {
-            if (label === "Tentang Kami" || label === "Kebijakan Privasi") {
-              const toPath = label === "Tentang Kami" ? "/about" : "/privacy";
-              return (
-                <Link
-                  key={label}
-                  to={toPath}
-                  className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
-                >
-                  {label}
-                </Link>
-              );
-            }
+            let toPath = "/";
+            if (label === "Tentang Kami") toPath = "/about";
+            else if (label === "Bantuan") toPath = "/help";
+            else if (label === "Kebijakan Privasi") toPath = "/privacy";
+            else if (label === "Syarat dan Ketentuan") toPath = "/terms";
+
             return (
-              <button
+              <Link
                 key={label}
-                onClick={() => showToast(`Halaman "${label}" segera hadir`)}
+                to={toPath}
                 className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
               >
                 {label}
-              </button>
+              </Link>
             );
           })}
         </div>
