@@ -2,7 +2,7 @@ const steps = [
   {
     icon: "menu_book",
     title: "Pilih Resep",
-    desc: "Pilih ribuan resep sehat yang dikurasi khusus oleh ahli gizi untuk keluarga Anda.",
+    desc: "Pilih dari berbagai resep sehat dan lezat yang cocok untuk semua gaya hidup dan kebutuhan Anda.",
   },
   {
     icon: "calendar_month",
