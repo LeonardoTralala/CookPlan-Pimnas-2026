@@ -16,7 +16,7 @@ export function FinalCTA({ onNavigate }) {
           Siap Ubah Gaya Masakmu?
         </h2>
         <p className="font-body-lg text-body-lg mb-10 text-on-primary-container/80 relative z-10">
-          Bergabunglah dengan 5,000+ keluarga yang telah mempermudah hidup mereka dengan CookPlan.
+          Berhenti menebak mau masak apa. Biarkan CookPlan yang urus semuanya. Plan it, Cook It, Waste Nothing!
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
           <button
