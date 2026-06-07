@@ -15,7 +15,7 @@ export function Hero({ onNavigate }) {
             Mulai Hidup Sehat
           </span>
           <h1 className="font-headline-xl text-headline-xl text-primary leading-tight">
-            Makan Sehat, Belanja Lokal, Tanpa Ribet.
+            Plan It, Cook It, Waste Nothing.
           </h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
             Rencanakan menu mingguanmu dan dapatkan daftar belanja otomatis dari produsen lokal favoritmu.
