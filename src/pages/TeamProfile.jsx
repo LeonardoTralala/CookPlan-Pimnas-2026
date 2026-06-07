@@ -63,7 +63,7 @@ export function TeamProfile({ onNavigate }) {
       </section>
 
       {/* ---------------- Meet the Team ---------------- */}
-      <section className="w-full bg-surface-container-lowest section-padding">
+      <section className="w-full bg-canvas-white section-padding">
         <div className="max-w-container-max mx-auto px-5 md:px-10">
           <div className="mb-12 text-center md:text-left">
             <h2 className="font-headline-lg text-headline-md md:text-headline-lg text-on-surface mb-4">Kenali Tim Kami</h2>
@@ -96,7 +96,7 @@ export function TeamProfile({ onNavigate }) {
       </section>
 
       {/* ---------------- Project Advisor ---------------- */}
-      <section className="w-full bg-surface-container-low section-padding border-t border-outline-variant/30">
+      <section className="w-full bg-surface section-padding border-t border-outline-variant/30">
         <div className="max-w-container-max mx-auto px-5 md:px-10">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 bg-canvas-white rounded-3xl p-8 md:p-12 shadow-sm border border-outline-variant/50">
             <div className="w-40 h-40 md:w-48 md:h-48 flex-shrink-0 rounded-2xl bg-surface-variant flex items-center justify-center shadow-md">
