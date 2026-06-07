@@ -2,8 +2,10 @@ import { heroImage } from "../utils/recipes.js";
 import { scrollToSection } from "../utils/scroll.js";
 
 export function Hero({ onNavigate }) {
-  const goPlanner = () => (onNavigate ? onNavigate("planner") : scrollToSection("how-it-works"));
-  const goCatalog = () => (onNavigate ? onNavigate("catalog") : scrollToSection("recipes"));
+  // Fase pre-register: CTA utama menuju formulir daftar tunggu; CTA sekunder
+  // hanya menggulir ke bagian "Cara Kerja" (fitur belum dibuka).
+  const goRegister = () => (onNavigate ? onNavigate("register") : scrollToSection("how-it-works"));
+  const goLearn = () => scrollToSection("how-it-works");
 
   return (
     <section className="hero-gradient pt-12 pb-16 md:pt-20 md:pb-32">
@@ -20,16 +22,16 @@ export function Hero({ onNavigate }) {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button
-              onClick={goPlanner}
+              onClick={goRegister}
               className="px-6 py-3 md:px-8 md:py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg transition-shadow cursor-pointer font-semibold"
             >
-              Mulai Rencana Masak
+              Daftar Gratis Sekarang
             </button>
             <button
-              onClick={goCatalog}
+              onClick={goLearn}
               className="px-6 py-3 md:px-8 md:py-4 border-2 border-primary text-primary rounded-full font-label-md text-label-md hover:bg-primary/5 transition-colors cursor-pointer font-semibold"
             >
-              Lihat Katalog Resep
+              Pelajari Cara Kerja
             </button>
           </div>
         </div>
