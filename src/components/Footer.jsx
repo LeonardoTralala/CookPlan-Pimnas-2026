@@ -16,11 +16,12 @@ export function Footer() {
         </div>
         <div className="flex flex-wrap justify-center gap-6 md:gap-8">
           {links.map((label) => {
-            if (label === "Tentang Kami") {
+            if (label === "Tentang Kami" || label === "Kebijakan Privasi") {
+              const toPath = label === "Tentang Kami" ? "/about" : "/privacy";
               return (
                 <Link
                   key={label}
-                  to="/about"
+                  to={toPath}
                   className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
                 >
                   {label}
