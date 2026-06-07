@@ -7,7 +7,7 @@ const steps = [
   {
     icon: "calendar_month",
     title: "Atur Jadwal",
-    desc: "Tentukan hari memasak Anda dan biarkan sistem kami menyesuaikan kebutuhan nutrisi harian.",
+    desc: "Atur jadwal memasak anda, rencanakan menu sesuai kebutuhan dan nutrisi harian anda.",
   },
   {
     icon: "local_mall",
