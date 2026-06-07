@@ -1,7 +1,9 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Logo } from "../components/Logo.jsx";
+import { Toast } from "../components/Toast.jsx";
 import { usePlan } from "../hooks/usePlan.js";
+import { supabase } from "../lib/supabase.js";
 
 const USER_TYPES = [
   "Mahasiswa / Anak Kos",
@@ -62,8 +64,6 @@ const KECAMATAN_MALANG = [
 
 const isMalang = (city) => city.trim().toLowerCase() === "malang";
 
-const STORAGE_KEY = "cookplan-preregistrations";
-
 const EMPTY_FORM = {
   name: "",
   email: "",
@@ -74,13 +74,15 @@ const EMPTY_FORM = {
 };
 
 // Pre-register (daftar tunggu) page for buyers. Captures interest before the
-// product launch and stores submissions in localStorage so the demo persists
-// without a backend. Mirrors the standalone layout pattern used by LandingPage.
+// product launch and stores submissions in Supabase (tabel `preregistrations`,
+// insert-only untuk anon). Mirrors the standalone layout pattern used by
+// LandingPage.
 export function PreRegister({ onNavigate }) {
   const { showToast } = usePlan();
   const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const update = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -103,8 +105,9 @@ export function PreRegister({ onNavigate }) {
     return next;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
     const found = validate();
     if (Object.keys(found).length > 0) {
       setErrors(found);
@@ -112,27 +115,30 @@ export function PreRegister({ onNavigate }) {
       return;
     }
 
+    // Kolom dipetakan ke tabel `preregistrations`. Field opsional yang kosong
+    // dikirim sebagai null agar konsisten di database.
     const entry = {
-      ...form,
       name: form.name.trim(),
       email: form.email.trim().toLowerCase(),
-      phone: form.phone.trim(),
+      phone: form.phone.trim() || null,
       city: form.city.trim(),
-      registeredAt: new Date().toISOString(),
+      kecamatan: isMalang(form.city) ? form.kecamatan || null : null,
+      user_type: form.userType || null,
     };
 
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      const list = Array.isArray(saved) ? saved : [];
-      if (list.some((item) => item.email === entry.email)) {
+    setSubmitting(true);
+    const { error } = await supabase.from("preregistrations").insert(entry);
+    setSubmitting(false);
+
+    if (error) {
+      // 23505 = unique_violation → email sudah ada di daftar tunggu.
+      if (error.code === "23505") {
         setErrors({ email: "Email ini sudah terdaftar di daftar tunggu." });
         showToast("Email ini sudah terdaftar.");
         return;
       }
-      list.push(entry);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    } catch {
-      // localStorage tidak tersedia — tetap tampilkan sukses untuk demo
+      showToast("Gagal mendaftar. Periksa koneksi lalu coba lagi.");
+      return;
     }
 
     setSubmitted(true);
@@ -199,16 +205,25 @@ export function PreRegister({ onNavigate }) {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 w-full pt-2">
                   <button
-                    onClick={() => setSubmitted(false)}
-                    className="flex-1 py-3 border-2 border-primary text-primary rounded-full font-label-md text-label-md hover:bg-primary/5 transition-colors cursor-pointer font-semibold"
+                    onClick={() => {
+                      const text = "Aku baru daftar ke CookPlan — aplikasi rencana masak dengan bahan lokal! Kamu juga bisa daftar daftar tunggu gratis di sini:";
+                      const url = window.location.origin + "/register";
+                      if (navigator.share) {
+                        navigator.share({ title: "CookPlan — Daftar Tunggu", text, url }).catch(() => {});
+                      } else {
+                        window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, "_blank", "noopener");
+                      }
+                    }}
+                    className="flex-1 py-3 border-2 border-primary text-primary rounded-full font-label-md text-label-md hover:bg-primary/5 transition-colors cursor-pointer font-semibold inline-flex items-center justify-center gap-2"
                   >
-                    Daftar Lagi
+                    <span className="material-symbols-outlined text-[18px]" aria-hidden="true">share</span>
+                    Bagikan ke Teman
                   </button>
                   <button
-                    onClick={() => (onNavigate ? onNavigate("catalog") : null)}
+                    onClick={() => (onNavigate ? onNavigate("overview") : null)}
                     className="flex-1 py-3 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg transition-shadow cursor-pointer font-semibold"
                   >
-                    Lihat Katalog
+                    Kembali ke Beranda
                   </button>
                 </div>
               </div>
@@ -290,9 +305,13 @@ export function PreRegister({ onNavigate }) {
 
                 <button
                   type="submit"
-                  className="w-full py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg transition-shadow cursor-pointer font-semibold"
+                  disabled={submitting}
+                  className="w-full py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg transition-shadow cursor-pointer font-semibold disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
                 >
-                  Daftar Sekarang
+                  {submitting && (
+                    <span className="material-symbols-outlined animate-spin text-[20px]" aria-hidden="true">progress_activity</span>
+                  )}
+                  {submitting ? "Mendaftarkan…" : "Daftar Sekarang"}
                 </button>
                 <p className="text-xs text-center text-on-surface-variant/70">
                   Dengan mendaftar, kamu setuju menerima informasi peluncuran dari CookPlan.
@@ -302,6 +321,7 @@ export function PreRegister({ onNavigate }) {
           </div>
         </div>
       </main>
+      <Toast />
     </div>
   );
 }
