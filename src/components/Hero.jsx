@@ -18,7 +18,7 @@ export function Hero({ onNavigate }) {
             Plan It, Cook It, Waste Nothing.
           </h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
-            Rencanakan menu mingguanmu dan dapatkan daftar belanja otomatis dari produsen lokal favoritmu.
+            Rencanakan menu mingguanmu dan dapatkan daftar belanja otomatis dari supplier lokal favoritmu.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button
