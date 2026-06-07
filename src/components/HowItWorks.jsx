@@ -12,7 +12,7 @@ const steps = [
   {
     icon: "local_mall",
     title: "Belanja Otomatis",
-    desc: "Daftar belanja langsung terkirim ke produsen lokal dan bahan segar sampai di depan pintu.",
+    desc: "Daftar belanja langsung terkirim ke supplier lokal dan bahan segar sampai di depan pintu.",
   },
 ];
 
