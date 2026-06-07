@@ -48,9 +48,12 @@ create policy "profiles_update_own"
   with check (auth.uid() = id);
 
 -- 4) Auto-update kolom updated_at ------------------------------------------------
+-- search_path dikunci ('') agar fungsi tidak rentan search_path hijacking
+-- (advisor 0011_function_search_path_mutable). now() tetap resolve dari pg_catalog.
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
+set search_path = ''
 as $$
 begin
   new.updated_at = now();
@@ -94,3 +97,9 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- 6) Hardening: cabut EXECUTE handle_new_user dari role API -----------------------
+-- Tanpa ini, fungsi SECURITY DEFINER bisa dipanggil anon/authenticated lewat
+-- /rest/v1/rpc/handle_new_user (advisor 0028/0029). Trigger tetap berjalan saat
+-- registrasi karena PostgreSQL tidak mengecek hak EXECUTE untuk pemanggilan trigger.
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
