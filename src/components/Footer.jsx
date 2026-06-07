@@ -1,13 +1,10 @@
 import { Logo } from "./Logo.jsx";
-import { usePlan } from "../hooks/usePlan.js";
 
 import { Link } from "react-router-dom";
 
 const links = ["Tentang Kami", "Bantuan", "Kebijakan Privasi", "Syarat dan Ketentuan"];
 
 export function Footer() {
-  const { showToast } = usePlan();
-
   return (
     <footer className="w-full mt-auto bg-surface-container-highest border-t border-outline-variant/30">
       <div className="w-full px-margin-mobile md:px-margin-desktop py-12 flex flex-col md:flex-row justify-between items-center max-w-container-max mx-auto gap-8">

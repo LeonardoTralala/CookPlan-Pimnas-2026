@@ -1,3 +1,7 @@
+import { Navbar } from "../components/Navbar.jsx";
+import { Footer } from "../components/Footer.jsx";
+import { Toast } from "../components/Toast.jsx";
+
 // Data anggota tim — placeholder, mudah diganti dengan data asli nanti.
 // Setiap kartu pakai lg:col-span-2 agar membentuk grid bento di 6 kolom.
 const TEAM_MEMBERS = [
@@ -35,10 +39,12 @@ const ADVISOR = {
   faculty: 'Dosen Pembimbing PKM-K'
 };
 
-function TeamProfile() {
+export function TeamProfile({ onNavigate }) {
   return (
-    <div className="bg-canvas-white text-on-surface min-h-dvh">
-      {/* ---------------- Hero ---------------- */}
+    <div className="bg-canvas-white text-on-surface min-h-dvh flex flex-col antialiased">
+      <Navbar onNavigate={onNavigate} />
+      <main className="flex-grow pt-24 pb-16">
+        {/* ---------------- Hero ---------------- */}
       <section className="w-full max-w-container-max mx-auto px-5 md:px-10 section-padding text-center flex flex-col items-center">
         <h1 className="font-headline-xl text-headline-lg md:text-headline-xl tracking-tight text-primary max-w-3xl mb-6 leading-tight">
           Menyederhanakan Perencanaan Makan untuk Pikiran yang Sibuk
@@ -117,8 +123,9 @@ function TeamProfile() {
           </div>
         </div>
       </section>
+      </main>
+      <Footer />
+      <Toast />
     </div>
   );
 }
-
-export default TeamProfile;
