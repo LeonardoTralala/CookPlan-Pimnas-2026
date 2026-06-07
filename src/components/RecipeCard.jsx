@@ -27,10 +27,6 @@ export function RecipeCard({ recipe }) {
             <span className="flex items-center gap-1">
               <span className="text-base">♨️</span> {recipe.time}
             </span>
-            <span className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-sm">local_fire_department</span>{" "}
-              {recipe.calories}
-            </span>
           </div>
           <p className="text-sm text-on-surface-variant mb-2">{recipe.desc}</p>
         </div>
