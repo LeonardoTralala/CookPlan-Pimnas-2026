@@ -1,4 +1,4 @@
-import { heroImage } from "../utils/recipes.js";
+import { useEffect, useRef } from "react";
 import { scrollToSection } from "../utils/scroll.js";
 
 export function Hero({ onNavigate }) {
@@ -7,10 +7,53 @@ export function Hero({ onNavigate }) {
   const goRegister = () => (onNavigate ? onNavigate("register") : scrollToSection("how-it-works"));
   const goLearn = () => scrollToSection("how-it-works");
 
+  const videoRef = useRef(null);
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    // Hormati prefers-reduced-motion: hentikan loop, biarkan poster diam.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      v.removeAttribute("autoplay");
+      v.pause();
+      return;
+    }
+    // Hemat kuota di HP: pakai versi 720p yang jauh lebih ringan.
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      const source = v.querySelector("source");
+      if (source && !source.src.includes("720")) {
+        source.src = "/hero-cook-720.mp4";
+        v.load();
+        v.play().catch(() => {});
+      }
+    }
+  }, []);
+
   return (
-    <section className="hero-gradient pt-12 pb-16 md:pt-20 md:pb-32">
-      <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-        <div className="space-y-6 md:space-y-8">
+    <section className="relative isolate overflow-hidden hero-gradient pt-12 pb-16 md:pt-20 md:pb-32 md:min-h-[600px] flex items-center">
+      {/* ---- Latar: video looping (poster sbagai fallback awal & reduced-motion) ---- */}
+      <div className="absolute inset-0 -z-10">
+        <video
+          ref={videoRef}
+          className="h-full w-full object-cover object-right"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster="/hero-poster.jpg"
+          aria-hidden="true"
+          tabIndex={-1}
+        >
+          <source src="/hero-cook.mp4" type="video/mp4" />
+        </video>
+        {/* Scrim agar teks di kiri tetap terbaca di atas video bergerak */}
+        <div className="absolute inset-0 bg-gradient-to-r from-canvas-white via-canvas-white/85 to-transparent md:via-canvas-white/75"></div>
+        <div className="absolute inset-0 bg-canvas-white/35 md:bg-transparent"></div>
+      </div>
+
+      {/* ---- Konten ---- */}
+      <div className="relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <div className="max-w-xl space-y-6 md:space-y-8">
           <span className="inline-block px-4 py-1.5 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm uppercase tracking-wider font-semibold">
             Mulai Hidup Sehat
           </span>
@@ -29,21 +72,11 @@ export function Hero({ onNavigate }) {
             </button>
             <button
               onClick={goLearn}
-              className="px-6 py-3 md:px-8 md:py-4 border-2 border-primary text-primary rounded-full font-label-md text-label-md hover:bg-primary/5 transition-colors cursor-pointer font-semibold"
+              className="px-6 py-3 md:px-8 md:py-4 border-2 border-primary text-primary rounded-full font-label-md text-label-md hover:bg-primary/5 transition-colors cursor-pointer font-semibold backdrop-blur-sm"
             >
               Pelajari Cara Kerja
             </button>
           </div>
-        </div>
-        <div className="relative group">
-          <div className="absolute -inset-4 bg-primary/5 rounded-panel blur-3xl group-hover:bg-primary/10 transition-colors"></div>
-          <img
-            className="relative w-full h-[240px] sm:h-[400px] md:h-[500px] object-cover rounded-3xl shadow-xl image-reveal"
-            alt="Hidangan masakan rumahan sehat khas Indonesia yang menggugah selera"
-            src={heroImage}
-            loading="eager"
-            onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
-          />
         </div>
       </div>
     </section>
