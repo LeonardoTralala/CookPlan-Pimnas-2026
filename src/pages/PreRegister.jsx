@@ -43,7 +43,7 @@ const BENEFITS = [
   {
     icon: "local_offer",
     title: "Diskon Khusus Pendaftar Awal",
-    desc: "Dapatkan penawaran eksklusif untuk bahan dari produsen lokal favoritmu.",
+    desc: "Dapatkan penawaran eksklusif untuk bahan dari supplier lokal favoritmu.",
   },
   {
     icon: "notifications_active",
