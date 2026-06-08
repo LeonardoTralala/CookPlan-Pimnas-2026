@@ -14,7 +14,7 @@ export const initialRecipes = [
   {
     id: 2,
     name: "Rendang Daging Sapi",
-    tag: "Masakan Padang",
+    tag: "Olahan Daging",
     time: "90m",
     calories: "610 kCal",
     desc: "Rendang daging sapi empuk kaya rempah, dimasak perlahan hingga bumbu meresap sempurna.",
