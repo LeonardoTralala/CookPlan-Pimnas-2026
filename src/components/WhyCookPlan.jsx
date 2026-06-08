@@ -8,7 +8,7 @@ const benefits = [
   },
   {
     icon: "favorite",
-    title: "Dukungan Produsen Lokal",
+    title: "Dukungan Supplier Lokal",
     desc: "Setiap rupiah yang Anda belanjakan langsung memberdayakan petani dan UMKM lokal di sekitar Anda.",
   },
   {
