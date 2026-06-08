@@ -23,7 +23,7 @@ export function FinalCTA({ onNavigate }) {
             onClick={start}
             className="px-10 py-5 bg-on-primary-container text-primary-container font-bold rounded-full hover:bg-white hover:text-primary transition-colors shadow-xl cursor-pointer"
           >
-            Mulai Sekarang - Gratis
+            Coba Sekarang
           </button>
         </div>
       </div>
