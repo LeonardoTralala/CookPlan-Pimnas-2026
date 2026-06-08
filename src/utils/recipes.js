@@ -9,7 +9,7 @@ export const initialRecipes = [
     calories: "520 kCal",
     desc: "Ayam goreng crispy dengan sambal bawang yang nendang — favorit semua kalangan.",
     image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAS_fnTGytoJbXuoSst45ycX7L5CdSqSyNn4gBZUYXFVVox-ieqJgfUjGa2y3Lzh4L3HX3sErR-Rc39WqBsVIVhFHfRAFUIpH4DPSaVRmGo8pLtsTgBCJVmymhsgBx3A9RI2O4ACnYKtyxus_kC5DE_cqVLV8D0PvWNB5gCbui05WZIR5QezkdNXc22V2ioxc2ZmorhLaj_PwXq__rw7mQCZuacmksGvEXTZGn_MPbQfsWf3F1BPfDb-gAGYkialM1EufvAUBRW2InO",
+      "https://images.pexels.com/photos/37320406/pexels-photo-37320406.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ export const initialRecipes = [
     calories: "610 kCal",
     desc: "Rendang daging sapi empuk kaya rempah, dimasak perlahan hingga bumbu meresap sempurna.",
     image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBazXnSB2QU_eyxkzLQPrWlzD4_wCwSieBvk5UlvHp327q3xTnQaOpWx7ibE9ZSm_DaJmbjmuuqid3Qjmcarg2niVBoPzzBQZ7jdnfbgjbqZsUHMpw9NT1uzW5y2Mn-prrZUOVN4d0pA9j3uJo68R5ixi_QJTIKdoRJrPLnw1vD7XwNI021XyhuR7oxx9tLv0JJmdb3CeycSUV7-fR9kkJUVuNOaexX_Y18yVUY6zDHo1YjKB5p5pmfNAUe5ywErx30wx6m6LNUfNZ3",
+      "https://images.pexels.com/photos/37066375/pexels-photo-37066375.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
   {
     id: 3,
@@ -29,7 +29,7 @@ export const initialRecipes = [
     calories: "430 kCal",
     desc: "Nasi goreng sederhana dengan kecap, bawang merah, dan telur — mudah dibuat kapan saja.",
     image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuB15XBxuo3amhiK1th3uQBS0e6STmXGG3jzn5-puyZKyqbBaCQDfNfWcPEHYzcVlmyXg9YfK4w8dFbsI2Xs-ilRWgHF5SRyEVHeqaIKhqwFKCFILzuQ5tXJk52I6dnkCZvAnc8vE_KQEdBtQDVBaZVbN1xmv-kPMjtEDPMTMUFZo8WLC_EJccVOi6kA7EPhGH-jb1F5I06LWCOLkkHNeLxIbF7AZSlj5NUhFVmEsEJZ_S_Pj6lPwlkJn8eWpd_A8DEX-dpcUS67Ns7L",
+      "https://images.pexels.com/photos/30604609/pexels-photo-30604609.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
 ];
 
