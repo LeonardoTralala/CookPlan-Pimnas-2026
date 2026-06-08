@@ -25,11 +25,7 @@ export function RecipeCard({ recipe }) {
           <h3 className="font-headline-md text-headline-md text-primary mb-2">{recipe.name}</h3>
           <div className="flex items-center gap-4 text-on-surface-variant text-label-sm mb-4">
             <span className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-sm">schedule</span> {recipe.time}
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-sm">local_fire_department</span>{" "}
-              {recipe.calories}
+              <span className="material-symbols-outlined text-base">outdoor_grill</span> {recipe.time}
             </span>
           </div>
           <p className="text-sm text-on-surface-variant mb-2">{recipe.desc}</p>

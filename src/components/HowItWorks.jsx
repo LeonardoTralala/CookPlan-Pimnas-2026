@@ -2,12 +2,12 @@ const steps = [
   {
     icon: "menu_book",
     title: "Pilih Resep",
-    desc: "Pilih ribuan resep sehat yang dikurasi khusus oleh ahli gizi untuk keluarga Anda.",
+    desc: "Pilih dari berbagai resep sehat dan lezat yang cocok untuk semua gaya hidup dan kebutuhan Anda.",
   },
   {
     icon: "calendar_month",
     title: "Atur Jadwal",
-    desc: "Tentukan hari memasak Anda dan biarkan sistem kami menyesuaikan kebutuhan nutrisi harian.",
+    desc: "Atur jadwal memasak anda, rencanakan menu sesuai kebutuhan dan nutrisi harian anda.",
   },
   {
     icon: "local_mall",
