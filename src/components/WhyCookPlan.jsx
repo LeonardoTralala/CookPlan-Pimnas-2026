@@ -7,11 +7,6 @@ const benefits = [
     desc: "Atur jadwal masak mingguan. Sesuaikan dengan porsi yang kamu butuhkan tanpa ribet.",
   },
   {
-    icon: "favorite",
-    title: "Dukungan Produsen Lokal",
-    desc: "Setiap rupiah yang Anda belanjakan langsung memberdayakan petani dan UMKM lokal di sekitar Anda.",
-  },
-  {
     icon: "schedule",
     title: "Hemat Waktu Berharga",
     desc: 'Hentikan kebingungan "masak apa hari ini" dan kurangi waktu belanja di pasar hingga 70%.',
