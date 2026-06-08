@@ -12,7 +12,7 @@ export function Hero({ onNavigate }) {
       <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid md:grid-cols-2 gap-8 md:gap-12 items-center">
         <div className="space-y-6 md:space-y-8">
           <span className="inline-block px-4 py-1.5 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm uppercase tracking-wider font-semibold">
-            Mulai Hidup Sehat
+            Dapur Cerdas Dimulai di Sini
           </span>
           <h1 className="font-headline-xl text-headline-xl text-primary leading-tight">
             Plan It, Cook It, Waste Nothing.
