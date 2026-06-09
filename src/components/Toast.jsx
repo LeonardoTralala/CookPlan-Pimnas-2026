@@ -4,20 +4,24 @@ import { usePlan } from "../hooks/usePlan.js";
 // Konten berubah saat ada pesan; sr-only menyembunyikannya secara visual saat kosong.
 export function Toast() {
   const { toast } = usePlan();
+  const isError = toast.variant === "error";
 
   return (
     <div
-      role="status"
-      aria-live="polite"
+      role={isError ? "alert" : "status"}
+      aria-live={isError ? "assertive" : "polite"}
       aria-atomic="true"
       className={
         toast.message
-          ? "fixed bottom-6 right-6 z-50 bg-primary text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 animate-fade-in"
+          ? `fixed bottom-6 right-6 z-50 ${isError ? "bg-error" : "bg-primary"} text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 animate-fade-in`
           : "sr-only"
       }
     >
-      <span className="material-symbols-outlined text-success-green shrink-0" aria-hidden="true">
-        check_circle
+      <span
+        className={`material-symbols-outlined shrink-0 ${isError ? "text-white" : "text-success-green"}`}
+        aria-hidden="true"
+      >
+        {isError ? "error" : "check_circle"}
       </span>
       <span className="font-medium text-sm">{toast.message}</span>
       {toast.onUndo && (
