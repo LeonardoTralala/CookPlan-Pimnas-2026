@@ -11,7 +11,7 @@ export function FeaturedRecipes({ onNavigate }) {
 
   return (
     <section id="recipes" className="section-padding bg-canvas-white px-margin-mobile md:px-margin-desktop">
-      <div className="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-end mb-10 md:mb-12 gap-6">
+      <div className="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-12 gap-6">
         <div className="max-w-xl">
           <h2 className="font-headline-lg text-headline-lg text-primary mb-4">
             Resep Unggulan Minggu Ini
@@ -22,7 +22,7 @@ export function FeaturedRecipes({ onNavigate }) {
         </div>
         <button
           onClick={seeAll}
-          className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all cursor-pointer"
+          className="flex items-center gap-2 text-primary font-bold hover:gap-4 active:opacity-70 transition-all cursor-pointer py-2 -my-2"
         >
           <span>Lihat Semua Resep</span>
           <span className="material-symbols-outlined">arrow_forward</span>

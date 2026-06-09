@@ -14,7 +14,7 @@ export function Navbar() {
 
         <Link
           to="/register"
-          className="inline-flex px-5 py-2 rounded-full bg-primary text-on-primary text-sm font-semibold hover:bg-surface-tint transition-colors cursor-pointer"
+          className="inline-flex items-center min-h-11 px-5 py-2.5 rounded-full bg-primary text-on-primary text-sm font-semibold hover:bg-surface-tint active:scale-95 transition cursor-pointer"
         >
           Daftar Gratis
         </Link>

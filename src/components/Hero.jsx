@@ -66,13 +66,13 @@ export function Hero({ onNavigate }) {
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button
               onClick={goRegister}
-              className="px-6 py-3 md:px-8 md:py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg transition-shadow cursor-pointer font-semibold"
+              className="px-6 py-3 md:px-8 md:py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg active:scale-[0.98] transition cursor-pointer font-semibold"
             >
               Daftar Gratis Sekarang
             </button>
             <button
               onClick={goLearn}
-              className="px-6 py-3 md:px-8 md:py-4 border-2 border-primary text-primary rounded-full font-label-md text-label-md hover:bg-primary/5 transition-colors cursor-pointer font-semibold backdrop-blur-sm"
+              className="px-6 py-3 md:px-8 md:py-4 border-2 border-primary text-primary rounded-full font-label-md text-label-md hover:bg-primary/5 active:scale-[0.98] transition cursor-pointer font-semibold backdrop-blur-sm"
             >
               Pelajari Cara Kerja
             </button>
