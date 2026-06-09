@@ -1,8 +1,8 @@
 const steps = [
   {
     icon: "menu_book",
-    title: "Pilih Resep",
-    desc: "Pilih dari berbagai resep sehat dan lezat yang cocok untuk semua gaya hidup dan kebutuhan Anda.",
+    title: "Rekomendasi Resep",
+    desc: "Dapatkan rekomendasi berbagai resep yang cocok untuk semua gaya hidup dan kebutuhan Anda.",
   },
   {
     icon: "calendar_month",

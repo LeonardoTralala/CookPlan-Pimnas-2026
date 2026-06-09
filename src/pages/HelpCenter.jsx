@@ -6,7 +6,7 @@ import { Toast } from "../components/Toast.jsx";
 const FAQ_ITEMS = [
   {
     question: "Bagaimana cara merencanakan menu mingguan?",
-    answer: "Setelah mendaftar, Anda bisa masuk ke halaman 'Katalog Resep'. Pilih resep yang Anda suka, tentukan porsi dan hari apa Anda ingin memasaknya, lalu klik 'Tambahkan ke Rencana'. Sistem kami akan otomatis mengatur jadwal mingguan Anda."
+    answer: "Setelah mendaftar, Anda bisa masuk ke halaman 'Katalog Resep'. Dapatkan rekomendasi resep yang sesuai dengan preferensi Anda, tentukan porsi dan hari apa Anda ingin memasaknya, lalu klik 'Tambahkan ke Rencana'. Sistem kami akan otomatis mengatur jadwal mingguan Anda."
   },
   {
     question: "Apakah saya bisa mengubah daftar belanja otomatis?",

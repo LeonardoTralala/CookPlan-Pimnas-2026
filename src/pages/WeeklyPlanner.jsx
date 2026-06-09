@@ -109,7 +109,7 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
   const handleConfirmAdd = () => {
     if (!pickerTarget || !pickerSelectedRecipe) return;
     onSetSlot(pickerSelectedRecipe, pickerTarget.day, pickerTarget.meal, pickerServings);
-    
+
     const mealLabel = MEALS.find((m) => m.key === pickerTarget.meal)?.label || pickerTarget.meal;
     showToast(`Berhasil menambahkan ${pickerSelectedRecipe.title} ke menu ${mealLabel} hari ${pickerTarget.day}!`);
 
@@ -149,11 +149,10 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                 <button
                   key={day.key}
                   onClick={() => setActiveMobileDay(day.key)}
-                  className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-bold transition-all shadow-sm cursor-pointer ${
-                    activeMobileDay === day.key
+                  className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-bold transition-all shadow-sm cursor-pointer ${activeMobileDay === day.key
                       ? 'bg-primary text-white scale-105'
                       : 'bg-white text-on-surface-variant border border-outline-variant hover:bg-surface-variant'
-                  }`}
+                    }`}
                 >
                   {day.short} <span className="font-medium text-xs opacity-80 ml-1">{weekDates[dayIdx]}</span>
                 </button>
@@ -194,66 +193,66 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                             {meal.label}
                           </div>
                           {slot ? (
-                          <div
-                            className="h-40 group relative rounded-3xl overflow-hidden recipe-card-shadow cursor-pointer"
-                          >
-                            <img
-                              src={slot.imageUrl}
-                              alt={slot.title}
-                              loading="lazy"
-                              onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
-                              <span className="text-white font-semibold text-[13px] leading-tight mb-1 line-clamp-2">
-                                {slot.title}
-                              </span>
-                              <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                                <div className="flex items-center gap-1 bg-on-surface/50 backdrop-blur-md px-2 py-0.5 rounded-full text-white/95 shadow-sm border border-white/10">
-                                  <span className="material-symbols-outlined text-[12px]">schedule</span>
-                                  <span className="text-[9px] font-bold tracking-wide">{slot.readyInMinutes}m</span>
-                                </div>
-                                <div className="flex items-center gap-1 bg-primary/90 backdrop-blur-md px-2 py-0.5 rounded-full text-white shadow-sm border border-primary-container/30">
-                                  <span className="material-symbols-outlined text-[12px]">group</span>
-                                  <span className="text-[9px] font-bold tracking-wide">{slot.servings || 2} porsi</span>
+                            <div
+                              className="h-40 group relative rounded-3xl overflow-hidden recipe-card-shadow cursor-pointer"
+                            >
+                              <img
+                                src={slot.imageUrl}
+                                alt={slot.title}
+                                loading="lazy"
+                                onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
+                                <span className="text-white font-semibold text-[13px] leading-tight mb-1 line-clamp-2">
+                                  {slot.title}
+                                </span>
+                                <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                                  <div className="flex items-center gap-1 bg-on-surface/50 backdrop-blur-md px-2 py-0.5 rounded-full text-white/95 shadow-sm border border-white/10">
+                                    <span className="material-symbols-outlined text-[12px]">schedule</span>
+                                    <span className="text-[9px] font-bold tracking-wide">{slot.readyInMinutes}m</span>
+                                  </div>
+                                  <div className="flex items-center gap-1 bg-primary/90 backdrop-blur-md px-2 py-0.5 rounded-full text-white shadow-sm border border-primary-container/30">
+                                    <span className="material-symbols-outlined text-[12px]">group</span>
+                                    <span className="text-[9px] font-bold tracking-wide">{slot.servings || 2} porsi</span>
+                                  </div>
                                 </div>
                               </div>
+                              {/* Tombol hapus */}
+                              <button
+                                onClick={() => {
+                                  const savedSlot = weeklyPlan[day.key][meal.key];
+                                  onRemoveSlot(day.key, meal.key);
+                                  showToast(
+                                    `Menu dihapus dari ${meal.label} hari ${day.key}`,
+                                    {
+                                      onUndo: () => {
+                                        restoreSlot(day.key, meal.key, savedSlot);
+                                        showToast('Menu dikembalikan');
+                                      }
+                                    }
+                                  );
+                                }}
+                                title="Hapus dari rencana"
+                                aria-label={`Hapus ${slot.title} dari ${meal.label} hari ${day.key}`}
+                                className="absolute top-2 right-2 w-11 h-11 rounded-full bg-on-surface/50 hover:bg-error text-white flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all cursor-pointer"
+                              >
+                                <span className="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
+                              </button>
                             </div>
-                            {/* Tombol hapus */}
+                          ) : (
                             <button
                               onClick={() => {
-                                const savedSlot = weeklyPlan[day.key][meal.key];
-                                onRemoveSlot(day.key, meal.key);
-                                showToast(
-                                  `Menu dihapus dari ${meal.label} hari ${day.key}`,
-                                  {
-                                    onUndo: () => {
-                                      restoreSlot(day.key, meal.key, savedSlot);
-                                      showToast('Menu dikembalikan');
-                                    }
-                                  }
-                                );
+                                setPickerTarget({ day: day.key, meal: meal.key });
+                                setPickerSearch('');
                               }}
-                              title="Hapus dari rencana"
-                              aria-label={`Hapus ${slot.title} dari ${meal.label} hari ${day.key}`}
-                              className="absolute top-2 right-2 w-11 h-11 rounded-full bg-on-surface/50 hover:bg-error text-white flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all cursor-pointer"
+                              className="h-40 border-2 border-dashed border-outline-variant rounded-3xl flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:border-primary hover:text-primary transition-all bg-white/50 group cursor-pointer w-full"
                             >
-                              <span className="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
+                              <span className="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform">
+                                add_circle
+                              </span>
+                              <span className="text-xs font-semibold">Tambah Resep</span>
                             </button>
-                          </div>
-                          ) : (
-                        <button
-                          onClick={() => {
-                            setPickerTarget({ day: day.key, meal: meal.key });
-                            setPickerSearch('');
-                          }}
-                          className="h-40 border-2 border-dashed border-outline-variant rounded-3xl flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:border-primary hover:text-primary transition-all bg-white/50 group cursor-pointer w-full"
-                        >
-                          <span className="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform">
-                            add_circle
-                          </span>
-                          <span className="text-xs font-semibold">Tambah Resep</span>
-                        </button>
                           )}
                         </div>
                       );
@@ -337,16 +336,14 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
           disabled={stats.filled === 0}
           aria-disabled={stats.filled === 0}
           title={stats.filled === 0 ? 'Isi minimal satu slot makan dulu' : undefined}
-          className={`pointer-events-auto px-8 py-4 rounded-full flex items-center gap-3 transition-all group ${
-            stats.filled === 0
+          className={`pointer-events-auto px-8 py-4 rounded-full flex items-center gap-3 transition-all group ${stats.filled === 0
               ? 'bg-surface-container-high text-on-surface-variant cursor-not-allowed shadow-none'
               : 'bg-primary hover:bg-primary-container text-white shadow-2xl shadow-primary/30 active:scale-95 cursor-pointer'
-          }`}
+            }`}
         >
           <span
-            className={`material-symbols-outlined transition-transform ${
-              stats.filled === 0 ? '' : 'group-hover:rotate-12'
-            }`}
+            className={`material-symbols-outlined transition-transform ${stats.filled === 0 ? '' : 'group-hover:rotate-12'
+              }`}
           >
             shopping_cart
           </span>
@@ -366,152 +363,152 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
           labelledBy="modal-picker-title"
           panelClassName="overflow-hidden max-w-2xl max-h-[90dvh] md:max-h-[85dvh] flex flex-col"
         >
-            {/* Content Based on Selection */}
-            {!pickerSelectedRecipe ? (
-              <>
-                <div className="p-6 border-b border-outline-variant shrink-0">
-                  <button
-                    onClick={() => {
-                      setPickerTarget(null);
-                      setPickerSelectedRecipe(null);
-                    }}
-                    className="absolute right-4 top-4 w-11 h-11 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
-                    aria-label="Tutup pencarian resep"
-                  >
-                    <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
-                  </button>
-                  <h3 id="modal-picker-title" className="font-headline-md text-headline-md text-primary mb-1 flex items-center gap-1.5 pr-10">
-                    <span className="material-symbols-outlined text-2xl">restaurant_menu</span>
-                    Pilih Resep
-                  </h3>
-                  <p className="text-xs text-on-surface-variant mb-4">
-                    Pilih hidangan untuk{' '}
-                    <strong>{MEALS.find((m) => m.key === pickerTarget.meal)?.label}</strong> hari{' '}
-                    <strong>{pickerTarget.day}</strong>.
-                  </p>
-                  <div className="relative">
-                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">
-                      search
+          {/* Content Based on Selection */}
+          {!pickerSelectedRecipe ? (
+            <>
+              <div className="p-6 border-b border-outline-variant shrink-0">
+                <button
+                  onClick={() => {
+                    setPickerTarget(null);
+                    setPickerSelectedRecipe(null);
+                  }}
+                  className="absolute right-4 top-4 w-11 h-11 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                  aria-label="Tutup pencarian resep"
+                >
+                  <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
+                </button>
+                <h3 id="modal-picker-title" className="font-headline-md text-headline-md text-primary mb-1 flex items-center gap-1.5 pr-10">
+                  <span className="material-symbols-outlined text-2xl">restaurant_menu</span>
+                  Rekomendasi Resep
+                </h3>
+                <p className="text-xs text-on-surface-variant mb-4">
+                  Pilih hidangan untuk{' '}
+                  <strong>{MEALS.find((m) => m.key === pickerTarget.meal)?.label}</strong> hari{' '}
+                  <strong>{pickerTarget.day}</strong>.
+                </p>
+                <div className="relative">
+                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">
+                    search
+                  </span>
+                  <input
+                    type="search"
+                    inputMode="search"
+                    enterKeyHint="search"
+                    autoComplete="off"
+                    autoFocus
+                    value={pickerSearch}
+                    onChange={(e) => setPickerSearch(e.target.value)}
+                    placeholder="Cari resep..."
+                    className="w-full pl-11 pr-4 py-2.5 rounded-full border border-outline-variant bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-base font-medium"
+                  />
+                </div>
+              </div>
+
+              {/* List */}
+              <div className="overflow-y-auto flex-1 p-6">
+                {pickerResults.length === 0 ? (
+                  <div className="text-center py-12 text-on-surface-variant">
+                    <span className="material-symbols-outlined text-5xl text-outline-variant mb-2 block">
+                      sentiment_dissatisfied
                     </span>
-                    <input
-                      type="search"
-                      inputMode="search"
-                      enterKeyHint="search"
-                      autoComplete="off"
-                      autoFocus
-                      value={pickerSearch}
-                      onChange={(e) => setPickerSearch(e.target.value)}
-                      placeholder="Cari resep..."
-                      className="w-full pl-11 pr-4 py-2.5 rounded-full border border-outline-variant bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-base font-medium"
-                    />
+                    <p className="text-sm">Resep tidak ditemukan.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {pickerResults.map((recipe) => (
+                      <button
+                        key={recipe.id}
+                        onClick={() => handlePickRecipe(recipe)}
+                        className="flex items-center gap-3 p-3 rounded-2xl border border-outline-variant bg-white hover:bg-secondary-container/20 hover:border-primary transition-all text-left cursor-pointer group"
+                      >
+                        <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
+                          <img
+                            src={recipe.imageUrl}
+                            alt={recipe.title}
+                            loading="lazy"
+                            onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-bold text-sm text-on-surface leading-tight line-clamp-2">
+                            {recipe.title}
+                          </h4>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Konfirmasi Porsi Modal */}
+              <div className="p-6 md:p-8">
+                <button
+                  onClick={() => {
+                    setPickerTarget(null);
+                    setPickerSelectedRecipe(null);
+                  }}
+                  className="absolute right-4 top-4 w-11 h-11 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
+                  aria-label="Tutup pengaturan porsi"
+                >
+                  <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
+                </button>
+
+                <h3 id="modal-picker-title" className="font-headline-md text-headline-md text-primary mb-2 flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-2xl">group</span>
+                  Atur Jumlah Porsi
+                </h3>
+                <p className="text-xs text-on-surface-variant mb-6 leading-relaxed">
+                  Berapa porsi <strong>{pickerSelectedRecipe.title}</strong> yang ingin Anda masak untuk{' '}
+                  <strong>{MEALS.find((m) => m.key === pickerTarget.meal)?.label}</strong> hari{' '}
+                  <strong>{pickerTarget.day}</strong>?
+                </p>
+
+                {/* Servings Stepper */}
+                <div className="space-y-1.5 mb-8">
+                  <label className="text-xs font-bold text-on-surface uppercase tracking-wider block">
+                    Jumlah Porsi (Servings)
+                  </label>
+                  <div className="flex items-center gap-4 bg-secondary-container/20 border border-outline-variant p-2 rounded-2xl justify-between">
+                    <button
+                      onClick={() => setPickerServings(Math.max(1, pickerServings - 1))}
+                      className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                      aria-label="Kurangi porsi"
+                    >
+                      <span className="material-symbols-outlined text-lg" aria-hidden="true">remove</span>
+                    </button>
+                    <span className="font-extrabold text-lg text-primary" aria-live="polite">{pickerServings} Porsi</span>
+                    <button
+                      onClick={() => setPickerServings(pickerServings + 1)}
+                      className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
+                      aria-label="Tambah porsi"
+                    >
+                      <span className="material-symbols-outlined text-lg" aria-hidden="true">add</span>
+                    </button>
                   </div>
                 </div>
 
-                {/* List */}
-                <div className="overflow-y-auto flex-1 p-6">
-                  {pickerResults.length === 0 ? (
-                    <div className="text-center py-12 text-on-surface-variant">
-                      <span className="material-symbols-outlined text-5xl text-outline-variant mb-2 block">
-                        sentiment_dissatisfied
-                      </span>
-                      <p className="text-sm">Resep tidak ditemukan.</p>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {pickerResults.map((recipe) => (
-                        <button
-                          key={recipe.id}
-                          onClick={() => handlePickRecipe(recipe)}
-                          className="flex items-center gap-3 p-3 rounded-2xl border border-outline-variant bg-white hover:bg-secondary-container/20 hover:border-primary transition-all text-left cursor-pointer group"
-                        >
-                          <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
-                            <img
-                              src={recipe.imageUrl}
-                              alt={recipe.title}
-                              loading="lazy"
-                              onError={(e) => { e.currentTarget.src = '/img/recipe-placeholder.svg'; }}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform"
-                            />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h4 className="font-bold text-sm text-on-surface leading-tight line-clamp-2">
-                              {recipe.title}
-                            </h4>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <>
-                {/* Konfirmasi Porsi Modal */}
-                <div className="p-6 md:p-8">
+                {/* Action buttons */}
+                <div className="flex gap-3 mt-4">
                   <button
-                    onClick={() => {
-                      setPickerTarget(null);
-                      setPickerSelectedRecipe(null);
-                    }}
-                    className="absolute right-4 top-4 w-11 h-11 rounded-full bg-secondary-container/40 text-on-surface flex items-center justify-center hover:bg-secondary-container transition-colors cursor-pointer"
-                    aria-label="Tutup pengaturan porsi"
+                    onClick={handleCancelPick}
+                    className="flex-1 py-3 border border-outline-variant text-on-surface-variant hover:bg-secondary-container/20 rounded-full font-bold text-sm transition-colors cursor-pointer"
                   >
-                    <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
+                    Kembali
                   </button>
-
-                  <h3 id="modal-picker-title" className="font-headline-md text-headline-md text-primary mb-2 flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-2xl">group</span>
-                    Atur Jumlah Porsi
-                  </h3>
-                  <p className="text-xs text-on-surface-variant mb-6 leading-relaxed">
-                    Berapa porsi <strong>{pickerSelectedRecipe.title}</strong> yang ingin Anda masak untuk{' '}
-                    <strong>{MEALS.find((m) => m.key === pickerTarget.meal)?.label}</strong> hari{' '}
-                    <strong>{pickerTarget.day}</strong>?
-                  </p>
-
-                  {/* Servings Stepper */}
-                  <div className="space-y-1.5 mb-8">
-                    <label className="text-xs font-bold text-on-surface uppercase tracking-wider block">
-                      Jumlah Porsi (Servings)
-                    </label>
-                    <div className="flex items-center gap-4 bg-secondary-container/20 border border-outline-variant p-2 rounded-2xl justify-between">
-                      <button
-                        onClick={() => setPickerServings(Math.max(1, pickerServings - 1))}
-                        className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
-                        aria-label="Kurangi porsi"
-                      >
-                        <span className="material-symbols-outlined text-lg" aria-hidden="true">remove</span>
-                      </button>
-                      <span className="font-extrabold text-lg text-primary" aria-live="polite">{pickerServings} Porsi</span>
-                      <button
-                        onClick={() => setPickerServings(pickerServings + 1)}
-                        className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center hover:bg-secondary-container/30 active:scale-95 transition-all text-primary font-bold cursor-pointer"
-                        aria-label="Tambah porsi"
-                      >
-                        <span className="material-symbols-outlined text-lg" aria-hidden="true">add</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Action buttons */}
-                  <div className="flex gap-3 mt-4">
-                    <button
-                      onClick={handleCancelPick}
-                      className="flex-1 py-3 border border-outline-variant text-on-surface-variant hover:bg-secondary-container/20 rounded-full font-bold text-sm transition-colors cursor-pointer"
-                    >
-                      Kembali
-                    </button>
-                    <button
-                      onClick={handleConfirmAdd}
-                      className="flex-1 py-3 bg-primary text-white hover:bg-primary-container rounded-full font-bold text-sm transition-all shadow-md cursor-pointer flex items-center justify-center gap-1"
-                    >
-                      <span className="material-symbols-outlined text-lg">check</span>
-                      Konfirmasi
-                    </button>
-                  </div>
+                  <button
+                    onClick={handleConfirmAdd}
+                    className="flex-1 py-3 bg-primary text-white hover:bg-primary-container rounded-full font-bold text-sm transition-all shadow-md cursor-pointer flex items-center justify-center gap-1"
+                  >
+                    <span className="material-symbols-outlined text-lg">check</span>
+                    Konfirmasi
+                  </button>
                 </div>
-              </>
-            )}
+              </div>
+            </>
+          )}
         </ModalSheet>
       )}
     </div>
