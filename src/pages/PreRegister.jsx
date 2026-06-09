@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Logo } from "../components/Logo.jsx";
 import { Toast } from "../components/Toast.jsx";
@@ -83,6 +83,16 @@ export function PreRegister({ onNavigate }) {
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  // Honeypot anti-bot: harus tetap kosong. Diisi otomatis oleh bot, bukan
+  // manusia (field-nya disembunyikan dari layar & tab order).
+  const [botField, setBotField] = useState("");
+  const successRef = useRef(null);
+
+  // Pindahkan fokus ke judul sukses agar perubahan layar terumumkan ke
+  // pembaca layar (screen reader), bukan tertinggal di tombol submit lama.
+  useEffect(() => {
+    if (submitted) successRef.current?.focus();
+  }, [submitted]);
 
   const update = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -108,10 +118,18 @@ export function PreRegister({ onNavigate }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return;
+
+    // Honeypot terisi → hampir pasti bot. Pura-pura sukses tanpa menyentuh
+    // database agar bot tidak tahu submission-nya diabaikan.
+    if (botField) {
+      setSubmitted(true);
+      return;
+    }
+
     const found = validate();
     if (Object.keys(found).length > 0) {
       setErrors(found);
-      showToast("Periksa kembali data yang kamu isi.");
+      showToast("Periksa kembali data yang kamu isi.", { variant: "error" });
       return;
     }
 
@@ -127,23 +145,29 @@ export function PreRegister({ onNavigate }) {
     };
 
     setSubmitting(true);
-    const { error } = await supabase.from("preregistrations").insert(entry);
-    setSubmitting(false);
-
-    if (error) {
-      // 23505 = unique_violation → email sudah ada di daftar tunggu.
-      if (error.code === "23505") {
-        setErrors({ email: "Email ini sudah terdaftar di daftar tunggu." });
-        showToast("Email ini sudah terdaftar.");
+    try {
+      const { error } = await supabase.from("preregistrations").insert(entry);
+      if (error) {
+        // 23505 = unique_violation → email sudah ada di daftar tunggu.
+        if (error.code === "23505") {
+          setErrors({ email: "Email ini sudah terdaftar di daftar tunggu." });
+          showToast("Email ini sudah terdaftar.", { variant: "error" });
+          return;
+        }
+        showToast("Gagal mendaftar. Periksa koneksi lalu coba lagi.", { variant: "error" });
         return;
       }
-      showToast("Gagal mendaftar. Periksa koneksi lalu coba lagi.");
-      return;
-    }
 
-    setSubmitted(true);
-    setForm(EMPTY_FORM);
-    showToast("Pendaftaran berhasil! Sampai jumpa di peluncuran 🎉");
+      setSubmitted(true);
+      setForm(EMPTY_FORM);
+      showToast("Pendaftaran berhasil! Sampai jumpa di peluncuran 🎉");
+    } catch {
+      // Kegagalan jaringan bisa membuat fetch melempar (bukan mengembalikan
+      // { error }). Tangani di sini supaya tombol tidak terkunci selamanya.
+      showToast("Gagal mendaftar. Periksa koneksi lalu coba lagi.", { variant: "error" });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -199,14 +223,20 @@ export function PreRegister({ onNavigate }) {
                 <div className="w-20 h-20 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
                   <span className="material-symbols-outlined text-4xl">check_circle</span>
                 </div>
-                <h2 className="font-headline-lg text-headline-lg text-primary">Kamu Sudah Terdaftar!</h2>
+                <h2
+                  ref={successRef}
+                  tabIndex={-1}
+                  className="font-headline-lg text-headline-lg text-primary outline-none"
+                >
+                  Kamu Sudah Terdaftar!
+                </h2>
                 <p className="text-on-surface-variant max-w-xs">
                   Terima kasih sudah bergabung di daftar tunggu CookPlan. Kami akan menghubungimu begitu peluncuran dimulai.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 w-full pt-2">
                   <button
                     onClick={() => {
-                      const text = "Aku baru daftar ke CookPlan — aplikasi rencana masak dengan bahan lokal! Kamu juga bisa daftar daftar tunggu gratis di sini:";
+                      const text = "Aku baru daftar ke CookPlan — aplikasi rencana masak dengan bahan lokal! Kamu juga bisa ikut daftar tunggu gratis di sini:";
                       const url = window.location.origin + "/register";
                       if (navigator.share) {
                         navigator.share({ title: "CookPlan — Daftar Tunggu", text, url }).catch(() => {});
@@ -234,40 +264,57 @@ export function PreRegister({ onNavigate }) {
                   <p className="text-sm text-on-surface-variant mt-1">Isi data di bawah, tidak sampai satu menit.</p>
                 </div>
 
-                <Field label="Nama Lengkap" error={errors.name}>
+                <Field id="pr-name" label="Nama Lengkap" error={errors.name}>
                   <input
+                    id="pr-name"
                     type="text"
                     value={form.name}
                     onChange={update("name")}
                     placeholder="Contoh: Andi Pratama"
+                    autoComplete="name"
+                    maxLength={120}
+                    aria-invalid={errors.name ? true : undefined}
+                    aria-describedby={errors.name ? "pr-name-error" : undefined}
                     className={inputClass(errors.name)}
                   />
                 </Field>
 
-                <Field label="Email" error={errors.email}>
+                <Field id="pr-email" label="Email" error={errors.email}>
                   <input
+                    id="pr-email"
                     type="email"
                     value={form.email}
                     onChange={update("email")}
                     placeholder="kamu@email.com"
+                    autoComplete="email"
+                    maxLength={200}
+                    aria-invalid={errors.email ? true : undefined}
+                    aria-describedby={errors.email ? "pr-email-error" : undefined}
                     className={inputClass(errors.email)}
                   />
                 </Field>
 
-                <Field label="Nomor WhatsApp (opsional)" error={errors.phone}>
+                <Field id="pr-phone" label="Nomor WhatsApp (opsional)" error={errors.phone}>
                   <input
+                    id="pr-phone"
                     type="tel"
                     value={form.phone}
                     onChange={update("phone")}
                     placeholder="0812xxxxxxxx"
+                    autoComplete="tel"
+                    maxLength={25}
+                    aria-invalid={errors.phone ? true : undefined}
+                    aria-describedby={errors.phone ? "pr-phone-error" : undefined}
                     className={inputClass(errors.phone)}
                   />
                 </Field>
 
-                <Field label="Kota / Domisili" error={errors.city}>
+                <Field id="pr-city" label="Kota / Domisili" error={errors.city}>
                   <CityCombobox
+                    id="pr-city"
                     value={form.city}
                     error={errors.city}
+                    describedBy={errors.city ? "pr-city-error" : undefined}
                     onChange={(city) => {
                       setForm((prev) => ({
                         ...prev,
@@ -281,8 +328,15 @@ export function PreRegister({ onNavigate }) {
                 </Field>
 
                 {isMalang(form.city) && (
-                  <Field label="Kecamatan (Kota Malang)" error={errors.kecamatan}>
-                    <select value={form.kecamatan} onChange={update("kecamatan")} className={inputClass(errors.kecamatan)}>
+                  <Field id="pr-kecamatan" label="Kecamatan (Kota Malang)" error={errors.kecamatan}>
+                    <select
+                      id="pr-kecamatan"
+                      value={form.kecamatan}
+                      onChange={update("kecamatan")}
+                      aria-invalid={errors.kecamatan ? true : undefined}
+                      aria-describedby={errors.kecamatan ? "pr-kecamatan-error" : undefined}
+                      className={inputClass(errors.kecamatan)}
+                    >
                       <option value="">Pilih kecamatan…</option>
                       {KECAMATAN_MALANG.map((k) => (
                         <option key={k} value={k}>
@@ -293,8 +347,8 @@ export function PreRegister({ onNavigate }) {
                   </Field>
                 )}
 
-                <Field label="Kamu seorang...">
-                  <select value={form.userType} onChange={update("userType")} className={inputClass()}>
+                <Field id="pr-usertype" label="Kamu seorang...">
+                  <select id="pr-usertype" value={form.userType} onChange={update("userType")} className={inputClass()}>
                     {USER_TYPES.map((t) => (
                       <option key={t} value={t}>
                         {t}
@@ -314,8 +368,28 @@ export function PreRegister({ onNavigate }) {
                   {submitting ? "Mendaftarkan…" : "Daftar Sekarang"}
                 </button>
                 <p className="text-xs text-center text-on-surface-variant/70">
-                  Dengan mendaftar, kamu setuju menerima informasi peluncuran dari CookPlan.
+                  Dengan mendaftar, kamu setuju menerima informasi peluncuran dari CookPlan dan menyetujui{" "}
+                  <Link to="/privacy" className="underline underline-offset-2 hover:text-primary">
+                    Kebijakan Privasi
+                  </Link>{" "}
+                  kami.
                 </p>
+
+                {/* Honeypot: tersembunyi dari manusia (off-screen + di luar tab
+                    order). Hanya bot yang mengisinya, lihat handleSubmit. */}
+                <div aria-hidden="true" className="absolute -left-[9999px] top-auto h-0 w-0 overflow-hidden">
+                  <label>
+                    Jangan isi kolom ini
+                    <input
+                      type="text"
+                      name="company"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={botField}
+                      onChange={(e) => setBotField(e.target.value)}
+                    />
+                  </label>
+                </div>
               </form>
             )}
           </div>
@@ -326,20 +400,36 @@ export function PreRegister({ onNavigate }) {
   );
 }
 
-// Searchable city picker: ketik untuk memfilter daftar kota lalu klik pilih.
-// Tetap menerima teks bebas, jadi kota di luar daftar tetap bisa didaftarkan.
-function CityCombobox({ value, error, onChange }) {
+// Searchable city picker (creatable combobox): ketik untuk memfilter daftar kota
+// lalu klik pilih. Bila kota yang diketik tidak ada di daftar, muncul opsi
+// eksplisit "Pakai '...'" sehingga kota di luar daftar tetap bisa dipilih dan
+// tercatat — bukan sekadar dibiarkan sebagai teks bebas.
+function CityCombobox({ value, error, onChange, id, describedBy }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
+  const listId = `${id || "city"}-listbox`;
+
+  const trimmed = value.trim();
 
   const matches = useMemo(() => {
-    const q = value.trim().toLowerCase();
+    const q = trimmed.toLowerCase();
     if (!q) return CITIES;
     return CITIES.filter((c) => c.toLowerCase().includes(q));
-  }, [value]);
+  }, [trimmed]);
 
-  const exactMatch = CITIES.some((c) => c.toLowerCase() === value.trim().toLowerCase());
-  const showOtherHint = value.trim() !== "" && matches.length === 0;
+  const exactMatch = CITIES.some((c) => c.toLowerCase() === trimmed.toLowerCase());
+
+  // Opsi "buat baru" muncul saat user mengetik kota yang tidak persis ada di
+  // daftar — ini solusi untuk kota yang belum terdaftar.
+  const showCreate = trimmed !== "" && !exactMatch;
+
+  // Gabungan opsi (kota + opsi buat-baru) dipakai untuk render sekaligus
+  // navigasi keyboard agar indeks aktif selalu konsisten.
+  const options = useMemo(() => {
+    const opts = matches.map((city) => ({ kind: "city", value: city }));
+    if (showCreate) opts.push({ kind: "create", value: trimmed });
+    return opts;
+  }, [matches, showCreate, trimmed]);
 
   const choose = (city) => {
     onChange(city);
@@ -354,25 +444,37 @@ function CityCombobox({ value, error, onChange }) {
     }
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setActive((i) => Math.min(i + 1, matches.length - 1));
+      setActive((i) => Math.min(i + 1, options.length - 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setActive((i) => Math.max(i - 1, 0));
-    } else if (e.key === "Enter" && active >= 0 && matches[active]) {
-      e.preventDefault();
-      choose(matches[active]);
+    } else if (e.key === "Enter") {
+      // Saat dropdown terbuka, Enter memilih opsi aktif (atau sekadar menutup
+      // dropdown) tanpa langsung men-submit form.
+      if (open) {
+        e.preventDefault();
+        if (active >= 0 && options[active]) choose(options[active].value);
+        else setOpen(false);
+      }
     } else if (e.key === "Escape") {
       setOpen(false);
     }
   };
 
+  const activeId = active >= 0 && options[active] ? `${listId}-opt-${active}` : undefined;
+
   return (
     <div className="relative">
       <input
+        id={id}
         type="text"
         role="combobox"
         aria-expanded={open}
+        aria-controls={listId}
         aria-autocomplete="list"
+        aria-activedescendant={activeId}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={describedBy}
         value={value}
         onChange={(e) => {
           onChange(e.target.value);
@@ -386,53 +488,70 @@ function CityCombobox({ value, error, onChange }) {
         autoComplete="off"
         className={inputClass(error)}
       />
-      {value.trim() !== "" && !exactMatch && (
+      {/* Badge penanda kota di luar daftar — hanya saat dropdown tertutup agar
+          tidak muncul prematur di tengah pengetikan. */}
+      {!open && showCreate && (
         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] uppercase tracking-wide font-semibold text-on-surface-variant/60">
           Kota lainnya
         </span>
       )}
 
-      {open && matches.length > 0 && (
+      {open && options.length > 0 && (
         <ul
+          id={listId}
+          role="listbox"
           className="absolute z-20 mt-1 w-full max-h-56 overflow-auto rounded-xl bg-canvas-white border border-outline-variant shadow-xl py-1"
           // Cegah input kehilangan fokus saat opsi diklik — tanpa ini, blur
           // menutup dropdown sebelum onClick opsi sempat terpanggil.
           onMouseDown={(e) => e.preventDefault()}
         >
-          {matches.map((city, i) => (
-            <li key={city}>
+          {options.map((opt, i) => (
+            <li key={opt.kind + ":" + opt.value} role="none">
               <button
                 type="button"
-                onClick={() => choose(city)}
+                id={`${listId}-opt-${i}`}
+                role="option"
+                aria-selected={i === active}
+                onClick={() => choose(opt.value)}
                 onMouseEnter={() => setActive(i)}
-                className={`w-full text-left px-4 py-2 text-sm cursor-pointer transition-colors ${
+                className={`w-full text-left px-4 py-2 text-sm cursor-pointer transition-colors flex items-center gap-2 ${
                   i === active
                     ? "bg-secondary-container text-on-secondary-container"
                     : "text-on-surface hover:bg-surface-container-low"
                 }`}
               >
-                {city}
+                {opt.kind === "create" ? (
+                  <>
+                    <span className="material-symbols-outlined text-[18px] shrink-0" aria-hidden="true">
+                      add_location_alt
+                    </span>
+                    <span>
+                      Pakai “{opt.value}” <span className="text-on-surface-variant/70">(kota lain)</span>
+                    </span>
+                  </>
+                ) : (
+                  opt.value
+                )}
               </button>
             </li>
           ))}
         </ul>
       )}
-
-      {showOtherHint && (
-        <p className="mt-1.5 text-xs text-on-surface-variant/70">
-          Kotamu belum ada di daftar — tidak masalah, kami tetap catat “{value.trim()}”.
-        </p>
-      )}
     </div>
   );
 }
 
-function Field({ label, error, children }) {
+function Field({ id, label, error, children }) {
+  const errorId = id ? `${id}-error` : undefined;
   return (
-    <label className="block">
+    <label htmlFor={id} className="block">
       <span className="block text-sm font-semibold text-on-surface mb-1.5">{label}</span>
       {children}
-      {error && <span className="block text-xs text-error mt-1">{error}</span>}
+      {error && (
+        <span id={errorId} className="block text-xs text-error mt-1">
+          {error}
+        </span>
+      )}
     </label>
   );
 }

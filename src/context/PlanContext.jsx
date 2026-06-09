@@ -22,7 +22,7 @@ function isValidPlanShape(plan) {
 
 export function PlanProvider({ children }) {
   const [addedRecipes, setAddedRecipes] = useState([]);
-  const [toast, setToast] = useState({ message: "", onUndo: null });
+  const [toast, setToast] = useState({ message: "", onUndo: null, variant: "success" });
 
   const [weeklyPlan, setWeeklyPlan] = useState(() => {
     const saved = localStorage.getItem('weeklyPlan');
@@ -38,12 +38,12 @@ export function PlanProvider({ children }) {
   });
 
   const showToast = useCallback((message, options = {}) => {
-    setToast({ message, onUndo: options.onUndo ?? null });
+    setToast({ message, onUndo: options.onUndo ?? null, variant: options.variant ?? "success" });
   }, []);
 
   useEffect(() => {
     if (!toast.message) return undefined;
-    const timer = setTimeout(() => setToast({ message: "", onUndo: null }), 3000);
+    const timer = setTimeout(() => setToast({ message: "", onUndo: null, variant: "success" }), 3000);
     return () => clearTimeout(timer);
   }, [toast.message]);
 
