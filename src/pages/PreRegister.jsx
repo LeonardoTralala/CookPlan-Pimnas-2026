@@ -171,7 +171,7 @@ export function PreRegister({ onNavigate }) {
   };
 
   return (
-    <div className="font-body-md text-on-surface bg-canvas-white min-h-screen flex flex-col antialiased">
+    <div className="font-body-md text-on-surface bg-canvas-white min-h-dvh flex flex-col antialiased">
       {/* Header */}
       <header className="w-full sticky top-0 z-50 border-b border-outline-variant/30 backdrop-blur-md bg-canvas-white/95">
         <nav className="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
@@ -180,7 +180,7 @@ export function PreRegister({ onNavigate }) {
           </Link>
           <Link
             to="/"
-            className="flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md cursor-pointer"
+            className="flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md cursor-pointer py-2 -my-2"
           >
             <span className="material-symbols-outlined text-lg">arrow_back</span>
             Kembali ke Beranda
@@ -244,14 +244,14 @@ export function PreRegister({ onNavigate }) {
                         window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, "_blank", "noopener");
                       }
                     }}
-                    className="flex-1 py-3 border-2 border-primary text-primary rounded-full font-label-md text-label-md hover:bg-primary/5 transition-colors cursor-pointer font-semibold inline-flex items-center justify-center gap-2"
+                    className="flex-1 py-3 border-2 border-primary text-primary rounded-full font-label-md text-label-md hover:bg-primary/5 active:scale-[0.98] transition cursor-pointer font-semibold inline-flex items-center justify-center gap-2"
                   >
                     <span className="material-symbols-outlined text-[18px]" aria-hidden="true">share</span>
                     Bagikan ke Teman
                   </button>
                   <button
                     onClick={() => (onNavigate ? onNavigate("overview") : null)}
-                    className="flex-1 py-3 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg transition-shadow cursor-pointer font-semibold"
+                    className="flex-1 py-3 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg active:scale-[0.98] transition cursor-pointer font-semibold"
                   >
                     Kembali ke Beranda
                   </button>
@@ -360,7 +360,7 @@ export function PreRegister({ onNavigate }) {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg transition-shadow cursor-pointer font-semibold disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg active:scale-[0.98] disabled:active:scale-100 transition cursor-pointer font-semibold disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
                 >
                   {submitting && (
                     <span className="material-symbols-outlined animate-spin text-[20px]" aria-hidden="true">progress_activity</span>
@@ -557,7 +557,9 @@ function Field({ id, label, error, children }) {
 }
 
 function inputClass(error) {
-  return `w-full px-4 py-3 rounded-xl bg-canvas-white border ${
+  // text-base (16px) penting: input < 16px memicu auto-zoom Safari iOS saat
+  // difokuskan, bikin layout "melompat" di HP.
+  return `w-full px-4 py-3 rounded-xl bg-canvas-white border text-base ${
     error ? "border-error" : "border-outline-variant"
   } text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all`;
 }

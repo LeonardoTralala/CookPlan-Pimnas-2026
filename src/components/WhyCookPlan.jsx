@@ -20,7 +20,7 @@ const benefits = [
 
 export function WhyCookPlan() {
   return (
-    <section className="py-24 bg-surface px-margin-mobile md:px-margin-desktop overflow-hidden">
+    <section className="section-padding bg-surface px-margin-mobile md:px-margin-desktop overflow-hidden">
       <div className="max-w-container-max mx-auto grid md:grid-cols-2 gap-16 items-center">
         <div className="order-2 md:order-1 relative">
           <div className="grid grid-cols-2 gap-4">

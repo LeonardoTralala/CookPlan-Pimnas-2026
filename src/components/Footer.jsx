@@ -23,7 +23,7 @@ export function Footer() {
               <Link
                 key={label}
                 to={toPath}
-                className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
+                className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer inline-flex items-center py-3"
               >
                 {label}
               </Link>
