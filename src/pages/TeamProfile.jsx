@@ -8,27 +8,32 @@ const TEAM_MEMBERS = [
   {
     name: 'Zilfi Alvin Mubarok',
     role: 'Direktur Utama',
-    desc: 'Mengatur visi proyek dan memastikan seluruh elemen tim selaras dengan misi CookPlan.'
+    desc: 'Mengatur visi proyek dan memastikan seluruh elemen tim selaras dengan misi CookPlan.',
+    image: '/foto/al .jpeg'
   },
   {
     name: 'Tiara Eka Wahyuningayu Vasha',
     role: 'Manajer IT',
-    desc: 'Bertanggung jawab atas arsitektur sistem, pengembangan fitur, dan pengalaman digital pengguna.'
+    desc: 'Bertanggung jawab atas arsitektur sistem, pengembangan fitur, dan pengalaman digital pengguna.',
+    image: '/foto/rara.jpeg'
   },
   {
     name: 'Tri Khusnul Hidayati',
     role: 'Manajer Operasional',
-    desc: 'Memastikan alur kerja harian dan integrasi produk dengan petani lokal berjalan lancar.'
+    desc: 'Memastikan alur kerja harian dan integrasi produk dengan petani lokal berjalan lancar.',
+    image: '/foto/aul.jpeg'
   },
   {
     name: 'Irma Ramadia Hakim',
     role: 'Manajer Keuangan',
-    desc: 'Mengelola efisiensi anggaran, pembukuan, dan memastikan keberlanjutan bisnis CookPlan.'
+    desc: 'Mengelola efisiensi anggaran, pembukuan, dan memastikan keberlanjutan bisnis CookPlan.',
+    image: '/foto/irma.jpeg'
   },
   {
     name: 'Nanda Maharani',
     role: 'Manajer Marketing',
-    desc: 'Merancang strategi promosi dan kampanye kreatif untuk mendekatkan CookPlan dengan masyarakat.'
+    desc: 'Merancang strategi promosi dan kampanye kreatif untuk mendekatkan CookPlan dengan masyarakat.',
+    image: '/foto/nanda.jpeg'
   }
 ];
 
@@ -36,7 +41,8 @@ const ADVISOR = {
   name: 'Dr. Uke Prajogo, S.TP., M.M., CMA',
   quote:
     'Membimbing tim berbakat ini melalui program PKM-K sangat membanggakan. Dedikasi mereka dalam memecahkan masalah gizi dan efisiensi waktu melalui platform inovatif patut diapresiasi.',
-  faculty: 'Dosen Pembimbing PKM-K'
+  faculty: 'Dosen Pembimbing PKM-K',
+  image: '/foto/p uke.jpeg'
 };
 
 export function TeamProfile({ onNavigate }) {
@@ -80,9 +86,13 @@ export function TeamProfile({ onNavigate }) {
                 className="w-[280px] md:w-[320px] shrink-0 snap-center bg-surface-cream rounded-3xl p-8 flex flex-col items-center text-center transition-transform hover:-translate-y-1 duration-300"
               >
                 <div className="w-32 h-32 rounded-full mb-6 overflow-hidden border-4 border-canvas-white bg-surface-variant flex items-center justify-center shadow-sm">
-                  <span className="material-symbols-outlined text-[64px] text-primary opacity-50">
-                    account_circle
-                  </span>
+                  {member.image ? (
+                    <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="material-symbols-outlined text-[64px] text-primary opacity-50">
+                      account_circle
+                    </span>
+                  )}
                 </div>
                 <h3 className="font-headline-md text-headline-md text-on-surface mb-2">{member.name}</h3>
                 <span className="text-sm font-semibold text-primary bg-surface-container-low px-4 py-1 rounded-full mb-4">
@@ -99,10 +109,14 @@ export function TeamProfile({ onNavigate }) {
       <section className="w-full bg-surface section-padding border-t border-outline-variant/30">
         <div className="max-w-container-max mx-auto px-5 md:px-10">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 bg-canvas-white rounded-3xl p-8 md:p-12 shadow-sm border border-outline-variant/50">
-            <div className="w-40 h-40 md:w-48 md:h-48 flex-shrink-0 rounded-2xl bg-surface-variant flex items-center justify-center shadow-md">
-              <span className="material-symbols-outlined text-[80px] text-primary opacity-50">
-                account_circle
-              </span>
+            <div className="w-40 h-40 md:w-48 md:h-48 flex-shrink-0 rounded-2xl bg-surface-variant flex items-center justify-center shadow-md overflow-hidden">
+              {ADVISOR.image ? (
+                <img src={ADVISOR.image} alt={ADVISOR.name} className="w-full h-full object-cover" />
+              ) : (
+                <span className="material-symbols-outlined text-[80px] text-primary opacity-50">
+                  account_circle
+                </span>
+              )}
             </div>
             <div className="flex flex-col items-center md:items-start text-center md:text-left">
               <div className="flex items-center gap-2 mb-2 text-primary">
