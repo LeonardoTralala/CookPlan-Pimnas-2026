@@ -60,11 +60,9 @@ export function TeamProfile({ onNavigate }) {
           membawa kembali keteraturan, kesehatan, dan kesederhanaan ke dapur. Kami percaya makanan
           yang baik tidak seharusnya menjadi sumber stres.
         </p>
-        {/* Blok dekoratif (tanpa aset eksternal) */}
-        <div className="w-full h-48 md:h-64 rounded-3xl bg-gradient-to-br from-surface-cream via-surface-variant to-surface-container-low flex items-center justify-center shadow-sm">
-          <span className="material-symbols-outlined text-primary/40 text-[80px] md:text-[112px]">
-            restaurant
-          </span>
+        {/* Foto Bersama */}
+        <div className="w-full max-w-4xl h-48 md:h-64 rounded-3xl overflow-hidden bg-surface-variant flex items-center justify-center shadow-md mx-auto">
+          <img src="/foto/bersama.jpeg" alt="Foto Bersama Tim CookPlan" className="w-full h-full object-cover object-[center_55%]" />
         </div>
       </section>
 
