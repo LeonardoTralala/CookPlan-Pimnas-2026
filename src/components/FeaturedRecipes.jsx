@@ -5,9 +5,8 @@ import { initialRecipes } from "../utils/recipes.js";
 export function FeaturedRecipes({ onNavigate }) {
   const { showToast } = usePlan();
 
-  // Fase pre-register: katalog penuh belum dibuka — arahkan ke daftar tunggu.
   const seeAll = () =>
-    onNavigate ? onNavigate("register") : showToast("Katalog lengkap resep segera hadir — gabung daftar tunggu dulu!");
+    onNavigate ? onNavigate("catalog") : showToast("Katalog lengkap resep sedang disiapkan!");
 
   return (
     <section id="recipes" className="section-padding bg-canvas-white px-margin-mobile md:px-margin-desktop">

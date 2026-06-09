@@ -2,10 +2,11 @@ import { useEffect, useRef } from "react";
 import { scrollToSection } from "../utils/scroll.js";
 
 export function Hero({ onNavigate }) {
-  // Fase pre-register: CTA utama menuju formulir daftar tunggu; CTA sekunder
-  // hanya menggulir ke bagian "Cara Kerja" (fitur belum dibuka).
-  const goRegister = () => (onNavigate ? onNavigate("register") : scrollToSection("how-it-works"));
-  const goLearn = () => scrollToSection("how-it-works");
+  // CTA utama membuka perencana mingguan (lewat login bila belum masuk); CTA
+  // sekunder menuju katalog resep. Tanpa onNavigate (landing berdiri sendiri)
+  // jatuh ke smooth-scroll antar bagian.
+  const goPlanner = () => (onNavigate ? onNavigate("planner") : scrollToSection("how-it-works"));
+  const goCatalog = () => (onNavigate ? onNavigate("catalog") : scrollToSection("recipes"));
 
   const videoRef = useRef(null);
   useEffect(() => {
@@ -65,16 +66,16 @@ export function Hero({ onNavigate }) {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button
-              onClick={goRegister}
+              onClick={goPlanner}
               className="px-6 py-3 md:px-8 md:py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg active:scale-[0.98] transition cursor-pointer font-semibold"
             >
-              Daftar Gratis Sekarang
+              Mulai Rencana Masak
             </button>
             <button
-              onClick={goLearn}
+              onClick={goCatalog}
               className="px-6 py-3 md:px-8 md:py-4 border-2 border-primary text-primary rounded-full font-label-md text-label-md hover:bg-primary/5 active:scale-[0.98] transition cursor-pointer font-semibold backdrop-blur-sm"
             >
-              Pelajari Cara Kerja
+              Lihat Katalog Resep
             </button>
           </div>
         </div>

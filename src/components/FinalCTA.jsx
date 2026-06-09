@@ -5,7 +5,7 @@ export function FinalCTA({ onNavigate }) {
 
   const start = () =>
     onNavigate
-      ? onNavigate("register")
+      ? onNavigate("auth")
       : showToast("Terima kasih! Pendaftaran beta akan segera dibuka.");
 
   return (

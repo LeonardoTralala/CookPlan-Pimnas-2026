@@ -1,16 +1,11 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Logo } from "../components/Logo.jsx";
 import { Toast } from "../components/Toast.jsx";
 import { useAuth } from "../hooks/useAuth.js";
 import { usePlan } from "../hooks/usePlan.js";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-// SEMENTARA: registrasi mandiri (sign-up) ditutup selama fase pre-register.
-// Calon pengguna diarahkan ke daftar tunggu (/register). Set true untuk
-// mengaktifkan kembali tab "Daftar" beserta form sign-up di halaman ini.
-const ALLOW_SELF_REGISTER = false;
 
 // Terjemahkan pesan error Supabase ke bahasa yang ramah pengguna.
 function friendlyError(error) {
@@ -237,8 +232,8 @@ export default function AuthPage() {
           <h1 className="font-headline-md text-headline-md">{heading}</h1>
           <p className="mt-1.5 text-body-md text-on-surface-variant">{subheading}</p>
 
-          {/* Toggle Masuk / Daftar — hanya muncul bila registrasi mandiri dibuka. */}
-          {ALLOW_SELF_REGISTER && !isForgot && !isUpdate && (
+          {/* Toggle Masuk / Daftar */}
+          {!isForgot && !isUpdate && (
             <div className="mt-6 grid grid-cols-2 gap-1 rounded-full bg-surface-container-low p-1" role="tablist" aria-label="Mode autentikasi">
               {[["login", "Masuk"], ["register", "Daftar"]].map(([value, label]) => (
                 <button
@@ -398,26 +393,16 @@ export default function AuthPage() {
                 Lanjutkan dengan Google
               </button>
 
-              {ALLOW_SELF_REGISTER ? (
-                <p className="mt-6 text-center text-label-md text-on-surface-variant">
-                  {isRegister ? "Sudah punya akun? " : "Belum punya akun? "}
-                  <button
-                    type="button"
-                    onClick={() => switchMode(isRegister ? "login" : "register")}
-                    className="font-semibold text-primary hover:underline cursor-pointer"
-                  >
-                    {isRegister ? "Masuk" : "Daftar gratis"}
-                  </button>
-                </p>
-              ) : (
-                // Registrasi mandiri masih ditutup — arahkan ke daftar tunggu.
-                <p className="mt-6 text-center text-label-md text-on-surface-variant">
-                  Belum punya akun?{" "}
-                  <Link to="/register" className="font-semibold text-primary hover:underline cursor-pointer">
-                    Gabung daftar tunggu
-                  </Link>
-                </p>
-              )}
+              <p className="mt-6 text-center text-label-md text-on-surface-variant">
+                {isRegister ? "Sudah punya akun? " : "Belum punya akun? "}
+                <button
+                  type="button"
+                  onClick={() => switchMode(isRegister ? "login" : "register")}
+                  className="font-semibold text-primary hover:underline cursor-pointer"
+                >
+                  {isRegister ? "Masuk" : "Daftar gratis"}
+                </button>
+              </p>
             </>
           )}
         </div>
