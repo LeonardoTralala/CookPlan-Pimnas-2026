@@ -16,6 +16,8 @@ loncat ke seksi penanganannya.
 | "Batas 20 generate per hari tercapai" | (c) Rate limit kena |
 | DB lokal aneh / data rusak | (d) DB corrupt lokal |
 | Hasil generate ngga update padahal input beda | (e) Cache stale |
+| Hapus akun user balik error 500 / `23503` | (f) FK violation saat hapus user |
+| Insert order baru gagal `null violates ... id` | (g) `orders.id` default hilang |
 
 ---
 
@@ -142,3 +144,86 @@ where input_hash = '<hash>';
 ```
 
 > Cara cache jalan: lihat `liam_docs/01-ARCHITECTURE/04-ai-integration-design.md`.
+
+---
+
+## (f) FK violation saat hapus user
+
+**Gejala:**
+
+```
+HTTP 500 dari DELETE /auth/v1/admin/users/{id}
+{"code":"23503","message":"update or delete on table \"users\" violates foreign
+key constraint \"profiles_id_fkey\" on table \"profiles\""}
+```
+
+Atau hapus baris `profiles` lewat REST balik error serupa untuk FK lain.
+
+**Akar masalah:** FK `profiles_id_fkey` (atau FK lain) tidak punya `ON DELETE CASCADE`
+yang seharusnya. Pernah terjadi di prod 2026-06-11 karena tabel dibikin manual
+sebelum migration jalan. Lihat `06-schema-drift-audit-2026-06-11.md`.
+
+**Cek cepat:**
+
+```sql
+select conname,
+       case confdeltype when 'a' then 'NO ACTION' when 'c' then 'CASCADE'
+            when 'n' then 'SET NULL' end as on_delete
+from pg_constraint
+where conname like 'profiles_id_fkey%' or conrelid='public.profiles'::regclass;
+```
+
+Kalau `on_delete = NO ACTION`, ini bug-nya. Mestinya `CASCADE`.
+
+**Penanganan:**
+
+```sql
+alter table public.profiles drop constraint if exists profiles_id_fkey;
+alter table public.profiles add constraint profiles_id_fkey
+  foreign key (id) references auth.users (id) on delete cascade;
+```
+
+Idempoten, aman dijalankan ulang. Migration lengkap untuk fix multi-FK ada di
+`supabase/migrations/20260611150000_fix_fk_drift_and_legalize_subs.sql`.
+
+> Untuk audit FK lain di prod, jalankan query di
+> `liam_docs/05-OPERATIONS/06-schema-drift-audit-2026-06-11.md` bagian
+> "Tabel & Constraint yang Diperiksa".
+
+---
+
+## (g) `orders.id` default hilang (insert order gagal)
+
+**Gejala:**
+
+```
+ERROR 23502: null value in column "id" of relation "orders" violates not-null
+constraint
+```
+
+Padahal frontend (`orderService.createOrder`) tidak supply `id` — mengandalkan
+default `generate_order_id()` yang generate `CP-YYYYMMDD-XXXX`.
+
+**Akar masalah:** Kolom default lepas (drift skema). Pernah terjadi di prod
+2026-06-11.
+
+**Cek cepat:**
+
+```sql
+select column_default from information_schema.columns
+where table_schema='public' and table_name='orders' and column_name='id';
+```
+
+Mestinya `generate_order_id()`. Kalau `null`, pasang ulang:
+
+```sql
+alter table public.orders alter column id set default public.generate_order_id();
+```
+
+Pastikan fungsi `generate_order_id()` ada dan grant ke `authenticated` aktif:
+
+```sql
+select proname from pg_proc where proname='generate_order_id';
+-- harus ada
+grant execute on function public.generate_order_id() to authenticated;
+```

@@ -85,3 +85,54 @@ Generate AI (apc/claude-opus-4.6) → 3 hari, 18 item, Rp139k, pantry dikurangi 
 - Rotate API key 9router (sempat terekspos saat development).
 - Pertimbangkan recompute order total server-side (M1) sebelum ada pembayaran nyata.
 - Set CORS origin spesifik saat domain produksi final.
+
+---
+
+## Production Schema Drift Audit (2026-06-11)
+
+Saat deploy phase 1 backend ke prod (`phdbbiydrjwxlehdfubh`), audit menemukan
+drift tambahan yang **tidak terlihat saat audit lokal** karena skema lokal di-built
+dari migration yang sama, sedangkan prod kemungkinan dibikin manual / via dashboard
+sebelum migration di-jalankan. Detail lengkap:
+`liam_docs/05-OPERATIONS/06-schema-drift-audit-2026-06-11.md`.
+
+### Temuan Tambahan (CRITICAL — fixed)
+| ID | Temuan | Fix | Status |
+|---|---|---|---|
+| P1 | `profiles_id_fkey → auth.users` = NO ACTION (mestinya CASCADE) → SEMUA hapus akun gagal `23503` | Migration `20260611150000`: alter constraint cascade | ✅ verified delete user end-to-end |
+| P2 | `orders.id` text NOT NULL tanpa default → insert order gagal `23502` | Migration `20260611150100`: `set default generate_order_id()` | ✅ verified ID `CP-20260611-0001` |
+| P3 | `orders.delivery_address` NOT NULL → frontend kirim null gagal | Migration `20260611150100`: drop NOT NULL | ✅ |
+| P4 | `orders.payment_method` check tidak include `'cod'` | Migration `20260611150100`: re-create constraint dengan whitelist 3 nilai | ✅ |
+
+### Temuan Tambahan (HIGH — fixed)
+| ID | Temuan | Fix | Status |
+|---|---|---|---|
+| P5 | `orders.user_id → profiles` = NO ACTION (mestinya SET NULL) | alter constraint set null | ✅ |
+| P6 | `meal_entries.recipe_id → recipes` = NO ACTION (mestinya SET NULL) | alter constraint set null | ✅ |
+| P7 | `subscriptions.user_id → profiles` = NO ACTION → orphan saat hapus user | alter constraint cascade | ✅ |
+| P8 | `prevent_role_change()` SECURITY DEFINER bisa dipanggil via RPC dari `anon`/`authenticated` | revoke EXECUTE dari role API (trigger jalan tanpa cek EXECUTE) | ✅ |
+
+### Temuan Tambahan (MEDIUM — fixed)
+| ID | Temuan | Fix | Status |
+|---|---|---|---|
+| P9 | `order_items.order_id` nullable (mestinya NOT NULL) → bisa orphan | alter set NOT NULL (tabel kosong saat patch) | ✅ |
+| P10 | `order_items` missing kolom `category` & `created_at` | add column if not exists | ✅ |
+
+### Temuan Diterima (tidak difix)
+| ID | Temuan | Alasan |
+|---|---|---|
+| P11 | Kolom extra di `orders`: `service_fee`, `payment_status`, `order_status` | Nullable & tidak dipakai code; project punya owner lain → konservatif jangan drop |
+| P12 | Kolom `profiles.gender` tidak ada di migration | Tidak dipakai code, harmless |
+| P13 | Tabel `subscriptions` tanpa migration awal | Dibikinkan migration `if not exists` untuk legalisasi (tidak ubah skema yang ada) |
+| P14 | Policy duplikat di `weekly_plans`, `recipes`, `recipe_ingredients` | Efek sama persis, kosmetik |
+| P15 | Migration history mismatch (prod 3 entri vs repo 9 file) | Memaksakan sync = risiko ke project orang lain |
+
+### Verifikasi Pasca-Fix
+```
+end-to-end generate-plan        → 200 ✓ plan valid + cache hit + pantry subtract
+delete user via admin API       → 200 ✓ cascade ke profiles, weekly_plans, generated_plans
+delete user dengan child data   → 200 ✓ orders/ai_usage_log preserve user_id=null
+insert order via REST           → 201 ✓ ID CP-20260611-0001 ter-generate
+prevent_role_change ACL         → {postgres,service_role} only ✓
+preregistrations data integrity → 31/31 baris utuh ✓
+```

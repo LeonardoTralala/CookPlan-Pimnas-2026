@@ -150,3 +150,93 @@ dari `generated_plans`, tidak call AI lagi.
 
 **Keputusan:** Semua dokumentasi pengembangan AI di folder `liam_docs/` (terpisah dari
 `docs/` lama). Bahasa Indonesia santai. ~50 file MD, parallel doc + code.
+
+---
+
+## ADR-011 — Apply Migration Baru ke Prod via Raw SQL (Bukan `db push`)
+
+**Tanggal:** 2026-06-11
+**Status:** Accepted
+
+**Konteks:** Saat hendak deploy phase 1 (Edge Function `generate-plan`) ke production
+project `phdbbiydrjwxlehdfubh`, ditemukan migration history mismatch besar: prod cuma
+punya 3 entri di `supabase_migrations.schema_migrations` (`initial_schema`,
+`generate_order_id_function`, `create_preregistrations`) sedangkan repo punya 9 file
+migration. Skema di prod kemungkinan dibikin manual / via dashboard sebelum migration
+dijalankan, sehingga banyak klausa `on delete cascade` & default value di-skip oleh
+`create table if not exists`.
+
+**Keputusan:** Migration baru (`20260611150000`, `20260611150100`) di-apply ke prod
+**lewat raw SQL via Supabase Management API** (`POST /v1/projects/{ref}/database/query`),
+**bukan** lewat `supabase db push`. Migration ditulis idempoten (`drop constraint if exists`
+lalu `add`, `create table if not exists`, `add column if not exists`) sehingga aman
+di-jalankan ulang di env mana pun.
+
+**Alasan:**
+- `db push` akan menghitung diff terhadap `schema_migrations` table di prod. Karena
+  history di prod minim, dia bakal coba apply 6 migration "missing" (000000-000006)
+  secara berurutan — sebagian besar pakai `create table if not exists` yang bakal
+  no-op untuk tabel yang sudah ada, tapi function/trigger/policy bisa nimbulkan
+  konflik tak terduga atau side effect.
+- Project ini punya owner lain (bukan kami). Memaksakan history sync = risiko
+  kerusakan tinggi tanpa manfaat fungsional.
+- Raw SQL via Mgmt API atomik per-request (kalau gagal, transaksi rollback dan
+  state prod tidak berubah).
+
+**Konsekuensi:**
+- `schema_migrations` di prod tidak nyatat 2 migration baru. Kalau tim mau apply ke
+  env baru lewat `db push`, mereka harus jalanin ulang manual atau update catatan
+  history. Konsekuensi diterima karena migration idempoten.
+- Untuk env baru (dev/staging) yang dibikin dari nol, jalankan `supabase db reset`
+  yang otomatis nge-apply semua migration dari folder.
+
+**Alternatif ditolak:**
+- `supabase db push` ke prod → risiko konflik dengan tabel/function yang sudah ada.
+- Sync paksa `schema_migrations` table → mengubah audit history project orang lain.
+- Tidak apply migration sama sekali → membiarkan bug critical (hapus akun gagal).
+
+---
+
+## ADR-012 — Patch Minimal untuk Drift Skema (Conservative Approach)
+
+**Tanggal:** 2026-06-11
+**Status:** Accepted
+
+**Konteks:** Audit prod menemukan drift yang lebih luas dari yang awalnya disangka:
+4 FK constraint salah behavior, kolom extra tak terdokumentasi di `orders`
+(`service_fee`, `payment_status`, `order_status`), kolom `gender` di `profiles`,
+tabel `subscriptions` tanpa migration file, policy duplikat di beberapa tabel.
+
+**Keputusan:** Hanya fix yang **breaking** atau menyentuh **bidang keamanan**:
+1. FK `profiles_id_fkey` → CASCADE (kritis — hapus user gagal total).
+2. FK `orders.user_id` → SET NULL (preserve riwayat order).
+3. FK `meal_entries.recipe_id` → SET NULL (preserve snapshot menu).
+4. FK `subscriptions.user_id` → CASCADE.
+5. `orders.id` default `generate_order_id()` (insert order baru gagal tanpa ini).
+6. `orders.delivery_address` drop NOT NULL (frontend kirim null kadang-kadang).
+7. `orders.payment_method` check tambah `'cod'` (selaras migration).
+8. `order_items.order_id` NOT NULL + tambah kolom `category`, `created_at`.
+9. Revoke EXECUTE `prevent_role_change()` dari role API (hardening SECURITY DEFINER).
+
+Drift kosmetik (kolom extra harmless, policy duplikat dengan efek sama) **dibiarkan**.
+
+**Alasan:**
+- Project punya owner lain. Mengubah hal yang tidak breaking = risiko mengganggu
+  alur yang mungkin dipakai admin tool/dashboard di luar repo (misalnya laporan
+  yang baca `payment_status` di kolom extra).
+- Kolom extra di `orders` semuanya nullable atau punya default valid → tidak
+  bikin insert frontend gagal.
+- Menghapus kolom = `pg_dump` history hilang permanen. Reversibility murah:
+  alter constraint balik gampang, tapi `drop column` susah dikembalikan.
+
+**Konsekuensi:**
+- Skema prod agak "kotor" dibanding migration baseline tapi konsisten dengan
+  niat code di frontend & Edge Functions.
+- Kalau owner mau bersihin nanti, bisa jalankan `pg_dump --schema-only` baseline
+  baru dan rebuild migration history dari nol di env staging dulu.
+
+**Alternatif ditolak:**
+- Drop semua kolom extra di `orders` → reversibility murah secara DDL tapi
+  potensial putus integrasi tak terlihat.
+- Sync penuh skema lewat `supabase db diff --linked` lalu apply → risiko ubah
+  hal yang tidak perlu.

@@ -54,6 +54,7 @@ Relasi singkat:
 | `ai_providers` | `generated_plans` | `generated_plans.provider_id` | set null |
 | `profiles` | `ai_usage_log` | `ai_usage_log.user_id` | set null |
 | `ai_providers` | `ai_usage_log` | `ai_usage_log.provider_id` | set null |
+| `profiles` | `subscriptions` | `subscriptions.user_id` | cascade |
 
 ---
 
@@ -298,3 +299,45 @@ Log pemakaian AI per request (buat rate limit + monitoring biaya).
 | `created_at` | timestamptz | not null default `now()` | |
 
 Index: `ai_usage_log_user_created_idx` on `(user_id, created_at)`.
+
+---
+
+## 12. `subscriptions`
+
+Langganan user (paket berlangganan). Awalnya tidak ada di file migration tapi
+ada di prod (drift) — di-legalisasi oleh migration `20260611150000` agar repo
+jadi sumber kebenaran.
+
+| Kolom | Tipe | Constraint / Default | Keterangan |
+|---|---|---|---|
+| `id` | serial | PK | |
+| `user_id` | uuid | FK → `profiles(id)` on delete cascade | |
+| `tier` | text | nullable | Paket langganan |
+| `status` | text | nullable | Status (active/expired/dll) |
+| `start_date` | date | not null | |
+| `end_date` | date | not null | |
+| `created_at` | timestamptz | default `now()` | |
+
+Policy: `subs_owner` (ALL, authenticated, owner-only).
+
+---
+
+## Catatan: Drift Skema di Produksi (2026-06-11)
+
+Project produksi `phdbbiydrjwxlehdfubh` punya beberapa drift dari skema yang
+didokumentasi di atas:
+
+**Kolom extra yang ada di prod (tidak dipakai code, dibiarkan):**
+- `profiles.gender text nullable`
+- `orders.service_fee integer default 15000`
+- `orders.payment_status text default 'pending'` (check: pending|completed|failed)
+- `orders.order_status text default 'received'` (check: received|processed|shipped|delivered)
+
+**Policy duplikat di prod (efek sama, kosmetik):**
+- `weekly_plans`: `plans_owner` + `weekly_plans_owner`
+- `recipes`: `recipes_read` + `recipes_read_public`
+- `recipe_ingredients`: `ingredients_read` + `recipe_ingredients_read_public`
+
+Drift ini didiamkan saat remediasi 2026-06-11 karena project punya owner lain
+dan konsekuensi mengubah hal non-breaking lebih besar dari manfaatnya. Detail:
+`liam_docs/05-OPERATIONS/06-schema-drift-audit-2026-06-11.md`.

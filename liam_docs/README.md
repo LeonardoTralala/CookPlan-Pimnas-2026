@@ -79,9 +79,11 @@ sistem order via WhatsApp — sesuai target MVP PKM-K 2026.
 |---------|-----|
 | [00-local-dev-workflow.md](./05-OPERATIONS/00-local-dev-workflow.md) | Daily dev flow |
 | [01-database-backup-restore.md](./05-OPERATIONS/01-database-backup-restore.md) | Backup & restore DB |
-| [02-future-production-deploy.md](./05-OPERATIONS/02-future-production-deploy.md) | Deploy ke prod (future) |
+| [02-future-production-deploy.md](./05-OPERATIONS/02-future-production-deploy.md) | Panduan deploy ke prod (untuk frontend & deploy berikutnya) |
 | [03-incident-runbook.md](./05-OPERATIONS/03-incident-runbook.md) | Runbook insiden |
 | [04-cost-monitoring.md](./05-OPERATIONS/04-cost-monitoring.md) | Monitoring biaya AI |
+| [05-prod-deploy-2026-06-11.md](./05-OPERATIONS/05-prod-deploy-2026-06-11.md) | Report deploy backend prod pertama (Edge Functions + audit) |
+| [06-schema-drift-audit-2026-06-11.md](./05-OPERATIONS/06-schema-drift-audit-2026-06-11.md) | Audit & remediasi drift skema prod |
 
 ---
 
@@ -89,8 +91,11 @@ sistem order via WhatsApp — sesuai target MVP PKM-K 2026.
 
 Lihat [03-progress-tracker.md](./00-OVERVIEW/03-progress-tracker.md) untuk status real-time.
 
-**Mode pengembangan:** 100% LOCAL (Supabase CLI). Production (`phdbbiydrjwxlehdfubh`)
-tidak disentuh sama sekali sampai ada fase deploy terpisah.
+**Mode pengembangan:** Phase 0–8 dikerjakan 100% LOCAL (Supabase CLI). **Phase 9
+(2026-06-11): backend ter-deploy ke production** (`phdbbiydrjwxlehdfubh`) —
+Edge Functions `generate-plan` & `admin-providers` ACTIVE, audit drift skema
+selesai, end-to-end test passing. Frontend Vercel & admin role setup masih
+pending tim.
 
 ---
 
