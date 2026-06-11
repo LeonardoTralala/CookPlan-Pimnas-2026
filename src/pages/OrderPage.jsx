@@ -94,8 +94,12 @@ export function OrderPage() {
       });
       const url = buildWhatsappUrl(order, items);
       showToast(`Pesanan ${order.id} dibuat! Membuka WhatsApp…`);
-      window.open(url, '_blank', 'noopener');
-      navigate('/profile');
+      // Pakai location.href (bukan window.open) karena dipanggil setelah await:
+      // popup blocker Safari/iOS — target PWA kita — memblok window.open yang
+      // kehilangan user-activation context. Deep link wa.me dibuka same-tab,
+      // app WhatsApp tetap ke-trigger di mobile. Order sudah tersimpan di DB,
+      // user bisa lihat riwayatnya nanti di profil.
+      window.location.href = url;
     } catch (e) {
       showToast(e.message || 'Gagal membuat pesanan.', { variant: 'error' });
     } finally {
