@@ -109,9 +109,14 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
   const [recipes, setRecipes] = useState([]);
   useEffect(() => {
     let active = true;
-    getRecipes().then((data) => { if (active) setRecipes(data); }).catch(() => {});
+    getRecipes()
+      .then((data) => { if (active) setRecipes(data); })
+      .catch((err) => {
+        console.error("Gagal memuat resep:", err);
+        if (active) showToast("Gagal memuat katalog resep. Coba refresh halaman.");
+      });
     return () => { active = false; };
-  }, []);
+  }, [showToast]);
 
   const recipeIndex = useMemo(() => {
     const m = new Map();

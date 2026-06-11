@@ -38,7 +38,13 @@ function UserProfile() {
   const [allRecipes, setAllRecipes] = useState([]);
   useEffect(() => {
     let active = true;
-    getRecipes().then((data) => { if (active) setAllRecipes(data); }).catch(() => {});
+    getRecipes()
+      .then((data) => { if (active) setAllRecipes(data); })
+      .catch((err) => {
+        // Log gagal fetch supaya tidak silent (audit Copilot). UI fallback ke
+        // state kosong, jadi user tetap bisa lihat profil tanpa Resep Tersimpan.
+        console.error("Gagal memuat resep:", err);
+      });
     return () => { active = false; };
   }, []);
   const savedRecipes = useMemo(() => allRecipes.slice(0, 6), [allRecipes]);

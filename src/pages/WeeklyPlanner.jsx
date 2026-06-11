@@ -51,7 +51,13 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
   const [recipes, setRecipes] = useState([]);
   useEffect(() => {
     let active = true;
-    getRecipes().then((data) => { if (active) setRecipes(data); }).catch(() => {});
+    getRecipes()
+      .then((data) => { if (active) setRecipes(data); })
+      .catch((err) => {
+        // Audit Copilot: kegagalan jangan silent — log supaya bisa didiagnosis,
+        // UI fallback tetap aman karena setRecipes default []
+        console.error("Gagal memuat resep:", err);
+      });
     return () => { active = false; };
   }, []);
 
