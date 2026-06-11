@@ -23,8 +23,17 @@ export function AppShell({ children }) {
 
   const handleSignOut = async () => {
     setSigningOut(true);
-    await signOut();
-    navigate('/');
+    try {
+      await signOut();
+      navigate('/');
+    } catch (err) {
+      // Biarkan user tetap di halaman saat ini bila signOut gagal — supaya
+      // session yang masih aktif tidak ke-redirect ke landing dengan keadaan
+      // tergantung. Console untuk debug, tombol auto-pulih via finally.
+      console.error('Sign out gagal:', err);
+    } finally {
+      setSigningOut(false);
+    }
   };
 
   const isActive = (to) => pathname === to || pathname.startsWith(to + '/');

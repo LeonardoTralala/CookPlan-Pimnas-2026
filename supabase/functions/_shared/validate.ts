@@ -141,7 +141,18 @@ export function subtractPantry(output: Record<string, unknown>, pantry: Generate
     const need = Number(item.total_amount ?? 0);
     const remaining = need - matchedAmount;
     if (remaining > 0) {
-      filtered.push({ ...item, total_amount: remaining, _note: "dikurangi stok rumah" });
+      // Skala harga proporsional terhadap sisa kebutuhan supaya
+      // total_estimated_cost setelah recompute mencerminkan jumlah yang
+      // benar-benar perlu dibeli (audit Copilot: jangan biarin harga penuh
+      // padahal jumlah sudah dikurangi).
+      const price = Number(item.estimated_price_idr ?? 0);
+      const newPrice = need > 0 ? price * (remaining / need) : price;
+      filtered.push({
+        ...item,
+        total_amount: remaining,
+        estimated_price_idr: Math.round(newPrice),
+        _note: "dikurangi stok rumah",
+      });
     }
     // kalau <= 0, buang (sudah tercukupi)
   }
