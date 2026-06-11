@@ -106,7 +106,7 @@ export async function callProvider(
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
 
-        if (buffer.length > MAX_CHARS || fullContent.length > MAX_CHARS) {
+        if (buffer.length > MAX_CHARS || fullContent.length > MAX_CHARS || fullReasoning.length > MAX_CHARS) {
           throw new Error(`Provider ${provider.label} mengirim respons terlalu besar (>2MB).`);
         }
 
