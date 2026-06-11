@@ -55,7 +55,13 @@ export async function createOrder(payload) {
       price_idr: Math.round(it.priceIdr ?? 0),
     }));
     const { error: itErr } = await supabase.from("order_items").insert(rows);
-    if (itErr) throw itErr;
+    if (itErr) {
+      // Hindari order "yatim" tanpa item bila insert order_items gagal.
+      // Best-effort cleanup: kalau delete juga gagal (mis. RLS/network),
+      // tetap lempar error asli supaya UI bisa tampilkan ke user.
+      await supabase.from("orders").delete().eq("id", order.id);
+      throw itErr;
+    }
   }
 
   return order;
