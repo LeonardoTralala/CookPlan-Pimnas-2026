@@ -1,0 +1,322 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { generatePlan } from '../services/aiService.js';
+import { usePlan } from '../hooks/usePlan.js';
+
+// Fitur 1: Generate Foodplan & Foodprep. Wizard 3 langkah (mobile-first).
+// Step 1: periode + porsi + output type
+// Step 2: diet + budget + bahan tersedia (pantry)
+// Step 3: konfirmasi + generate
+
+const PERIODE_OPTIONS = [
+  { value: 3, label: '3 Hari' },
+  { value: 7, label: '7 Hari' },
+  { value: 14, label: '14 Hari' },
+];
+
+const OUTPUT_OPTIONS = [
+  { value: 'foodplan', icon: 'restaurant_menu', label: 'Foodplan', desc: 'Daftar menu + resep' },
+  { value: 'foodprep', icon: 'shopping_basket', label: 'Foodprep', desc: 'Menu + resep + daftar belanja & estimasi harga' },
+  { value: 'full', icon: 'local_shipping', label: 'Foodplan & Prep + Belanja', desc: 'Lengkap + layanan belanja (Core Offer)' },
+];
+
+const DIET_OPTIONS = [
+  { value: 'vegetarian', label: 'Vegetarian' },
+  { value: 'vegan', label: 'Vegan' },
+  { value: 'halal', label: 'Halal' },
+  { value: 'tinggi-protein', label: 'Tinggi Protein' },
+  { value: 'hemat', label: 'Hemat Budget' },
+  { value: 'cepat', label: 'Cepat (< 30 mnt)' },
+  { value: 'bahan-lokal', label: 'Bahan Lokal' },
+];
+
+const BUDGET_PRESETS = [100000, 200000, 350000, 500000];
+
+export function GeneratePlan() {
+  const navigate = useNavigate();
+  const { showToast } = usePlan();
+
+  const [step, setStep] = useState(1);
+  const [periode, setPeriode] = useState(7);
+  const [porsi, setPorsi] = useState(2);
+  const [outputType, setOutputType] = useState('foodprep');
+  const [diet, setDiet] = useState(['halal']);
+  const [budget, setBudget] = useState(200000);
+  const [pantry, setPantry] = useState([]);
+  const [pantryInput, setPantryInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const toggleDiet = (value) => {
+    setDiet((prev) => prev.includes(value) ? prev.filter((d) => d !== value) : [...prev, value]);
+  };
+
+  const addPantry = () => {
+    const text = pantryInput.trim();
+    if (!text) return;
+    // Parsing sederhana: "telur 5 butir" → {name, amount, unit}
+    const match = text.match(/^(.+?)\s+(\d+(?:[.,]\d+)?)\s*(\w+)?$/);
+    let item;
+    if (match) {
+      item = { name: match[1].trim(), amount: Number(match[2].replace(',', '.')), unit: match[3] || '' };
+    } else {
+      item = { name: text, amount: undefined, unit: '' };
+    }
+    setPantry((prev) => [...prev, item]);
+    setPantryInput('');
+  };
+
+  const removePantry = (idx) => setPantry((prev) => prev.filter((_, i) => i !== idx));
+
+  const handleGenerate = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const result = await generatePlan({ periode, porsi, diet, budget, pantry, outputType });
+      // Simpan hasil ke sessionStorage agar GenerateResult bisa baca tanpa refetch.
+      sessionStorage.setItem(`plan_${result.planId}`, JSON.stringify(result));
+      showToast('Plan berhasil dibuat! 🎉');
+      navigate(`/generate/${result.planId}`);
+    } catch (e) {
+      setError(e.message || 'Gagal generate plan. Coba lagi.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatRupiah = (n) => new Intl.NumberFormat('id-ID', {
+    style: 'currency', currency: 'IDR', minimumFractionDigits: 0,
+  }).format(n);
+
+  return (
+    <div className="max-w-2xl mx-auto px-5 md:px-10 py-8 md:py-12">
+      {/* Header + progress */}
+      <div className="mb-8">
+        <h1 className="font-headline-lg text-headline-lg text-primary mb-2 flex items-center gap-2">
+          <span className="material-symbols-outlined text-3xl">auto_awesome</span>
+          Generate Foodplan
+        </h1>
+        <p className="text-on-surface-variant text-body-md mb-5">
+          Biar AI susun menu & belanja mingguanmu otomatis.
+        </p>
+        <div className="flex items-center gap-2">
+          {[1, 2, 3].map((s) => (
+            <div key={s} className="flex-1">
+              <div className={`h-1.5 rounded-full transition-colors ${s <= step ? 'bg-primary' : 'bg-surface-container-high'}`} />
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-on-surface-variant mt-2">Langkah {step} dari 3</p>
+      </div>
+
+      {/* STEP 1 */}
+      {step === 1 && (
+        <div className="space-y-7 animate-fade-in">
+          <Field label="Periode plan">
+            <div className="grid grid-cols-3 gap-2">
+              {PERIODE_OPTIONS.map((opt) => (
+                <Chip key={opt.value} active={periode === opt.value} onClick={() => setPeriode(opt.value)}>
+                  {opt.label}
+                </Chip>
+              ))}
+            </div>
+          </Field>
+
+          <Field label="Jumlah porsi per menu">
+            <Stepper value={porsi} onDec={() => setPorsi(Math.max(1, porsi - 1))} onInc={() => setPorsi(porsi + 1)} suffix="Porsi" />
+          </Field>
+
+          <Field label="Mau hasil apa?">
+            <div className="space-y-2">
+              {OUTPUT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setOutputType(opt.value)}
+                  className={`w-full flex items-start gap-3 p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+                    outputType === opt.value
+                      ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                      : 'border-outline-variant hover:border-primary/50'
+                  }`}
+                >
+                  <span className={`material-symbols-outlined ${outputType === opt.value ? 'text-primary' : 'text-on-surface-variant'}`}>{opt.icon}</span>
+                  <span>
+                    <span className="block font-semibold text-on-surface text-sm">{opt.label}</span>
+                    <span className="block text-xs text-on-surface-variant">{opt.desc}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </Field>
+
+          <div className="flex justify-end pt-2">
+            <button onClick={() => setStep(2)} className="px-6 py-3 bg-primary text-on-primary rounded-full font-semibold text-sm hover:shadow-lg active:scale-95 transition cursor-pointer">
+              Lanjut
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 2 */}
+      {step === 2 && (
+        <div className="space-y-7 animate-fade-in">
+          <Field label="Preferensi diet (boleh pilih >1)">
+            <div className="flex flex-wrap gap-2">
+              {DIET_OPTIONS.map((opt) => (
+                <Chip key={opt.value} active={diet.includes(opt.value)} onClick={() => toggleDiet(opt.value)}>
+                  {opt.label}
+                </Chip>
+              ))}
+            </div>
+          </Field>
+
+          <Field label="Budget total">
+            <div className="flex flex-wrap gap-2 mb-3">
+              {BUDGET_PRESETS.map((b) => (
+                <Chip key={b} active={budget === b} onClick={() => setBudget(b)}>{formatRupiah(b)}</Chip>
+              ))}
+            </div>
+            <input
+              type="number"
+              inputMode="numeric"
+              value={budget}
+              onChange={(e) => setBudget(Number(e.target.value))}
+              className="w-full px-4 py-3 rounded-xl bg-white border border-outline-variant text-base focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+              placeholder="Budget dalam Rupiah"
+            />
+          </Field>
+
+          <Field label="Bahan yang sudah ada di rumah (opsional)">
+            <div className="flex gap-2 mb-3">
+              <input
+                type="text"
+                value={pantryInput}
+                onChange={(e) => setPantryInput(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addPantry(); } }}
+                placeholder="mis. telur 5 butir"
+                className="flex-1 px-4 py-3 rounded-xl bg-white border border-outline-variant text-base focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+              />
+              <button onClick={addPantry} aria-label="Tambah bahan" className="w-12 h-12 shrink-0 rounded-xl bg-primary text-on-primary flex items-center justify-center cursor-pointer hover:opacity-90 active:scale-95 transition">
+                <span className="material-symbols-outlined">add</span>
+              </button>
+            </div>
+            {pantry.length > 0 && (
+              <ul className="space-y-1.5">
+                {pantry.map((p, i) => (
+                  <li key={i} className="flex items-center justify-between bg-surface-container-low rounded-xl px-4 py-2.5 text-sm">
+                    <span className="text-on-surface">{p.name}{p.amount ? ` — ${p.amount} ${p.unit}` : ''}</span>
+                    <button onClick={() => removePantry(i)} aria-label="Hapus" className="text-on-surface-variant hover:text-error cursor-pointer">
+                      <span className="material-symbols-outlined text-[20px]">close</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Field>
+
+          <div className="flex justify-between pt-2">
+            <button onClick={() => setStep(1)} className="px-6 py-3 border border-outline-variant text-on-surface-variant rounded-full font-semibold text-sm hover:bg-surface-container-low transition cursor-pointer">
+              Kembali
+            </button>
+            <button onClick={() => setStep(3)} className="px-6 py-3 bg-primary text-on-primary rounded-full font-semibold text-sm hover:shadow-lg active:scale-95 transition cursor-pointer">
+              Lanjut
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 3 */}
+      {step === 3 && (
+        <div className="space-y-6 animate-fade-in">
+          <div className="bg-surface-container-low rounded-2xl p-6 space-y-3">
+            <h3 className="font-headline-md text-headline-md text-primary mb-2">Ringkasan</h3>
+            <SummaryRow label="Periode" value={`${periode} hari × ${porsi} porsi`} />
+            <SummaryRow label="Jenis output" value={OUTPUT_OPTIONS.find((o) => o.value === outputType)?.label} />
+            <SummaryRow label="Diet" value={diet.length ? diet.join(', ') : 'Tidak ada'} />
+            <SummaryRow label="Budget" value={formatRupiah(budget)} />
+            <SummaryRow label="Bahan di rumah" value={`${pantry.length} item`} />
+          </div>
+
+          {error && (
+            <div className="flex items-start gap-2.5 rounded-2xl bg-error/10 px-4 py-3 text-sm text-error">
+              <span className="material-symbols-outlined text-[20px] shrink-0">error</span>
+              <span>{error}</span>
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row justify-between gap-3 pt-2">
+            <button onClick={() => setStep(2)} disabled={loading} className="px-6 py-3 border border-outline-variant text-on-surface-variant rounded-full font-semibold text-sm hover:bg-surface-container-low transition cursor-pointer disabled:opacity-50">
+              Kembali
+            </button>
+            <button
+              onClick={handleGenerate}
+              disabled={loading}
+              className="flex-1 sm:flex-none px-8 py-3 bg-primary text-on-primary rounded-full font-semibold text-sm hover:shadow-lg active:scale-95 transition cursor-pointer disabled:opacity-60 inline-flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <span className="material-symbols-outlined animate-spin text-[20px]">progress_activity</span>
+                  AI sedang menyusun…
+                </>
+              ) : (
+                <>
+                  <span className="material-symbols-outlined text-[20px]">auto_awesome</span>
+                  Generate Plan-ku
+                </>
+              )}
+            </button>
+          </div>
+          {loading && (
+            <p className="text-center text-xs text-on-surface-variant">
+              Sonnet 4.5 thinking butuh beberapa detik untuk berpikir mendalam…
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Field({ label, children }) {
+  return (
+    <div>
+      <p className="text-sm font-semibold text-on-surface mb-2.5">{label}</p>
+      {children}
+    </div>
+  );
+}
+
+function Chip({ active, onClick, children }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-4 py-2.5 rounded-full text-sm font-semibold border transition-all cursor-pointer ${
+        active ? 'bg-primary text-on-primary border-primary' : 'bg-white text-on-surface-variant border-outline-variant hover:border-primary/50'
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function Stepper({ value, onDec, onInc, suffix }) {
+  return (
+    <div className="flex items-center gap-4 bg-surface-container-low border border-outline-variant p-2 rounded-2xl justify-between max-w-xs">
+      <button onClick={onDec} aria-label="Kurangi" className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center text-primary cursor-pointer active:scale-95 transition">
+        <span className="material-symbols-outlined">remove</span>
+      </button>
+      <span className="font-bold text-lg text-primary" aria-live="polite">{value} {suffix}</span>
+      <button onClick={onInc} aria-label="Tambah" className="w-11 h-11 rounded-xl bg-white border border-outline-variant flex items-center justify-center text-primary cursor-pointer active:scale-95 transition">
+        <span className="material-symbols-outlined">add</span>
+      </button>
+    </div>
+  );
+}
+
+function SummaryRow({ label, value }) {
+  return (
+    <div className="flex justify-between text-sm">
+      <span className="text-on-surface-variant">{label}</span>
+      <span className="font-semibold text-on-surface text-right">{value}</span>
+    </div>
+  );
+}

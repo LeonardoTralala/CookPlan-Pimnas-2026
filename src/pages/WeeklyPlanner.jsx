@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { mockRecipes } from '../utils/mockRecipes';
+import { getRecipes } from '../services/recipeService.js';
 import { usePlan } from '../hooks/usePlan.js';
 import { ModalSheet } from '../components/ModalSheet.jsx';
 
@@ -47,6 +47,14 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
   const [pickerServings, setPickerServings] = useState(2);
   const [activeMobileDay, setActiveMobileDay] = useState(DAYS[0].key);
 
+  // Bank resep dari DB (untuk picker & rekomendasi).
+  const [recipes, setRecipes] = useState([]);
+  useEffect(() => {
+    let active = true;
+    getRecipes().then((data) => { if (active) setRecipes(data); }).catch(() => {});
+    return () => { active = false; };
+  }, []);
+
   // Handle Escape key to close modal
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -93,12 +101,12 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
 
   // Resep untuk picker (difilter pencarian)
   const pickerResults = useMemo(() => {
-    if (pickerSearch.trim() === '') return mockRecipes;
+    if (pickerSearch.trim() === '') return recipes;
     const q = pickerSearch.toLowerCase();
-    return mockRecipes.filter((r) => r.title.toLowerCase().includes(q));
-  }, [pickerSearch]);
+    return recipes.filter((r) => r.title.toLowerCase().includes(q));
+  }, [recipes, pickerSearch]);
 
-  const recommended = mockRecipes.slice(0, 3);
+  const recommended = recipes.slice(0, 3);
   const recommendCaptions = ['Terpopuler minggu ini', 'Berdasarkan pesananmu sebelumnya', 'Favorit di wilayahmu'];
 
   const handlePickRecipe = (recipe) => {

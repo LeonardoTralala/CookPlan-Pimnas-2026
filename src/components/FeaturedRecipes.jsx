@@ -9,6 +9,11 @@ export function FeaturedRecipes({ onNavigate }) {
   const seeAll = () =>
     onNavigate ? onNavigate("register") : showToast("Katalog lengkap resep segera hadir — gabung daftar tunggu dulu!");
 
+  // Kartu resep unggulan = teaser marketing. Klik mengarahkan ke daftar tunggu
+  // (bukan menambah ke rencana, karena katalog penuh ada di area login).
+  const handleAdd = () =>
+    onNavigate ? onNavigate("register") : showToast("Gabung daftar tunggu untuk mengakses resep lengkap!");
+
   return (
     <section id="recipes" className="section-padding bg-canvas-white px-margin-mobile md:px-margin-desktop">
       <div className="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-12 gap-6">
@@ -31,7 +36,7 @@ export function FeaturedRecipes({ onNavigate }) {
 
       <div className="max-w-container-max mx-auto grid md:grid-cols-3 gap-6 md:gap-8">
         {initialRecipes.map((recipe) => (
-          <RecipeCard key={recipe.id} recipe={recipe} />
+          <RecipeCard key={recipe.id} recipe={recipe} onAdd={handleAdd} />
         ))}
       </div>
     </section>

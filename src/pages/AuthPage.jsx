@@ -10,7 +10,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // SEMENTARA: registrasi mandiri (sign-up) ditutup selama fase pre-register.
 // Calon pengguna diarahkan ke daftar tunggu (/register). Set true untuk
 // mengaktifkan kembali tab "Daftar" beserta form sign-up di halaman ini.
-const ALLOW_SELF_REGISTER = false;
+const ALLOW_SELF_REGISTER = true;
 
 // Terjemahkan pesan error Supabase ke bahasa yang ramah pengguna.
 function friendlyError(error) {

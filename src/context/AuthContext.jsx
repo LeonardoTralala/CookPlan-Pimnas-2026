@@ -25,12 +25,17 @@ export function AuthProvider({ children }) {
     let active = true;
 
     // Pulihkan sesi yang tersimpan saat aplikasi pertama dimuat.
-    supabase.auth.getSession().then(({ data }) => {
-      if (active) {
-        setSession(data.session ?? null);
-        setLoading(false);
-      }
-    });
+    supabase.auth.getSession()
+      .then(({ data }) => {
+        if (active) {
+          setSession(data.session ?? null);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        // Jangan biarkan loading menggantung selamanya bila getSession gagal.
+        if (active) setLoading(false);
+      });
 
     // Pantau perubahan sesi (login, logout, refresh token, OAuth redirect).
     const { data: sub } = supabase.auth.onAuthStateChange((event, newSession) => {

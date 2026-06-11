@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
-import { mockRecipes } from '../utils/mockRecipes';
+import { useState, useMemo, useEffect } from 'react';
+import { getRecipes } from '../services/recipeService.js';
 import { usePlan } from '../hooks/usePlan.js';
+import { useAuth } from '../hooks/useAuth.js';
 import { AVATAR_URL } from '../utils/userConfig.js';
 
 // Item navigasi pada sidebar Settings (desktop)
@@ -18,14 +19,29 @@ const RECIPE_FILTERS = ['Semua Resep', 'Sarapan Cepat', 'Favorit Vegetarian', 'M
 
 function UserProfile() {
   const { showToast } = usePlan();
+  const { user } = useAuth();
   const soon = (fitur) => showToast(`Fitur ${fitur} sedang dikembangkan oleh rekan tim!`);
   const [activeNav, setActiveNav] = useState('saved');
   const [activeFilter, setActiveFilter] = useState('Semua Resep');
   const [savedSearch, setSavedSearch] = useState('');
   const [gender, setGender] = useState('');
 
+  // Data identitas dari sesi login (bukan hardcode). Fallback aman bila kosong.
+  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.username
+    || user?.email?.split('@')[0] || 'Pengguna';
+  const displayEmail = user?.email || '-';
+  const joinedAt = user?.created_at
+    ? new Date(user.created_at).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' })
+    : null;
+
   // Ambil sebagian resep dari katalog sebagai "resep tersimpan" milik pengguna
-  const savedRecipes = useMemo(() => mockRecipes.slice(0, 6), []);
+  const [allRecipes, setAllRecipes] = useState([]);
+  useEffect(() => {
+    let active = true;
+    getRecipes().then((data) => { if (active) setAllRecipes(data); }).catch(() => {});
+    return () => { active = false; };
+  }, []);
+  const savedRecipes = useMemo(() => allRecipes.slice(0, 6), [allRecipes]);
 
   const filteredSaved = useMemo(() => {
     if (savedSearch.trim() === '') return savedRecipes;
@@ -84,7 +100,7 @@ function UserProfile() {
               <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-surface-cream bg-surface-variant flex items-center justify-center shadow-sm">
                 <img
                   src={AVATAR_URL}
-                  alt="Brokoli"
+                  alt={displayName}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -95,16 +111,18 @@ function UserProfile() {
 
             <div className="flex-grow text-center md:text-left space-y-2 mt-2 md:mt-4">
               <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight leading-tight">
-                Brokoli
+                {displayName}
               </h1>
-              <p className="text-lg text-on-surface-variant">brokoli@example.com</p>
+              <p className="text-lg text-on-surface-variant">{displayEmail}</p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-2">
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary text-on-primary rounded-full text-xs font-semibold shadow-sm">
-                  <span className="material-symbols-outlined text-[14px] fill">verified</span> Paket Pro
+                  <span className="material-symbols-outlined text-[14px] fill">verified</span> Akun Aktif
                 </span>
-                <span className="inline-flex items-center gap-1 px-3 py-1 bg-surface-container-lowest border border-outline-variant text-on-surface-variant rounded-full text-xs font-semibold">
-                  Bergabung Mar 2024
-                </span>
+                {joinedAt && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-surface-container-lowest border border-outline-variant text-on-surface-variant rounded-full text-xs font-semibold">
+                    Bergabung {joinedAt}
+                  </span>
+                )}
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-surface-container-low border border-outline-variant text-on-surface-variant rounded-full text-xs font-semibold">
                   <span className="material-symbols-outlined text-[14px]">wc</span>
                   Jenis Kelamin:
