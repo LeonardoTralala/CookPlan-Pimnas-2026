@@ -40,7 +40,14 @@ alter table public.orders
          or payment_method in ('transfer_bank','qris','cod'));
 
 -- 4) order_items.order_id : NOT NULL + cocokin migration ------------------------
--- Tabel kosong sekarang (0 baris), jadi aman tambah NOT NULL.
+-- Fail fast kalau masih ada baris yang melanggar (biar deploy tidak setengah jalan
+-- — ALTER bakal gagal di tengah, sisa migration di bawah tetap dieksekusi).
+do $$
+begin
+  if exists (select 1 from public.order_items where order_id is null) then
+    raise exception 'Cannot set order_items.order_id NOT NULL: found rows with NULL order_id';
+  end if;
+end $$;
 alter table public.order_items
   alter column order_id set not null;
 

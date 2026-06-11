@@ -11,7 +11,11 @@
 -- =============================================================================
 
 -- Trigger: tahan perubahan kolom role dari klien biasa (anon/authenticated).
--- service_role (dipakai Edge Function admin) tetap boleh mengubah role.
+-- Fungsi ini SECURITY DEFINER, jadi `current_user` selalu = owner fungsi
+-- (misalnya postgres) dan tidak bisa dipakai untuk membedakan caller.
+-- Pakai `session_user` (invoker asli) + whitelist role yang boleh ubah role:
+-- service_role (Edge Function), postgres (migration via SQL editor),
+-- supabase_admin (Supabase internal).
 create or replace function public.prevent_role_change()
 returns trigger
 language plpgsql
@@ -19,10 +23,9 @@ security definer
 set search_path = ''
 as $$
 begin
-  -- Bila role berubah DAN pemanggil bukan service_role → tolak (paksa nilai lama).
+  -- Bila role berubah DAN pemanggil bukan whitelist → tolak (paksa nilai lama).
   if new.role is distinct from old.role
-     and coalesce(current_setting('request.jwt.claim.role', true), '') <> 'service_role'
-     and current_user <> 'service_role'
+     and session_user not in ('service_role', 'postgres', 'supabase_admin')
   then
     new.role := old.role;
   end if;
