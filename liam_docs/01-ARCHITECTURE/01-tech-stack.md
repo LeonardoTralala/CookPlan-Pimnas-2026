@@ -38,7 +38,7 @@ last-updated: 2026-06-11
 | Primary | Sonnet 4.5 thinking | Via 9router/enowxlabs |
 | Fallback | Gemini | Google AI |
 | Config store | Tabel `ai_providers` | Ganti tanpa redeploy |
-| Validation | Zod (di Edge Function) | Input + output schema |
+| Validation | Custom validators (`_shared/validate.ts`) | Validasi input/output + pantry subtraction |
 
 ## Tooling Lokal
 

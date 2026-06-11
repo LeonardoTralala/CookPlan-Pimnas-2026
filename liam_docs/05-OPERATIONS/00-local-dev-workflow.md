@@ -4,11 +4,18 @@ status: done
 last-updated: 2026-06-11
 ---
 
-# Workflow Dev Harian (100% Lokal)
+# Workflow Dev Harian
 
-Dokumen ini ngejelasin rutinitas ngoding CookPlan sehari-hari. Semua jalan
-**100% lokal** pakai Supabase CLI. **Project produksi (ref `phdbbiydrjwxlehdfubh`)
-belum disentuh sama sekali**, jadi santai aja, ngga bakal ada yang kena ke prod.
+Dokumen ini ngejelasin rutinitas ngoding CookPlan sehari-hari. Semua contoh
+perintah di sini menarget **Supabase lokal** via CLI (Docker stack di
+`http://127.0.0.1:54321`). Kalau lagi mau dev ngomong langsung ke prod,
+rename `.env.local` → `.env.local.bak` dulu biar `.env` (yang point ke
+`https://phdbbiydrjwxlehdfubh.supabase.co`) yang dipakai Vite.
+
+> 📌 **Catatan status:** Backend Supabase **sudah ter-deploy** ke prod
+> (lihat `05-prod-deploy-2026-06-11.md`). Migration baru / perubahan skema
+> ke prod tetap wajib koordinasi tim — lihat
+> `02-future-production-deploy.md`.
 
 ## Git branch
 

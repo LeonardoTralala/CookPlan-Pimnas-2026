@@ -4,14 +4,22 @@ status: done
 last-updated: 2026-06-11
 ---
 
-# Deploy ke Produksi (NANTI — Belum Dilakukan)
+# Deploy ke Produksi (Panduan + Checklist)
 
-> 🚨 **STATUS: BELUM PERNAH DEPLOY.** Project produksi (ref
-> `phdbbiydrjwxlehdfubh`) masih kosong / belum disentuh. Dokumen ini panduan
-> buat NANTI pas tim udah siap go-live.
+> 📌 **CATATAN:** Backend Supabase **sudah pernah ter-deploy** ke project
+> produksi `phdbbiydrjwxlehdfubh` pada 2026-06-11 (Edge Functions
+> `generate-plan` & `admin-providers` ACTIVE, migration drift fix di-apply
+> via Mgmt API). Lihat detail di
+> `liam_docs/05-OPERATIONS/05-prod-deploy-2026-06-11.md` &
+> `06-schema-drift-audit-2026-06-11.md`.
 >
-> **Jangan jalanin langkah-langkah di bawah tanpa koordinasi sama Tiara (Manajer
-> IT) dulu.** Deploy ke prod itu satu arah dampaknya gede — koordinasi tim wajib.
+> Dokumen ini adalah **panduan untuk deploy berikutnya** (frontend ke
+> Vercel, atau migration baru ke prod) dan **checklist pre-deploy** yang
+> harus tetap dijalankan setiap kali ada perubahan ke prod.
+>
+> **Jangan jalanin langkah-langkah di bawah tanpa koordinasi sama Tiara
+> (Manajer IT) dulu.** Deploy ke prod itu satu arah dampaknya gede —
+> koordinasi tim wajib.
 
 ## Gambaran besar
 
