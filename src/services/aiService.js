@@ -73,12 +73,16 @@ export async function getGeneratedPlanById(id) {
 }
 
 // Cek sisa kuota generate hari ini (rate limit info untuk UI).
+// Pakai setUTCHours supaya batas hari konsisten dengan toISOString() (UTC).
+// Server-side rate limit di Edge Function juga UTC-based, sehingga UI &
+// server pakai window yang sama (audit Copilot: setHours lokal + toISOString
+// UTC menghasilkan boundary yang inkonsisten untuk user non-UTC).
 export async function getTodayUsageCount() {
   const { data: userData } = await supabase.auth.getUser();
   const user = userData?.user;
   if (!user) return 0;
   const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
+  startOfDay.setUTCHours(0, 0, 0, 0);
   const { count, error } = await supabase
     .from("ai_usage_log")
     .select("id", { count: "exact", head: true })

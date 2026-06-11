@@ -7,14 +7,20 @@ import { supabase } from "../lib/supabase.js";
 const DAYS = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
 const MEAL_TYPES = ["breakfast", "lunch", "dinner"];
 
-// Hitung tanggal Senin minggu berjalan (ISO, YYYY-MM-DD) sebagai kunci week.
+// Hitung tanggal Senin minggu berjalan (YYYY-MM-DD) sebagai kunci week.
+// Pakai komponen tanggal LOKAL (bukan toISOString) supaya user di non-UTC
+// timezone (mis. WIB UTC+7) tidak ketarik ke hari sebelumnya saat tengah malam
+// lokal — bug yang bikin week_start_date tersimpan/terbaca di minggu salah.
 export function getCurrentWeekStart(date = new Date()) {
   const d = new Date(date);
   const dow = d.getDay(); // 0=Minggu..6=Sabtu
   const diffToMonday = dow === 0 ? -6 : 1 - dow;
   d.setDate(d.getDate() + diffToMonday);
   d.setHours(0, 0, 0, 0);
-  return d.toISOString().slice(0, 10);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
 }
 
 function createEmptyPlan() {

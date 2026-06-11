@@ -51,9 +51,9 @@ Deno.serve(async (req) => {
   if (userErr || !userData?.user) return json({ error: "Tidak terautentikasi." }, 401);
   const userId = userData.user.id;
 
-  // 2. Rate limit
+  // 2. Rate limit (window UTC-based, konsisten dengan getTodayUsageCount di klien)
   const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
+  startOfDay.setUTCHours(0, 0, 0, 0);
   const { count: usageCount } = await admin
     .from("ai_usage_log")
     .select("id", { count: "exact", head: true })
