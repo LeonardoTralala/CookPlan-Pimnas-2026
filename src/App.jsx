@@ -17,6 +17,7 @@ import { GenerateResult } from './pages/GenerateResult.jsx';
 import { OrderPage } from './pages/OrderPage.jsx';
 import { AIProviders } from './pages/admin/AIProviders.jsx';
 import { Toast } from './components/Toast.jsx';
+import { InstallPrompt } from './components/InstallPrompt.jsx';
 
 // Routing penuh CookPlan. Halaman publik (landing, pre-register, legal) + halaman
 // aplikasi terproteksi (generate, katalog, planner, belanja, profil) di balik
@@ -52,6 +53,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Toast />
+      <InstallPrompt />
     </>
   );
 }
