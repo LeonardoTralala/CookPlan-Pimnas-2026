@@ -19,3 +19,14 @@ createRoot(document.getElementById('root')).render(
     </BrowserRouter>
   </StrictMode>,
 )
+
+// Daftarkan service worker untuk PWA (installable "Add to Home Screen").
+// Hanya di production build (dev server Vite tidak butuh & bisa bikin cache aneh).
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      // Registrasi gagal tidak fatal — app tetap jalan tanpa PWA.
+    });
+  });
+}
+

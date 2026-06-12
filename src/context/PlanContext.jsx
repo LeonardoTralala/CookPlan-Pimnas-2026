@@ -1,5 +1,7 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { PlanContext } from "./plan-context.js";
+import { useAuth } from "../hooks/useAuth.js";
+import * as planService from "../services/planService.js";
 
 const DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 const MEAL_TYPES = ['breakfast', 'lunch', 'dinner'];
@@ -20,97 +22,195 @@ function isValidPlanShape(plan) {
   });
 }
 
-export function PlanProvider({ children }) {
-  const [addedRecipes, setAddedRecipes] = useState([]);
-  const [toast, setToast] = useState({ message: "", onUndo: null, variant: "success" });
-
-  const [weeklyPlan, setWeeklyPlan] = useState(() => {
-    const saved = localStorage.getItem('weeklyPlan');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (isValidPlanShape(parsed)) return parsed;
-      } catch {
-        // abaikan data rusak
-      }
+function loadLocalPlan() {
+  const saved = localStorage.getItem('weeklyPlan');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      if (isValidPlanShape(parsed)) return parsed;
+    } catch {
+      // abaikan data rusak
     }
-    return createEmptyPlan();
-  });
+  }
+  return createEmptyPlan();
+}
+
+export function PlanProvider({ children }) {
+  const { isAuthenticated } = useAuth();
+
+  // toast pakai counter id agar dua pesan identik tetap me-reset timer (audit #16).
+  const [toast, setToast] = useState({ id: 0, message: "", onUndo: null, variant: "success" });
+  const [weeklyPlan, setWeeklyPlan] = useState(loadLocalPlan);
+
+  // planId DB minggu berjalan (null saat belum login / belum dimuat).
+  const planIdRef = useRef(null);
+  // Antrian mutasi yang terjadi sebelum planId siap (audit #6), agar tidak hilang.
+  const pendingRef = useRef([]);
 
   const showToast = useCallback((message, options = {}) => {
-    setToast({ message, onUndo: options.onUndo ?? null, variant: options.variant ?? "success" });
+    setToast((prev) => ({
+      id: prev.id + 1,
+      message,
+      onUndo: options.onUndo ?? null,
+      variant: options.variant ?? "success",
+    }));
   }, []);
 
   useEffect(() => {
     if (!toast.message) return undefined;
-    const timer = setTimeout(() => setToast({ message: "", onUndo: null, variant: "success" }), 3000);
+    const timer = setTimeout(
+      () => setToast((prev) => ({ ...prev, message: "", onUndo: null })),
+      3000
+    );
     return () => clearTimeout(timer);
-  }, [toast.message]);
+  }, [toast.id, toast.message]);
 
-  const isInPlan = useCallback(
-    (recipeId) => addedRecipes.some((r) => r.id === recipeId),
-    [addedRecipes]
-  );
+  // Persist helper: tulis ke DB bila login (planId siap), kalau belum siap antri,
+  // kalau guest tulis localStorage. Dipanggil DI LUAR updater setState (audit #5).
+  const persistSlot = useCallback((recipe, day, mealType, servings, nextPlan) => {
+    if (isAuthenticated) {
+      if (planIdRef.current) {
+        planService.setSlot(planIdRef.current, recipe, day, mealType, servings)
+          .catch((e) => console.error("setSlot gagal:", e.message));
+      } else {
+        pendingRef.current.push({ type: "set", recipe, day, mealType, servings });
+      }
+    } else {
+      localStorage.setItem('weeklyPlan', JSON.stringify(nextPlan));
+    }
+  }, [isAuthenticated]);
 
-  const toggleRecipeInPlan = useCallback(
-    (recipe) => {
-      setAddedRecipes((prev) => {
-        if (prev.some((r) => r.id === recipe.id)) {
-          showToast(`${recipe.name} dihapus dari rencana belanja`);
-          return prev.filter((r) => r.id !== recipe.id);
+  const persistRemove = useCallback((day, mealType, nextPlan) => {
+    if (isAuthenticated) {
+      if (planIdRef.current) {
+        planService.removeSlot(planIdRef.current, day, mealType)
+          .catch((e) => console.error("removeSlot gagal:", e.message));
+      } else {
+        pendingRef.current.push({ type: "remove", day, mealType });
+      }
+    } else {
+      localStorage.setItem('weeklyPlan', JSON.stringify(nextPlan));
+    }
+  }, [isAuthenticated]);
+
+  // Saat status login berubah: muat plan dari DB + flush antrian. Saat logout,
+  // kembali ke localStorage.
+  useEffect(() => {
+    let active = true;
+    if (!isAuthenticated) {
+      planIdRef.current = null;
+      queueMicrotask(() => { if (active) setWeeklyPlan(loadLocalPlan()); });
+      return () => { active = false; };
+    }
+
+    (async () => {
+      try {
+        const { planId, plan } = await planService.getCurrentPlan();
+        if (!active) return;
+        planIdRef.current = planId;
+
+        // Flush mutasi yang sempat tertunda sebelum planId siap.
+        const pending = pendingRef.current;
+        pendingRef.current = [];
+        for (const m of pending) {
+          try {
+            if (m.type === "set") await planService.setSlot(planId, m.recipe, m.day, m.mealType, m.servings);
+            else await planService.removeSlot(planId, m.day, m.mealType);
+          } catch (e) { console.error("flush pending gagal:", e.message); }
         }
-        showToast(`${recipe.name} ditambahkan ke rencana belanja!`);
-        return [...prev, recipe];
-      });
-    },
-    [showToast]
-  );
 
-  const setSlot = useCallback((recipe, day, mealType, servings) => {
-    setWeeklyPlan((prev) => {
-      const updated = {
-        ...prev,
-        [day]: {
-          ...prev[day],
-          [mealType]: {
-            recipeId: recipe.id,
-            title: recipe.title,
-            servings,
-            imageUrl: recipe.imageUrl,
-            priceIdr: recipe.priceIdr,
-            readyInMinutes: recipe.readyInMinutes,
-            calories: recipe.calories
+        // Migrasi sekali: kalau DB kosong tapi ada data localStorage, dorong ke DB.
+        const dbEmpty = Object.values(plan).every((d) => MEAL_TYPES.every((mm) => !d[mm]));
+        const local = loadLocalPlan();
+        const localHasData = Object.values(local).some((d) => MEAL_TYPES.some((mm) => d[mm]));
+
+        if (dbEmpty && localHasData && pending.length === 0) {
+          let migratedOk = true;
+          for (const day of DAYS) {
+            for (const meal of MEAL_TYPES) {
+              const slot = local[day][meal];
+              if (slot && slot.recipeId != null) {
+                try {
+                  await planService.setSlot(planId, { id: slot.recipeId, ...slot }, day, meal, slot.servings ?? 2);
+                } catch (e) { migratedOk = false; console.error("migrasi gagal:", e.message); }
+              }
+            }
+          }
+          // Hanya hapus localStorage bila SEMUA slot berhasil dimigrasi (audit #7).
+          if (migratedOk) localStorage.removeItem('weeklyPlan');
+          const refreshed = await planService.getCurrentPlan();
+          if (active) setWeeklyPlan(refreshed.plan);
+        } else {
+          // Bila ada pending yang baru di-flush, reload agar konsisten.
+          if (pending.length > 0) {
+            const refreshed = await planService.getCurrentPlan();
+            if (active) setWeeklyPlan(refreshed.plan);
+          } else {
+            setWeeklyPlan(plan);
           }
         }
-      };
-      localStorage.setItem('weeklyPlan', JSON.stringify(updated));
-      return updated;
+      } catch (e) {
+        console.error("muat plan gagal:", e.message);
+        if (active) setWeeklyPlan(loadLocalPlan());
+      }
+    })();
+
+    return () => { active = false; };
+  }, [isAuthenticated]);
+
+  const isInPlan = useCallback(
+    (recipeId) => {
+      for (const day of DAYS) {
+        for (const meal of MEAL_TYPES) {
+          if (weeklyPlan[day]?.[meal]?.recipeId === recipeId) return true;
+        }
+      }
+      return false;
+    },
+    [weeklyPlan]
+  );
+
+  // setSlot: hitung next state, set, lalu persist DI LUAR updater (audit #5).
+  const setSlot = useCallback((recipe, day, mealType, servings) => {
+    const slotData = {
+      recipeId: recipe.id,
+      title: recipe.title,
+      servings,
+      imageUrl: recipe.imageUrl,
+      priceIdr: recipe.priceIdr,
+      readyInMinutes: recipe.readyInMinutes,
+      calories: recipe.calories,
+    };
+    let nextPlan;
+    setWeeklyPlan((prev) => {
+      nextPlan = { ...prev, [day]: { ...prev[day], [mealType]: slotData } };
+      return nextPlan;
     });
-  }, []);
+    persistSlot(recipe, day, mealType, servings, nextPlan);
+  }, [persistSlot]);
 
   const removeSlot = useCallback((day, mealType) => {
+    let nextPlan;
     setWeeklyPlan((prev) => {
-      const updated = {
-        ...prev,
-        [day]: { ...prev[day], [mealType]: null }
-      };
-      localStorage.setItem('weeklyPlan', JSON.stringify(updated));
-      return updated;
+      nextPlan = { ...prev, [day]: { ...prev[day], [mealType]: null } };
+      return nextPlan;
     });
-  }, []);
+    persistRemove(day, mealType, nextPlan);
+  }, [persistRemove]);
 
   const restoreSlot = useCallback((day, mealType, slotData) => {
+    let nextPlan;
     setWeeklyPlan((prev) => {
-      const updated = {
-        ...prev,
-        [day]: { ...prev[day], [mealType]: slotData }
-      };
-      localStorage.setItem('weeklyPlan', JSON.stringify(updated));
-      return updated;
+      nextPlan = { ...prev, [day]: { ...prev[day], [mealType]: slotData } };
+      return nextPlan;
     });
-  }, []);
+    if (slotData?.recipeId != null) {
+      persistSlot({ id: slotData.recipeId, ...slotData }, day, mealType, slotData.servings ?? 2, nextPlan);
+    } else {
+      persistRemove(day, mealType, nextPlan);
+    }
+  }, [persistSlot, persistRemove]);
 
-  // Jumlah slot terisi di seluruh rencana mingguan – dipakai badge Navbar
   const plannedCount = useMemo(() => {
     let count = 0;
     Object.values(weeklyPlan).forEach((daySlots) => {
@@ -120,18 +220,16 @@ export function PlanProvider({ children }) {
     return count;
   }, [weeklyPlan]);
 
-  const value = {
-    addedRecipes,
+  const value = useMemo(() => ({
     toast,
     showToast,
     isInPlan,
-    toggleRecipeInPlan,
     weeklyPlan,
     setSlot,
     removeSlot,
     restoreSlot,
     plannedCount,
-  };
+  }), [toast, showToast, isInPlan, weeklyPlan, setSlot, removeSlot, restoreSlot, plannedCount]);
 
   return <PlanContext.Provider value={value}>{children}</PlanContext.Provider>;
 }

@@ -29,3 +29,7 @@ poles-tampilan.md
 .env
 .env.*
 !.env.example
+
+# Database backups (may contain PII)
+.backups/
+backups

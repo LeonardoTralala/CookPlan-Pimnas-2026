@@ -1,10 +1,16 @@
 import { useState, useMemo, useEffect } from 'react';
-import { mockRecipes } from '../utils/mockRecipes';
+import { getRecipes } from '../services/recipeService.js';
 import { usePlan } from '../hooks/usePlan.js';
 import { ModalSheet } from '../components/ModalSheet.jsx';
 
 function RecipeCatalog({ onAddToPlan }) {
   const { showToast, weeklyPlan } = usePlan();
+
+  // Bank resep dari DB (Supabase) — menggantikan mockRecipes statis.
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
   const [maxTime, setMaxTime] = useState(120); // default max 120 minutes
@@ -38,6 +44,16 @@ function RecipeCatalog({ onAddToPlan }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedRecipeForDetail, selectedRecipeForPlan, showAdvancedFilters]);
 
+  // Muat bank resep dari Supabase saat mount.
+  useEffect(() => {
+    let active = true;
+    getRecipes()
+      .then((data) => { if (active) { setRecipes(data); setLoadError(''); } })
+      .catch((err) => { if (active) setLoadError(err.message || 'Gagal memuat resep.'); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, []);
+
   // Toggle quick filter tag
   const handleToggleFilter = (filterName) => {
     if (activeFilters.includes(filterName)) {
@@ -56,12 +72,12 @@ function RecipeCatalog({ onAddToPlan }) {
 
   // Filter recipes based on search query, quick filters, and advanced criteria
   const filteredRecipes = useMemo(() => {
-    return mockRecipes.filter((recipe) => {
+    return recipes.filter((recipe) => {
       // 1. Search Query Filter (matches title or ingredients)
       if (searchQuery.trim() !== '') {
         const query = searchQuery.toLowerCase();
         const matchesTitle = recipe.title.toLowerCase().includes(query);
-        const matchesIngredients = recipe.ingredients.some((ing) =>
+        const matchesIngredients = (recipe.ingredients ?? []).some((ing) =>
           ing.name.toLowerCase().includes(query)
         );
         if (!matchesTitle && !matchesIngredients) return false;
@@ -69,26 +85,27 @@ function RecipeCatalog({ onAddToPlan }) {
 
       // 2. Quick Filter Chips
       if (activeFilters.length > 0) {
+        const badges = recipe.badges ?? [];
         const matchesAllActive = activeFilters.every((filter) => {
           if (filter === 'Vegetarian') {
-            return recipe.badges.includes('Vegetarian');
+            return badges.includes('Vegetarian');
           }
           if (filter === 'Cepat') {
-            return recipe.readyInMinutes <= 30 || recipe.badges.includes('Cepat');
+            return recipe.readyInMinutes <= 30 || badges.includes('Cepat');
           }
           if (filter === 'Bahan Lokal') {
-            return recipe.badges.includes('Bahan Lokal');
+            return badges.includes('Bahan Lokal');
           }
           if (filter === 'Hemat Budget') {
-            return recipe.priceIdr <= 30000 || recipe.badges.includes('Hemat Budget');
+            return recipe.priceIdr <= 30000 || badges.includes('Hemat Budget');
           }
           return true;
         });
         if (!matchesAllActive) return false;
       }
 
-      // 3. Max Cooking Time
-      if (recipe.readyInMinutes > maxTime) return false;
+      // 3. Max Cooking Time — 120 = "Semua" (tanpa batas), jadi skip filter.
+      if (maxTime < 120 && recipe.readyInMinutes > maxTime) return false;
 
       // 4. Price Category
       if (priceCategory === 'Hemat' && recipe.priceIdr >= 15000) return false;
@@ -97,7 +114,7 @@ function RecipeCatalog({ onAddToPlan }) {
 
       return true;
     });
-  }, [searchQuery, activeFilters, maxTime, priceCategory]);
+  }, [recipes, searchQuery, activeFilters, maxTime, priceCategory]);
 
   // Handle confirming "Add to Plan"
   const handleConfirmAddToPlan = () => {
@@ -311,7 +328,18 @@ function RecipeCatalog({ onAddToPlan }) {
 
       {/* Catalog Grid */}
       <section className="px-6 max-w-container-max mx-auto">
-        {filteredRecipes.length === 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20 text-on-surface-variant">
+            <span className="material-symbols-outlined animate-spin text-4xl text-primary mb-3" aria-hidden="true">progress_activity</span>
+            <p className="text-sm">Memuat resep…</p>
+          </div>
+        ) : loadError ? (
+          <div className="text-center py-20 bg-white rounded-3xl border border-error/30 p-8">
+            <span className="material-symbols-outlined text-5xl text-error mb-4">error</span>
+            <h3 className="font-headline-md text-headline-md text-on-surface mb-2">Gagal Memuat Resep</h3>
+            <p className="text-on-surface-variant text-sm max-w-md mx-auto">{loadError}</p>
+          </div>
+        ) : filteredRecipes.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border border-outline-variant p-8">
             <span className="material-symbols-outlined text-5xl md:text-6xl text-outline-variant mb-4">
               sentiment_dissatisfied
@@ -355,7 +383,7 @@ function RecipeCatalog({ onAddToPlan }) {
                   {/* Badges Overlay */}
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 rounded-full bg-white/95 text-primary font-bold text-[10px] shadow-sm tracking-wide">
-                      {recipe.badges[0]}
+                      {recipe.badges?.[0]}
                     </span>
                   </div>
                 </div>
@@ -442,7 +470,7 @@ function RecipeCatalog({ onAddToPlan }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 <div className="absolute bottom-6 left-6 text-white pr-10">
                   <div className="flex flex-wrap gap-1.5 mb-2">
-                    {selectedRecipeForDetail.badges.map((badge, idx) => (
+                    {(selectedRecipeForDetail.badges ?? []).map((badge, idx) => (
                       <span
                         key={idx}
                         className="px-2.5 py-0.5 rounded-full bg-primary-container text-on-primary-container font-bold text-[9px] uppercase tracking-wider"
@@ -505,7 +533,7 @@ function RecipeCatalog({ onAddToPlan }) {
                     Bahan-Bahan yang Dibutuhkan
                   </h4>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
-                    {selectedRecipeForDetail.ingredients.map((ing, idx) => (
+                    {(selectedRecipeForDetail.ingredients ?? []).map((ing, idx) => (
                       <li
                         key={idx}
                         className="flex justify-between items-center py-1.5 border-b border-outline-variant/30 text-xs md:text-sm"
@@ -526,7 +554,7 @@ function RecipeCatalog({ onAddToPlan }) {
                     Langkah-Langkah Memasak
                   </h4>
                   <ol className="space-y-4">
-                    {selectedRecipeForDetail.instructions.map((step, idx) => (
+                    {(selectedRecipeForDetail.instructions ?? []).map((step, idx) => (
                       <li key={idx} className="flex gap-4 items-start text-xs md:text-sm leading-relaxed">
                         <span className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
                           {idx + 1}

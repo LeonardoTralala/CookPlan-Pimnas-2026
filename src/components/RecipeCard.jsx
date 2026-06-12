@@ -1,9 +1,4 @@
-import { usePlan } from "../hooks/usePlan.js";
-
-export function RecipeCard({ recipe }) {
-  const { isInPlan, toggleRecipeInPlan } = usePlan();
-  const added = isInPlan(recipe.id);
-
+export function RecipeCard({ recipe, onAdd }) {
   return (
     <div className="bg-surface-cream rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col justify-between">
       <div>
@@ -33,17 +28,11 @@ export function RecipeCard({ recipe }) {
       </div>
       <div className="p-4 pt-0 md:p-6 md:pt-0">
         <button
-          onClick={() => toggleRecipeInPlan(recipe)}
-          className={`w-full py-3 rounded-full font-label-md text-label-md active:scale-[0.98] transition cursor-pointer border font-semibold flex items-center justify-center gap-1.5 ${
-            added
-              ? "bg-primary border-primary text-white hover:bg-primary/95"
-              : "border-primary text-primary hover:bg-primary hover:text-white"
-          }`}
+          onClick={() => onAdd?.(recipe)}
+          className="w-full py-3 rounded-full font-label-md text-label-md active:scale-[0.98] transition cursor-pointer border font-semibold flex items-center justify-center gap-1.5 border-primary text-primary hover:bg-primary hover:text-white"
         >
-          {added && (
-            <span className="material-symbols-outlined text-lg" aria-hidden="true">check</span>
-          )}
-          {added ? "Ditambahkan" : "Tambah ke Rencana"}
+          Lihat Resep Lengkap
+          <span className="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
         </button>
       </div>
     </div>

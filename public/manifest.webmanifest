@@ -1,0 +1,55 @@
+{
+  "name": "CookPlan — Rencana Masak & Belanja",
+  "short_name": "CookPlan",
+  "description": "Rencanakan menu masak mingguan, daftar belanja otomatis, dan masak hemat dengan bahan lokal.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbfaf9",
+  "theme_color": "#375219",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["food", "lifestyle", "productivity"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Generate Foodplan",
+      "short_name": "Generate",
+      "url": "/generate",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Rencana Mingguan",
+      "short_name": "Rencana",
+      "url": "/planner",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Daftar Belanja",
+      "short_name": "Belanja",
+      "url": "/shopping",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

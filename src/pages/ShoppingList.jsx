@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { mockRecipes } from '../utils/mockRecipes';
+import { useMemo, useState, useEffect } from 'react';
+import { getRecipes } from '../services/recipeService.js';
 import { usePlan } from '../hooks/usePlan.js';
 
 // Porsi dasar resep di mockRecipes (takaran bahan ditulis untuk ~2 porsi)
@@ -38,7 +38,7 @@ function formatAmount(amount) {
 // Bangun daftar belanja dari rencana mingguan:
 // kumpulkan tiap slot terisi -> ambil resep penuh -> agregasi bahan per (nama+satuan),
 // skala jumlah & harga sesuai porsi, lalu kelompokkan per kategori.
-function buildShoppingList(weeklyPlan) {
+function buildShoppingList(weeklyPlan, recipeIndex) {
   const itemMap = new Map(); // key: `${name}__${unit}` -> { name, unit, amount, priceIdr, category }
 
   if (weeklyPlan && typeof weeklyPlan === 'object') {
@@ -46,12 +46,12 @@ function buildShoppingList(weeklyPlan) {
       if (!daySlots) return;
       Object.values(daySlots).forEach((slot) => {
         if (!slot) return;
-        const recipe = mockRecipes.find((r) => r.id === slot.recipeId);
+        const recipe = recipeIndex.get(slot.recipeId);
         if (!recipe) return;
 
         const factor = (slot.servings || BASE_SERVINGS) / BASE_SERVINGS;
 
-        recipe.ingredients.forEach((ing) => {
+        (recipe.ingredients ?? []).forEach((ing) => {
           const key = `${ing.name}__${ing.unit}`;
           const existing = itemMap.get(key);
           if (existing) {
@@ -105,9 +105,28 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
   const [checkedItems, setCheckedItems] = useState(() => new Set());
   const { showToast } = usePlan();
 
+  // Bank resep dari DB → index by id untuk lookup bahan saat agregasi.
+  const [recipes, setRecipes] = useState([]);
+  useEffect(() => {
+    let active = true;
+    getRecipes()
+      .then((data) => { if (active) setRecipes(data); })
+      .catch((err) => {
+        console.error("Gagal memuat resep:", err);
+        if (active) showToast("Gagal memuat katalog resep. Coba refresh halaman.");
+      });
+    return () => { active = false; };
+  }, [showToast]);
+
+  const recipeIndex = useMemo(() => {
+    const m = new Map();
+    for (const r of recipes) m.set(r.id, r);
+    return m;
+  }, [recipes]);
+
   const { sections, totalItems, estimatedCost } = useMemo(
-    () => buildShoppingList(weeklyPlan),
-    [weeklyPlan]
+    () => buildShoppingList(weeklyPlan, recipeIndex),
+    [weeklyPlan, recipeIndex]
   );
 
   const toggleItem = (id) => {
@@ -155,7 +174,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
   // ---------------- Daftar Belanja ----------------
   return (
     <div className="bg-canvas-white min-h-dvh text-on-surface">
-      <main className="max-w-container-max mx-auto px-5 md:px-10 py-8 md:py-12 pb-28 lg:pb-12">
+      <main className="max-w-container-max mx-auto px-5 md:px-10 py-8 md:py-12 pb-44 lg:pb-12">
         {/* Header */}
         <header className="mb-10 max-w-3xl animate-fade-in">
           <h1 className="font-headline-xl text-headline-lg md:text-headline-xl text-primary tracking-tight mb-3 leading-tight">
@@ -354,7 +373,7 @@ function ShoppingList({ weeklyPlan, onGoToPlanner }) {
 
       {/* Bar total + CTA sticky khusus mobile: ringkasan & checkout selalu terjangkau
           tanpa harus scroll melewati seluruh daftar bahan (di desktop pakai sidebar). */}
-      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-canvas-white/95 backdrop-blur border-t border-outline-variant px-5 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex items-center gap-4 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+      <div className="lg:hidden fixed bottom-above-nav md:bottom-0 inset-x-0 z-30 bg-canvas-white/95 backdrop-blur border-t border-outline-variant px-5 py-3 flex items-center gap-4 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
         <div className="min-w-0">
           <p className="text-xs text-on-surface-variant leading-none mb-1">
             Total ({totalItems} item)

@@ -7,10 +7,11 @@ import { usePlan } from "../hooks/usePlan.js";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// SEMENTARA: registrasi mandiri (sign-up) ditutup selama fase pre-register.
-// Calon pengguna diarahkan ke daftar tunggu (/register). Set true untuk
-// mengaktifkan kembali tab "Daftar" beserta form sign-up di halaman ini.
-const ALLOW_SELF_REGISTER = false;
+// Flag untuk menutup self-register saat fase pre-register publik. Saat ini
+// AKTIF (true) — calon pengguna bisa langsung daftar lewat tab "Daftar" di
+// halaman ini. Set false bila ingin mengarahkan pendaftar ke daftar tunggu
+// `/register` sementara waktu (misal pause campaign atau quota terisi).
+const ALLOW_SELF_REGISTER = true;
 
 // Terjemahkan pesan error Supabase ke bahasa yang ramah pengguna.
 function friendlyError(error) {
