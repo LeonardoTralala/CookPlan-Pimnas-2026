@@ -76,7 +76,8 @@ export function GeneratePlan() {
       // Simpan hasil ke sessionStorage agar GenerateResult bisa baca tanpa refetch.
       sessionStorage.setItem(`plan_${result.planId}`, JSON.stringify(result));
       showToast('Plan berhasil dibuat! 🎉');
-      navigate(`/generate/${result.planId}`);
+      // autoApply: hasil generate langsung diterapkan ke Rencana Masak Mingguan.
+      navigate(`/generate/${result.planId}`, { state: { autoApply: true } });
     } catch (e) {
       setError(e.message || 'Gagal generate plan. Coba lagi.');
     } finally {

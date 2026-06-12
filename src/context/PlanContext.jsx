@@ -189,6 +189,47 @@ export function PlanProvider({ children }) {
     persistSlot(recipe, day, mealType, servings, nextPlan);
   }, [persistSlot]);
 
+  // applySlots: terapkan banyak slot sekaligus (hasil generate AI → planner).
+  // Satu setState + satu bulk upsert, bukan loop setSlot per slot.
+  const applySlots = useCallback((slotList) => {
+    const deduped = new Map();
+    for (const s of slotList ?? []) deduped.set(`${s.day}|${s.mealType}`, s);
+    if (deduped.size === 0) return;
+
+    let nextPlan;
+    setWeeklyPlan((prev) => {
+      nextPlan = { ...prev };
+      for (const { recipe, day, mealType, servings } of deduped.values()) {
+        nextPlan[day] = {
+          ...nextPlan[day],
+          [mealType]: {
+            recipeId: recipe.id,
+            title: recipe.title,
+            servings,
+            imageUrl: recipe.imageUrl,
+            priceIdr: recipe.priceIdr,
+            readyInMinutes: recipe.readyInMinutes,
+            calories: recipe.calories,
+          },
+        };
+      }
+      return nextPlan;
+    });
+
+    if (isAuthenticated) {
+      if (planIdRef.current) {
+        planService.setSlots(planIdRef.current, [...deduped.values()])
+          .catch((e) => console.error("setSlots gagal:", e.message));
+      } else {
+        for (const s of deduped.values()) {
+          pendingRef.current.push({ type: "set", recipe: s.recipe, day: s.day, mealType: s.mealType, servings: s.servings });
+        }
+      }
+    } else {
+      localStorage.setItem('weeklyPlan', JSON.stringify(nextPlan));
+    }
+  }, [isAuthenticated]);
+
   const removeSlot = useCallback((day, mealType) => {
     let nextPlan;
     setWeeklyPlan((prev) => {
@@ -226,10 +267,11 @@ export function PlanProvider({ children }) {
     isInPlan,
     weeklyPlan,
     setSlot,
+    applySlots,
     removeSlot,
     restoreSlot,
     plannedCount,
-  }), [toast, showToast, isInPlan, weeklyPlan, setSlot, removeSlot, restoreSlot, plannedCount]);
+  }), [toast, showToast, isInPlan, weeklyPlan, setSlot, applySlots, removeSlot, restoreSlot, plannedCount]);
 
   return <PlanContext.Provider value={value}>{children}</PlanContext.Provider>;
 }
