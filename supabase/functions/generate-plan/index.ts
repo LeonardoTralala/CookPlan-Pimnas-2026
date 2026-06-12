@@ -120,14 +120,27 @@ Deno.serve(async (req) => {
   }
   const validIds = new Set(candidates.map((r) => r.id));
 
-  // 6. Ambil provider aktif + fallback (service_role bypass RLS lockdown)
+  // 6. Ambil provider untuk chain failover (service_role bypass RLS lockdown).
+  //    Mode chain: kalau ada provider dgn priority NOT NULL, dicoba urut priority ASC
+  //    (3 main + fallback dst). Mode legacy: pakai is_active (primary) + is_fallback.
   const { data: providers } = await admin
     .from("ai_providers")
     .select("*")
-    .or("is_active.eq.true,is_fallback.eq.true");
-  const primary = providers?.find((p) => p.is_active) as AIProvider | undefined;
-  const fallback = providers?.find((p) => p.is_fallback) as AIProvider | undefined;
-  if (!primary && !fallback) {
+    .or("is_active.eq.true,is_fallback.eq.true,priority.not.is.null");
+
+  const chainProviders = (providers ?? [])
+    .filter((p) => p.priority != null)
+    .sort((a, b) => (a.priority as number) - (b.priority as number)) as AIProvider[];
+
+  let tryProviders: AIProvider[];
+  if (chainProviders.length > 0) {
+    tryProviders = chainProviders;
+  } else {
+    const primary = providers?.find((p) => p.is_active) as AIProvider | undefined;
+    const fallback = providers?.find((p) => p.is_fallback) as AIProvider | undefined;
+    tryProviders = [primary, fallback].filter(Boolean) as AIProvider[];
+  }
+  if (tryProviders.length === 0) {
     return json({ error: "Belum ada AI provider aktif. Atur di Admin." }, 503);
   }
 
@@ -137,8 +150,7 @@ Deno.serve(async (req) => {
     { role: "user", content: buildUserMessage(input, candidates) },
   ];
 
-  // 8. Call AI: coba primary, fallback bila gagal
-  const tryProviders = [primary, fallback].filter(Boolean) as AIProvider[];
+  // 8. Call AI: coba tiap provider di chain berurutan, fallback bila gagal
   let aiResult = null;
   let usedProvider: AIProvider | null = null;
   let lastError = "";
