@@ -44,15 +44,28 @@ export function mapGeneratedPlanToWeek(plan, recipeIndex, today = new Date()) {
   const days = plan?.days ?? [];
   const useTodayOffset = days.length > 0 && days.length < DAYS.length;
   const startIdx = todayIndex(today);
+  // Hari planner yang sudah terisi — cegah dua entri AI jatuh ke hari yang sama.
+  const usedDays = new Set();
 
   days.forEach((dayEntry, idx) => {
     if (idx >= DAYS.length) {
       skippedDays += 1;
       return;
     }
-    const day = useTodayOffset
+    let day = useTodayOffset
       ? DAYS[(startIdx + idx) % DAYS.length]
       : resolveDayName(dayEntry.day, idx);
+    // resolveDayName bisa memetakan dua label AI ke hari yang sama; alihkan ke
+    // hari kosong berikutnya supaya menu hari itu tidak hilang tertimpa dedup.
+    if (usedDays.has(day)) {
+      const free = DAYS.find((d) => !usedDays.has(d));
+      if (!free) {
+        skippedDays += 1;
+        return;
+      }
+      day = free;
+    }
+    usedDays.add(day);
     for (const meal of dayEntry.meals ?? []) {
       const recipe = recipeIndex.get(meal.recipe_id);
       if (!recipe || !MEAL_TYPES.includes(meal.meal_type)) {

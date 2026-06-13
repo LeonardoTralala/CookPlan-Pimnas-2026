@@ -55,8 +55,8 @@ export function GeneratePlan() {
   // Riwayat generate + kuota harian (info, bukan blocker — server tetap validasi).
   useEffect(() => {
     let active = true;
-    getGeneratedHistory(5)
-      .then((rows) => { if (active) setHistory(rows.filter((r) => r.status === 'success')); })
+    getGeneratedHistory(5, { successOnly: true })
+      .then((rows) => { if (active) setHistory(rows); })
       .catch(() => { /* riwayat opsional, jangan ganggu wizard */ });
     getTodayUsageCount()
       .then((n) => { if (active) setUsageCount(n); })
