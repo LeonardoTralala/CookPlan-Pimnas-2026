@@ -2,6 +2,10 @@
 // Schema dikirim sebagai TEKS di dalam prompt (provider-agnostic, ADR-005) agar
 // jalan di semua provider tanpa peduli native JSON-mode support.
 
+// Naikkan setiap kali prompt berubah secara perilaku — ikut di-hash sebagai
+// cache key di generate-plan supaya hasil cache prompt lama tidak terpakai.
+export const PROMPT_VERSION = "2";
+
 export const SYSTEM_PROMPT = `Kamu adalah CookPlan AI, asisten perencana masak (meal planner) untuk pengguna Indonesia (mahasiswa kos & pekerja kantoran).
 
 TUGAS: Rancang foodplan/foodprep dari BANK RESEP yang disediakan. Pilih & susun menu ke dalam jadwal harian sesuai permintaan user.
@@ -12,7 +16,7 @@ ATURAN WAJIB:
 3. Variasikan menu antar hari (jangan menu yang sama berturut-turut bila memungkinkan).
 4. Sesuaikan jumlah porsi dengan input user.
 5. Usahakan total estimasi biaya TIDAK melebihi budget user lebih dari 10%. Beri peringatan di "warnings" bila budget terlalu kecil.
-6. Isi setiap slot makan sesuai periode (3/7/14 hari) dan jenis makan yang relevan.
+6. Isi TIGA waktu makan untuk SETIAP hari: sarapan (breakfast), makan siang (lunch), dan makan malam (dinner). Jangan ada hari yang slotnya bolong.
 7. Bahasa Indonesia santai & ramah untuk field teks (plan_summary, notes, prep_instructions).
 
 OUTPUT: WAJIB berupa JSON valid SAJA, TANPA penjelasan tambahan, TANPA markdown code fence. Ikuti SCHEMA persis.`;
@@ -85,5 +89,5 @@ ${JSON.stringify(recipeBank, null, 1)}
 
 ${OUTPUT_SCHEMA_TEXT}
 
-Buatkan plan untuk ${totalDays} hari. Untuk tiap hari isi minimal makan siang & malam (sarapan opsional bila resep cocok). Output JSON saja.`;
+Buatkan plan untuk ${totalDays} hari. Untuk SETIAP hari isi tiga waktu makan: breakfast, lunch, dan dinner (pilih resep yang cocok untuk sarapan, kalau tidak ada gunakan resep paling ringan/cepat). Output JSON saja.`;
 }

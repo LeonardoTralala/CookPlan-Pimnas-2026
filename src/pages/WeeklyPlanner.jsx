@@ -37,7 +37,7 @@ function getWeekDates() {
 }
 
 
-function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onGenerateShoppingList }) {
+function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onGoToGenerate, onGenerateShoppingList }) {
   const { showToast, restoreSlot } = usePlan();
 
   // Slot yang sedang diisi: { day, meal } | null
@@ -156,6 +156,28 @@ function WeeklyPlanner({ weeklyPlan, onSetSlot, onRemoveSlot, onGoToCatalog, onG
                 Atur jadwal makan Anda untuk hidup yang lebih sehat dan teratur.
               </p>
             </div>
+
+            {/* CTA generate AI saat planner masih kosong */}
+            {stats.filled === 0 && (
+              <div className="mb-6 rounded-panel border border-primary/30 bg-primary/5 p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-primary mb-1 flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[20px]">auto_awesome</span>
+                    Bingung mau masak apa minggu ini?
+                  </h3>
+                  <p className="text-sm text-on-surface-variant">
+                    Biar AI menyusun menu sesuai budget dan preferensimu, lalu otomatis mengisi planner ini.
+                  </p>
+                </div>
+                <button
+                  onClick={onGoToGenerate}
+                  className="shrink-0 px-6 py-3 bg-primary text-white rounded-full font-bold text-sm hover:shadow-lg active:scale-95 transition cursor-pointer inline-flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[20px]">auto_awesome</span>
+                  Generate dengan AI
+                </button>
+              </div>
+            )}
 
             {/* Mobile Days Tabs */}
             <div className="md:hidden flex overflow-x-auto hide-scrollbar gap-2 mb-6 -mx-5 px-5 pb-2">
