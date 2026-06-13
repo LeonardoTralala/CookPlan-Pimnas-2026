@@ -61,6 +61,19 @@ export async function getGeneratedHistory(limit = 10, { successOnly = false } = 
   return data ?? [];
 }
 
+// Hapus satu hasil generate milik user (defense in depth: filter user_id eksplisit).
+export async function deleteGeneratedPlan(id) {
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData?.user;
+  if (!user) throw new Error("Belum login.");
+  const { error } = await supabase
+    .from("generated_plans")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", user.id);
+  if (error) throw error;
+}
+
 // Ambil satu hasil generate by id (untuk render ulang hasil tersimpan).
 // Defense in depth: filter eksplisit user_id selain mengandalkan RLS (audit #9).
 export async function getGeneratedPlanById(id) {
