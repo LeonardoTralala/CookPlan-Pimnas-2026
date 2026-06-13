@@ -18,7 +18,7 @@ export function GenerateResult() {
   const { planId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { applySlots, showToast } = usePlan();
+  const { applySlots, restoreSlot, showToast } = usePlan();
 
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,22 +30,30 @@ export function GenerateResult() {
   // true bila datang langsung dari halaman generate (bukan buka ulang dari history).
   const autoApplyRef = useRef(Boolean(location.state?.autoApply));
 
-  // Terapkan plan ke Rencana Masak Mingguan (planner).
+  // Terapkan plan ke Rencana Masak Mingguan (planner), dengan opsi Urungkan
+  // yang mengembalikan slot ke isi sebelumnya (termasuk yang tadinya kosong).
   const applyToPlanner = useCallback((planData, index, auto = false) => {
     const { slots, skippedDays } = mapGeneratedPlanToWeek(planData, index);
     if (slots.length === 0) {
       showToast('Tidak ada menu valid untuk dimasukkan ke planner.');
       return;
     }
-    applySlots(slots);
+    const undoList = applySlots(slots);
     setApplied(true);
     const extra = skippedDays > 0 ? ' (7 hari pertama)' : '';
     showToast(
       auto
         ? `${slots.length} menu otomatis masuk ke Rencana Mingguan${extra}! 🎉`
-        : `${slots.length} menu diterapkan ke Rencana Mingguan${extra}!`
+        : `${slots.length} menu diterapkan ke Rencana Mingguan${extra}!`,
+      {
+        onUndo: () => {
+          for (const u of undoList) restoreSlot(u.day, u.mealType, u.prev);
+          setApplied(false);
+          showToast('Perubahan di planner diurungkan.');
+        },
+      }
     );
-  }, [applySlots, showToast]);
+  }, [applySlots, restoreSlot, showToast]);
 
   // Muat hasil: utamakan sessionStorage (baru di-generate), fallback DB.
   useEffect(() => {
@@ -136,6 +144,22 @@ export function GenerateResult() {
           </p>
         )}
       </div>
+
+      {/* Status: sudah diterapkan ke planner (persisten, tidak hilang seperti toast) */}
+      {applied && (
+        <div className="flex items-center justify-between gap-3 rounded-2xl bg-success-green/10 border border-success-green/30 px-4 py-3">
+          <p className="text-sm text-on-surface flex items-center gap-2">
+            <span className="material-symbols-outlined text-success-green text-[20px]">check_circle</span>
+            Menu sudah masuk ke Rencana Masak Mingguan.
+          </p>
+          <button
+            onClick={() => navigate('/planner')}
+            className="text-sm font-bold text-primary whitespace-nowrap hover:underline cursor-pointer"
+          >
+            Lihat Planner →
+          </button>
+        </div>
+      )}
 
       {/* Warnings */}
       {(plan.warnings?.length ?? 0) > 0 && (

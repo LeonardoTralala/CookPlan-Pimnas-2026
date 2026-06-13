@@ -6,9 +6,14 @@
 const DAYS = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
 const MEAL_TYPES = ["breakfast", "lunch", "dinner"];
 
-// Tentukan nama hari planner dari label hari AI. Prioritas:
-// 1) mengandung nama hari Indonesia, 2) mengandung angka ("Hari 3" → Rabu),
-// 3) fallback urutan index entri.
+// Index hari ini dalam DAYS (Senin=0 .. Minggu=6).
+function todayIndex(date) {
+  return (date.getDay() + 6) % 7;
+}
+
+// Tentukan nama hari planner dari label hari AI (dipakai untuk plan 7 hari penuh).
+// Prioritas: 1) mengandung nama hari Indonesia, 2) mengandung angka
+// ("Hari 3" → Rabu), 3) fallback urutan index entri.
 function resolveDayName(raw, idx) {
   const text = String(raw ?? "").toLowerCase();
   const named = DAYS.find((d) => text.includes(d.toLowerCase()));
@@ -24,18 +29,30 @@ function resolveDayName(raw, idx) {
 // Ubah plan hasil AI menjadi daftar slot siap masuk planner.
 // recipeIndex: Map<recipe_id, recipe> (shape camelCase dari recipeService).
 // Return { slots: [{ recipe, day, mealType, servings }], skippedDays, skippedMeals }.
-// Plan > 7 hari: hanya 7 entri pertama yang muat di planner mingguan.
-export function mapGeneratedPlanToWeek(plan, recipeIndex) {
+//
+// Aturan penempatan hari:
+// - Plan < 7 hari: mulai dari HARI INI (generate 3 hari di hari Jumat → Jumat,
+//   Sabtu, Minggu), label hari dari AI diabaikan karena AI tidak tahu tanggal.
+// - Plan ≥ 7 hari: satu minggu penuh — pakai nama hari dari AI bila ada,
+//   fallback urutan dari Senin. Entri ke-8 dst tidak muat di planner mingguan
+//   dan dilewati (dihitung di skippedDays).
+export function mapGeneratedPlanToWeek(plan, recipeIndex, today = new Date()) {
   const slots = [];
   let skippedDays = 0;
   let skippedMeals = 0;
 
-  (plan?.days ?? []).forEach((dayEntry, idx) => {
+  const days = plan?.days ?? [];
+  const useTodayOffset = days.length > 0 && days.length < DAYS.length;
+  const startIdx = todayIndex(today);
+
+  days.forEach((dayEntry, idx) => {
     if (idx >= DAYS.length) {
       skippedDays += 1;
       return;
     }
-    const day = resolveDayName(dayEntry.day, idx);
+    const day = useTodayOffset
+      ? DAYS[(startIdx + idx) % DAYS.length]
+      : resolveDayName(dayEntry.day, idx);
     for (const meal of dayEntry.meals ?? []) {
       const recipe = recipeIndex.get(meal.recipe_id);
       if (!recipe || !MEAL_TYPES.includes(meal.meal_type)) {

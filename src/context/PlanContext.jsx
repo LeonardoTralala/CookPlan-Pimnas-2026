@@ -191,14 +191,22 @@ export function PlanProvider({ children }) {
 
   // applySlots: terapkan banyak slot sekaligus (hasil generate AI → planner).
   // Satu setState + satu bulk upsert, bukan loop setSlot per slot.
+  // Return daftar undo [{ day, mealType, prev }] berisi isi slot SEBELUM
+  // tertimpa, untuk tombol "Urungkan" di toast (pakai restoreSlot per item).
   const applySlots = useCallback((slotList) => {
     const deduped = new Map();
     for (const s of slotList ?? []) deduped.set(`${s.day}|${s.mealType}`, s);
-    if (deduped.size === 0) return;
+    if (deduped.size === 0) return [];
 
+    // Mengandalkan eager evaluation updater React saat queue kosong — pola yang
+    // sama dengan nextPlan di setSlot/removeSlot di atas.
     let nextPlan;
+    const undoList = [];
     setWeeklyPlan((prev) => {
       nextPlan = { ...prev };
+      for (const { day, mealType } of deduped.values()) {
+        undoList.push({ day, mealType, prev: prev[day]?.[mealType] ?? null });
+      }
       for (const { recipe, day, mealType, servings } of deduped.values()) {
         nextPlan[day] = {
           ...nextPlan[day],
@@ -228,6 +236,8 @@ export function PlanProvider({ children }) {
     } else {
       localStorage.setItem('weeklyPlan', JSON.stringify(nextPlan));
     }
+
+    return undoList;
   }, [isAuthenticated]);
 
   const removeSlot = useCallback((day, mealType) => {
