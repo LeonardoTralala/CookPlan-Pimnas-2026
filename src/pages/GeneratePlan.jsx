@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { generatePlan } from '../services/aiService.js';
+import { generatePlan, getGeneratedHistory, getTodayUsageCount } from '../services/aiService.js';
 import { usePlan } from '../hooks/usePlan.js';
 
 // Fitur 1: Generate Foodplan & Foodprep. Wizard 3 langkah (mobile-first).
@@ -32,6 +32,9 @@ const DIET_OPTIONS = [
 
 const BUDGET_PRESETS = [100000, 200000, 350000, 500000];
 
+// Selaras dengan RATE_LIMIT_PER_DAY di Edge Function generate-plan.
+const DAILY_LIMIT = 20;
+
 export function GeneratePlan() {
   const navigate = useNavigate();
   const { showToast } = usePlan();
@@ -46,6 +49,20 @@ export function GeneratePlan() {
   const [pantryInput, setPantryInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [history, setHistory] = useState([]);
+  const [usageCount, setUsageCount] = useState(null);
+
+  // Riwayat generate + kuota harian (info, bukan blocker — server tetap validasi).
+  useEffect(() => {
+    let active = true;
+    getGeneratedHistory(5, { successOnly: true })
+      .then((rows) => { if (active) setHistory(rows); })
+      .catch(() => { /* riwayat opsional, jangan ganggu wizard */ });
+    getTodayUsageCount()
+      .then((n) => { if (active) setUsageCount(n); })
+      .catch(() => { /* idem */ });
+    return () => { active = false; };
+  }, []);
 
   const toggleDiet = (value) => {
     setDiet((prev) => prev.includes(value) ? prev.filter((d) => d !== value) : [...prev, value]);
@@ -76,7 +93,8 @@ export function GeneratePlan() {
       // Simpan hasil ke sessionStorage agar GenerateResult bisa baca tanpa refetch.
       sessionStorage.setItem(`plan_${result.planId}`, JSON.stringify(result));
       showToast('Plan berhasil dibuat! 🎉');
-      navigate(`/generate/${result.planId}`);
+      // autoApply: hasil generate langsung diterapkan ke Rencana Masak Mingguan.
+      navigate(`/generate/${result.planId}`, { state: { autoApply: true } });
     } catch (e) {
       setError(e.message || 'Gagal generate plan. Coba lagi.');
     } finally {
@@ -96,9 +114,15 @@ export function GeneratePlan() {
           <span className="material-symbols-outlined text-3xl">auto_awesome</span>
           Generate Foodplan
         </h1>
-        <p className="text-on-surface-variant text-body-md mb-5">
+        <p className="text-on-surface-variant text-body-md mb-2">
           Biar AI susun menu & belanja mingguanmu otomatis.
         </p>
+        {usageCount != null && (
+          <p className="text-xs text-on-surface-variant/80 mb-5 flex items-center gap-1">
+            <span className="material-symbols-outlined text-[16px]">bolt</span>
+            Sisa kuota hari ini: <strong>{Math.max(0, DAILY_LIMIT - usageCount)}</strong> dari {DAILY_LIMIT} generate
+          </p>
+        )}
         <div className="flex items-center gap-2">
           {[1, 2, 3].map((s) => (
             <div key={s} className="flex-1">
@@ -153,6 +177,40 @@ export function GeneratePlan() {
               Lanjut
             </button>
           </div>
+
+          {/* Riwayat generate — hasil lama tetap bisa dibuka lagi dari sini */}
+          {history.length > 0 && (
+            <div className="pt-4 border-t border-outline-variant/60">
+              <h2 className="text-sm font-semibold text-on-surface mb-3 flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[20px] text-primary">history</span>
+                Hasil Generate Sebelumnya
+              </h2>
+              <div className="space-y-2">
+                {history.map((h) => (
+                  <button
+                    key={h.id}
+                    onClick={() => navigate(`/generate/${h.id}`)}
+                    className="w-full flex items-center gap-3 p-3.5 rounded-2xl border border-outline-variant bg-white hover:border-primary/50 transition-colors text-left cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-primary shrink-0">
+                      {OUTPUT_OPTIONS.find((o) => o.value === h.output_type)?.icon || 'restaurant_menu'}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold text-on-surface truncate">
+                        {OUTPUT_OPTIONS.find((o) => o.value === h.output_type)?.label || h.output_type}
+                        {h.input_json?.periode ? ` · ${h.input_json.periode} hari` : ''}
+                        {h.input_json?.porsi ? ` × ${h.input_json.porsi} porsi` : ''}
+                      </span>
+                      <span className="block text-xs text-on-surface-variant">
+                        {new Date(h.created_at).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' })}
+                      </span>
+                    </span>
+                    <span className="material-symbols-outlined text-on-surface-variant text-[20px] shrink-0">chevron_right</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

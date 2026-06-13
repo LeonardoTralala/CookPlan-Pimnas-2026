@@ -42,14 +42,19 @@ export async function generatePlan(input) {
 }
 
 // Ambil history generate milik user (untuk halaman riwayat / dashboard).
-export async function getGeneratedHistory(limit = 10) {
+// successOnly: filter status='success' DI SERVER supaya limit menghitung hanya
+// hasil sukses — bila tidak, beberapa generate gagal terbaru bisa "menelan"
+// kuota limit dan membuat daftar tampak kosong padahal ada sukses lebih lama.
+export async function getGeneratedHistory(limit = 10, { successOnly = false } = {}) {
   const { data: userData } = await supabase.auth.getUser();
   const user = userData?.user;
   if (!user) throw new Error("Belum login.");
-  const { data, error } = await supabase
+  let query = supabase
     .from("generated_plans")
     .select("id, input_json, output_type, model, status, created_at")
-    .eq("user_id", user.id)
+    .eq("user_id", user.id);
+  if (successOnly) query = query.eq("status", "success");
+  const { data, error } = await query
     .order("created_at", { ascending: false })
     .limit(limit);
   if (error) throw error;
