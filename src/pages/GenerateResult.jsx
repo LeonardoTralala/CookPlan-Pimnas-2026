@@ -270,7 +270,11 @@ export function GenerateResult() {
 
       {/* Action: apply ke planner + order (full mode = Core Offer) */}
       <div className="flex flex-col sm:flex-row gap-3 pt-2">
-        <button onClick={() => navigate('/generate')} className="px-6 py-3 border border-outline-variant text-on-surface-variant rounded-full font-semibold text-sm hover:bg-surface-container-low transition cursor-pointer">
+        <button
+          onClick={() => navigate('/generate')}
+          className="flex-1 px-6 py-3 border border-primary text-on-surface-variant rounded-full font-semibold text-sm hover:bg-surface-container-low active:scale-95 transition cursor-pointer inline-flex items-center justify-center gap-2"
+        >
+          <span className="material-symbols-outlined text-[20px]">refresh</span>
           Generate Lagi
         </button>
         <button
@@ -283,7 +287,7 @@ export function GenerateResult() {
         {showShopping && (
           <button
             onClick={() => navigate(`/order/${planId}`)}
-            className="flex-1 px-6 py-3 bg-primary text-on-primary rounded-full font-semibold text-sm hover:shadow-lg active:scale-95 transition cursor-pointer inline-flex items-center justify-center gap-2"
+            className="flex-1 px-6 py-3 border border-primary bg-primary text-on-primary rounded-full font-semibold text-sm hover:shadow-lg active:scale-95 transition cursor-pointer inline-flex items-center justify-center gap-2"
           >
             <span className="material-symbols-outlined text-[20px]">shopping_cart_checkout</span>
             Pesan Paket Belanja

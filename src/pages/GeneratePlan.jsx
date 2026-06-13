@@ -325,7 +325,7 @@ export function GeneratePlan() {
             <button
               onClick={handleGenerate}
               disabled={loading}
-              className="flex-1 sm:flex-none px-8 py-3 bg-primary text-on-primary rounded-full font-semibold text-sm hover:shadow-lg active:scale-95 transition cursor-pointer disabled:opacity-60 inline-flex items-center justify-center gap-2"
+              className="flex-1 px-6 py-3 bg-primary text-on-primary rounded-full font-semibold text-sm hover:shadow-lg active:scale-95 transition cursor-pointer disabled:opacity-60 inline-flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
