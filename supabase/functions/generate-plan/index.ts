@@ -7,7 +7,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 import { SYSTEM_PROMPT, PROMPT_VERSION, buildUserMessage } from "../_shared/prompt.ts";
 import { callProvider, safeJsonExtract, estimateCost } from "../_shared/aiAdapter.ts";
 import type { AIProvider } from "../_shared/aiAdapter.ts";
-import { validateInput, validateOutput, subtractPantry } from "../_shared/validate.ts";
+import { validateInput, validateOutput, subtractPantry, enforceVariety } from "../_shared/validate.ts";
 
 const RATE_LIMIT_PER_DAY = 20; // generate per user per hari
 
@@ -102,9 +102,10 @@ Deno.serve(async (req) => {
     .select("id, title, calories, price_idr, ready_in_minutes, difficulty, cuisine, tags, badges, ingredients_text, base_servings")
     .eq("is_active", true)
     .limit(40);
-  // Filter diet: resep harus punya minimal satu tag yang cocok (overlap).
+  // Filter diet: resep harus punya minimal satu slug diet yang cocok (overlap).
+  // Pakai kolom `recipes.diet` (controlled vocabulary), bukan `tags` yang nyampur bahan.
   if (input.diet.length > 0) {
-    recipeQuery = recipeQuery.overlaps("tags", input.diet);
+    recipeQuery = recipeQuery.overlaps("diet", input.diet);
   }
   let { data: candidates } = await recipeQuery;
   // Fallback: kalau filter diet menyisakan terlalu sedikit, ambil semua aktif.
@@ -151,7 +152,7 @@ Deno.serve(async (req) => {
     { role: "user", content: buildUserMessage(input, candidates) },
   ];
 
-  // 8. Call AI: coba primary, fallback bila gagal
+  // 8. Call AI: coba tiap provider di chain berurutan, fallback bila gagal
   let aiResult = null;
   let usedProvider: AIProvider | null = null;
   let lastError = "";
@@ -228,8 +229,10 @@ Deno.serve(async (req) => {
     return json({ error: "Output AI tidak lolos validasi: " + validation.errors[0] }, 502);
   }
 
-  // 10. Pantry subtraction (post-process di server, bukan delegasi ke AI)
-  const finalOutput = subtractPantry(parsed as Record<string, unknown>, input.pantry);
+  // 10. Post-process di server (bukan delegasi ke AI):
+  //     a. tegakkan variasi/hari + isi 3 slot (foodprep), b. kurangi pantry.
+  const variedOutput = enforceVariety(parsed as Record<string, unknown>, input.variasiPerHari, input.porsi);
+  const finalOutput = subtractPantry(variedOutput, input.pantry);
 
   // 11. Persist
   const cost = estimateCost(aiResult.tokensInput, aiResult.tokensOutput);

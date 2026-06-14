@@ -1,26 +1,29 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { generatePlan, getGeneratedHistory, getTodayUsageCount, deleteGeneratedPlan } from '../services/aiService.js';
+import { getActiveDietTags } from '../services/dietService.js';
 import { usePlan } from '../hooks/usePlan.js';
 
 // Fitur 1: Generate Foodplan & Foodprep. Wizard 3 langkah (mobile-first).
-// Step 1: periode + porsi + output type
+// Step 1: periode + porsi + waktu makan
 // Step 2: diet + budget + bahan tersedia (pantry)
 // Step 3: konfirmasi + generate
 
-const PERIODE_OPTIONS = [
-  { value: 3, label: '3 Hari' },
-  { value: 7, label: '7 Hari' },
-  { value: 14, label: '14 Hari' },
-];
+// Batas periode plan (hari). Maksimal 7 supaya selaras dengan kapasitas planner
+// mingguan (Senin–Minggu) dan validasi server (validateInput).
+const PERIODE_MAX = 7;
 
-const OUTPUT_OPTIONS = [
-  { value: 'foodplan', icon: 'restaurant_menu', label: 'Foodplan', desc: 'Daftar menu + resep' },
-  { value: 'foodprep', icon: 'shopping_basket', label: 'Foodprep', desc: 'Menu + resep + daftar belanja & estimasi harga' },
-  { value: 'full', icon: 'local_shipping', label: 'Foodplan & Prep + Belanja', desc: 'Lengkap + layanan belanja (Core Offer)' },
-];
+// Variasi menu per hari: berapa RESEP BERBEDA yang dimasak dalam sehari. Setiap
+// hari tetap 3 waktu makan (breakfast/lunch/dinner); bila variasi < 3, resep yang
+// sama dipakai ulang untuk mengisi waktu makan sisanya (konsep foodprep — masak
+// sekali, makan beberapa kali). Maks 3 karena tidak mungkin > jumlah waktu makan.
+const VARIASI_MAX = 3;
+const MEAL_SLOTS_PER_DAY = 3;
 
-const DIET_OPTIONS = [
+// Opsi diet sekarang diambil dinamis dari tabel diet_tags (lihat dietService).
+// Konstanta ini cuma FALLBACK bila fetch gagal / tabel belum di-push, supaya
+// wizard tidak pernah kosong. Selaras dengan seed migrasi diet_tags.
+const DEFAULT_DIET_OPTIONS = [
   { value: 'vegetarian', label: 'Vegetarian' },
   { value: 'vegan', label: 'Vegan' },
   { value: 'halal', label: 'Halal' },
@@ -32,6 +35,9 @@ const DIET_OPTIONS = [
 
 const BUDGET_PRESETS = [100000, 200000, 350000, 500000];
 
+// Batas catatan khusus — selaras NOTES_MAX di validateInput (Edge Function).
+const NOTES_MAX = 300;
+
 // Selaras dengan RATE_LIMIT_PER_DAY di Edge Function generate-plan.
 const DAILY_LIMIT = 20;
 
@@ -42,17 +48,20 @@ export function GeneratePlan() {
   const [step, setStep] = useState(1);
   const [periode, setPeriode] = useState(7);
   const [porsi, setPorsi] = useState(2);
-  const [outputType, setOutputType] = useState('foodprep');
+  const [variasiPerHari, setVariasiPerHari] = useState(1);
   const [diet, setDiet] = useState(['halal']);
   const [budget, setBudget] = useState(200000);
   const [pantry, setPantry] = useState([]);
   const [pantryInput, setPantryInput] = useState('');
+  const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [history, setHistory] = useState([]);
   const [usageCount, setUsageCount] = useState(null);
+  const [dietOptions, setDietOptions] = useState(DEFAULT_DIET_OPTIONS);
 
   // Riwayat generate + kuota harian (info, bukan blocker — server tetap validasi).
+  // Opsi diet di-fetch dari diet_tags; gagal → tetap pakai fallback konstanta.
   useEffect(() => {
     let active = true;
     getGeneratedHistory(5, { successOnly: true })
@@ -61,6 +70,9 @@ export function GeneratePlan() {
     getTodayUsageCount()
       .then((n) => { if (active) setUsageCount(n); })
       .catch(() => { /* idem */ });
+    getActiveDietTags()
+      .then((rows) => { if (active && rows.length) setDietOptions(rows); })
+      .catch(() => { /* pakai DEFAULT_DIET_OPTIONS */ });
     return () => { active = false; };
   }, []);
 
@@ -100,7 +112,9 @@ export function GeneratePlan() {
     setLoading(true);
     setError('');
     try {
-      const result = await generatePlan({ periode, porsi, diet, budget, pantry, outputType });
+      // outputType selalu 'full' — pilihan jenis output dihapus dari wizard;
+      // hasil selalu lengkap (menu + belanja + prep), Core Offer tetap tersedia.
+      const result = await generatePlan({ periode, porsi, variasiPerHari, diet, budget, pantry, notes, outputType: 'full' });
       // Simpan hasil ke sessionStorage agar GenerateResult bisa baca tanpa refetch.
       sessionStorage.setItem(`plan_${result.planId}`, JSON.stringify(result));
       showToast('Plan berhasil dibuat! 🎉');
@@ -148,39 +162,36 @@ export function GeneratePlan() {
       {step === 1 && (
         <div className="space-y-7 animate-fade-in">
           <Field label="Periode plan">
-            <div className="grid grid-cols-3 gap-2">
-              {PERIODE_OPTIONS.map((opt) => (
-                <Chip key={opt.value} active={periode === opt.value} onClick={() => setPeriode(opt.value)}>
-                  {opt.label}
-                </Chip>
-              ))}
-            </div>
+            <Stepper
+              value={periode}
+              onDec={() => setPeriode(Math.max(1, periode - 1))}
+              onInc={() => setPeriode(Math.min(PERIODE_MAX, periode + 1))}
+              suffix="Hari"
+            />
+            <p className="text-xs text-on-surface-variant mt-2">Maksimal {PERIODE_MAX} hari.</p>
           </Field>
 
-          <Field label="Jumlah porsi per menu">
+          <Field label="Jumlah porsi per jam makan">
             <Stepper value={porsi} onDec={() => setPorsi(Math.max(1, porsi - 1))} onInc={() => setPorsi(porsi + 1)} suffix="Porsi" />
+            <p className="text-xs text-on-surface-variant mt-2">
+              Porsi sekali makan (mis. 2 = buat 2 orang). Total masak otomatis dikali jumlah waktu makan.
+            </p>
           </Field>
 
-          <Field label="Mau hasil apa?">
-            <div className="space-y-2">
-              {OUTPUT_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => setOutputType(opt.value)}
-                  className={`w-full flex items-start gap-3 p-4 rounded-2xl border text-left transition-all cursor-pointer ${
-                    outputType === opt.value
-                      ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                      : 'border-outline-variant hover:border-primary/50'
-                  }`}
-                >
-                  <span className={`material-symbols-outlined ${outputType === opt.value ? 'text-primary' : 'text-on-surface-variant'}`}>{opt.icon}</span>
-                  <span>
-                    <span className="block font-semibold text-on-surface text-sm">{opt.label}</span>
-                    <span className="block text-xs text-on-surface-variant">{opt.desc}</span>
-                  </span>
-                </button>
-              ))}
-            </div>
+          <Field label="Berapa variasi menu dalam sehari?">
+            <Stepper
+              value={variasiPerHari}
+              onDec={() => setVariasiPerHari(Math.max(1, variasiPerHari - 1))}
+              onInc={() => setVariasiPerHari(Math.min(VARIASI_MAX, variasiPerHari + 1))}
+              suffix="Variasi"
+            />
+            <p className="text-xs text-on-surface-variant mt-2">
+              Tetap {MEAL_SLOTS_PER_DAY}× makan/hari. {variasiPerHari === 1
+                ? 'Masak 1 menu sekali, dimakan pagi–siang–malam (foodprep).'
+                : variasiPerHari >= MEAL_SLOTS_PER_DAY
+                  ? 'Tiap waktu makan menu berbeda.'
+                  : `${variasiPerHari} menu berbeda, dipakai ulang menutup ${MEAL_SLOTS_PER_DAY} waktu makan.`}
+            </p>
           </Field>
 
           <div className="flex justify-end pt-2">
@@ -203,13 +214,10 @@ export function GeneratePlan() {
                     onClick={() => navigate(`/generate/${h.id}`)}
                     className="w-full flex items-center gap-3 p-3.5 rounded-2xl border border-outline-variant bg-white hover:border-primary/50 transition-colors text-left cursor-pointer"
                   >
-                    <span className="material-symbols-outlined text-primary shrink-0">
-                      {OUTPUT_OPTIONS.find((o) => o.value === h.output_type)?.icon || 'restaurant_menu'}
-                    </span>
+                    <span className="material-symbols-outlined text-primary shrink-0">restaurant_menu</span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm font-semibold text-on-surface truncate">
-                        {OUTPUT_OPTIONS.find((o) => o.value === h.output_type)?.label || h.output_type}
-                        {h.input_json?.periode ? ` · ${h.input_json.periode} hari` : ''}
+                        {h.input_json?.periode ? `${h.input_json.periode} hari` : 'Plan'}
                         {h.input_json?.porsi ? ` × ${h.input_json.porsi} porsi` : ''}
                       </span>
                       <span className="block text-xs text-on-surface-variant">
@@ -236,7 +244,7 @@ export function GeneratePlan() {
         <div className="space-y-7 animate-fade-in">
           <Field label="Preferensi diet (boleh pilih >1)">
             <div className="flex flex-wrap gap-2">
-              {DIET_OPTIONS.map((opt) => (
+              {dietOptions.map((opt) => (
                 <Chip key={opt.value} active={diet.includes(opt.value)} onClick={() => toggleDiet(opt.value)}>
                   {opt.label}
                 </Chip>
@@ -288,6 +296,20 @@ export function GeneratePlan() {
             )}
           </Field>
 
+          <Field label="Catatan khusus (opsional)">
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value.slice(0, NOTES_MAX))}
+              rows={3}
+              placeholder="mis. hindari pedas, pengen menu serba ayam, alergi seaafood"
+              className="w-full px-4 py-3 rounded-xl bg-white border border-outline-variant text-base resize-none focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+            />
+            <div className="flex items-center justify-between mt-1.5">
+              {/* <p className="text-xs text-on-surface-variant">Sekadar penghalus — parameter di atas tetap yang utama.</p> */}
+              <span className="text-xs text-on-surface-variant/70">{notes.length}/{NOTES_MAX}</span>
+            </div>
+          </Field>
+
           <div className="flex justify-between pt-2">
             <button onClick={() => setStep(1)} className="px-6 py-3 border border-outline-variant text-on-surface-variant rounded-full font-semibold text-sm hover:bg-surface-container-low transition cursor-pointer">
               Kembali
@@ -304,11 +326,16 @@ export function GeneratePlan() {
         <div className="space-y-6 animate-fade-in">
           <div className="bg-surface-container-low rounded-2xl p-6 space-y-3">
             <h3 className="font-headline-md text-headline-md text-primary mb-2">Ringkasan</h3>
-            <SummaryRow label="Periode" value={`${periode} hari × ${porsi} porsi`} />
-            <SummaryRow label="Jenis output" value={OUTPUT_OPTIONS.find((o) => o.value === outputType)?.label} />
+            <SummaryRow label="Periode" value={`${periode} hari`} />
+            <SummaryRow label="Porsi per jam makan" value={`${porsi} porsi`} />
+            <SummaryRow
+              label="Variasi menu"
+              value={`${variasiPerHari} variasi/hari${variasiPerHari === 1 ? ' (masak sekali, seharian)' : ''}`}
+            />
             <SummaryRow label="Diet" value={diet.length ? diet.join(', ') : 'Tidak ada'} />
             <SummaryRow label="Budget" value={formatRupiah(budget)} />
             <SummaryRow label="Bahan di rumah" value={`${pantry.length} item`} />
+            {notes.trim() && <SummaryRow label="Catatan khusus" value={notes.trim()} />}
           </div>
 
           {error && (
@@ -364,9 +391,8 @@ function Chip({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2.5 rounded-full text-sm font-semibold border transition-all cursor-pointer ${
-        active ? 'bg-primary text-on-primary border-primary' : 'bg-white text-on-surface-variant border-outline-variant hover:border-primary/50'
-      }`}
+      className={`px-4 py-2.5 rounded-full text-sm font-semibold border transition-all cursor-pointer ${active ? 'bg-primary text-on-primary border-primary' : 'bg-white text-on-surface-variant border-outline-variant hover:border-primary/50'
+        }`}
     >
       {children}
     </button>
