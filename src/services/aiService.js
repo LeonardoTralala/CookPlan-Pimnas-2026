@@ -7,10 +7,12 @@ import { supabase } from "../lib/supabase.js";
 // Input shape yang dikirim ke Edge Function:
 //   {
 //     periode: 3|7|14,           // jumlah hari
-//     porsi: number,             // porsi per menu
+//     porsi: number,             // porsi per jam makan (servings per slot, auto dikali jumlah waktu makan)
 //     diet: string[],            // ['vegetarian','halal',...]
 //     budget: number,            // IDR total
 //     pantry: [{name, amount?, unit?}],  // bahan tersedia di rumah
+//     variasiPerHari: number,    // 1..3 jumlah resep BERBEDA per hari (foodprep: dipakai ulang menutup 3 waktu makan)
+//     notes: string,             // catatan khusus user (opsional), max 300 char
 //     outputType: 'foodplan'|'foodprep'|'full'
 //   }
 //
