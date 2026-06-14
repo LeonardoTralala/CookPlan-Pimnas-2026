@@ -10,7 +10,9 @@ export interface GenerateInput {
   meals: string[];        // subset dari ["breakfast","lunch","dinner"], minimal 1
 }
 
-const VALID_PERIODE = [3, 7, 14];
+// Periode bebas 1..7 hari (maksimal selaras kapasitas planner mingguan).
+const PERIODE_MIN = 1;
+const PERIODE_MAX = 7;
 const VALID_OUTPUT = ["foodplan", "foodprep", "full"];
 // Urutan kanonik waktu makan — dipakai untuk normalisasi & tampilan konsisten.
 const VALID_MEALS = ["breakfast", "lunch", "dinner"];
@@ -20,9 +22,9 @@ export function validateInput(raw: unknown): GenerateInput {
   if (!raw || typeof raw !== "object") throw new Error("Input tidak valid.");
   const r = raw as Record<string, unknown>;
 
-  const periode = Number(r.periode);
-  if (!VALID_PERIODE.includes(periode)) {
-    throw new Error("Periode harus 3, 7, atau 14 hari.");
+  const periode = Math.floor(Number(r.periode));
+  if (!Number.isFinite(periode) || periode < PERIODE_MIN || periode > PERIODE_MAX) {
+    throw new Error(`Periode harus antara ${PERIODE_MIN} dan ${PERIODE_MAX} hari.`);
   }
 
   const porsi = Number(r.porsi);
