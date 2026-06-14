@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { generatePlan, getGeneratedHistory, getTodayUsageCount } from '../services/aiService.js';
+import { generatePlan, getGeneratedHistory, getTodayUsageCount, deleteGeneratedPlan } from '../services/aiService.js';
 import { getActiveDietTags } from '../services/dietService.js';
 import { usePlan } from '../hooks/usePlan.js';
 
@@ -96,6 +96,17 @@ export function GeneratePlan() {
   };
 
   const removePantry = (idx) => setPantry((prev) => prev.filter((_, i) => i !== idx));
+
+  const handleDeleteHistory = async (id, e) => {
+    e.stopPropagation();
+    try {
+      await deleteGeneratedPlan(id);
+      setHistory((prev) => prev.filter((h) => h.id !== id));
+      showToast('Riwayat dihapus.');
+    } catch {
+      showToast('Gagal menghapus riwayat.');
+    }
+  };
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -198,7 +209,7 @@ export function GeneratePlan() {
               </h2>
               <div className="space-y-2">
                 {history.map((h) => (
-                  <button
+                  <div
                     key={h.id}
                     onClick={() => navigate(`/generate/${h.id}`)}
                     className="w-full flex items-center gap-3 p-3.5 rounded-2xl border border-outline-variant bg-white hover:border-primary/50 transition-colors text-left cursor-pointer"
@@ -213,8 +224,14 @@ export function GeneratePlan() {
                         {new Date(h.created_at).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' })}
                       </span>
                     </span>
-                    <span className="material-symbols-outlined text-on-surface-variant text-[20px] shrink-0">chevron_right</span>
-                  </button>
+                    <button
+                      onClick={(e) => handleDeleteHistory(h.id, e)}
+                      className="p-1.5 rounded-full text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors shrink-0 cursor-pointer"
+                      title="Hapus riwayat"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">delete</span>
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -335,7 +352,7 @@ export function GeneratePlan() {
             <button
               onClick={handleGenerate}
               disabled={loading}
-              className="flex-1 sm:flex-none px-8 py-3 bg-primary text-on-primary rounded-full font-semibold text-sm hover:shadow-lg active:scale-95 transition cursor-pointer disabled:opacity-60 inline-flex items-center justify-center gap-2"
+              className="flex-1 px-6 py-3 bg-primary text-on-primary rounded-full font-semibold text-sm hover:shadow-lg active:scale-95 transition cursor-pointer disabled:opacity-60 inline-flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
