@@ -20,7 +20,6 @@ const MEALS = [
   { key: 'dinner', label: 'Makan Malam' }
 ];
 
-const TOTAL_SLOTS = DAYS.length * MEALS.length; // 21
 
 // Tanggal Senin–Minggu pada minggu berjalan (berdasarkan tanggal hari ini)
 function getWeekDates() {
