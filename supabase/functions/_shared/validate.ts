@@ -7,10 +7,13 @@ export interface GenerateInput {
   budget: number;         // IDR
   pantry: { name: string; amount?: number; unit?: string }[];
   outputType: "foodplan" | "foodprep" | "full";
+  meals: string[];        // subset dari ["breakfast","lunch","dinner"], minimal 1
 }
 
 const VALID_PERIODE = [3, 7, 14];
 const VALID_OUTPUT = ["foodplan", "foodprep", "full"];
+// Urutan kanonik waktu makan — dipakai untuk normalisasi & tampilan konsisten.
+const VALID_MEALS = ["breakfast", "lunch", "dinner"];
 
 // Validasi & normalisasi input dari klien. Throw Error dengan pesan ramah.
 export function validateInput(raw: unknown): GenerateInput {
@@ -51,7 +54,16 @@ export function validateInput(raw: unknown): GenerateInput {
     };
   }).filter((p) => p.name);
 
-  return { periode, porsi, diet, budget, pantry, outputType: outputType as GenerateInput["outputType"] };
+  // Waktu makan yang diminta. Normalisasi ke urutan kanonik + dedup; kosong/
+  // tidak valid → default semua tiga (kompatibel dengan klien lama tanpa field ini).
+  const mealsRaw = Array.isArray(r.meals)
+    ? r.meals.map((m) => String(m).toLowerCase().trim())
+    : [];
+  const mealsSet = new Set(mealsRaw.filter((m) => VALID_MEALS.includes(m)));
+  const meals = VALID_MEALS.filter((m) => mealsSet.has(m));
+  if (meals.length === 0) meals.push(...VALID_MEALS);
+
+  return { periode, porsi, diet, budget, pantry, meals, outputType: outputType as GenerateInput["outputType"] };
 }
 
 // Validasi output AI secara semantik. Return { ok, errors }.
@@ -92,6 +104,23 @@ export function validateOutput(
   }
 
   return { ok: errors.length === 0, errors };
+}
+
+// Buang slot makan yang tidak diminta user (safety net post-process: prompt sudah
+// menginstruksikan, tapi jangan percaya penuh ke AI — sama filosofinya dgn subtractPantry).
+// Tidak menyentuh shopping_list/total karena harga dihitung per resep, dan resep yang
+// sama bisa dipakai ulang di slot lain; pengurangan biaya diserahkan ke subtractPantry.
+export function filterMeals(output: Record<string, unknown>, meals: string[]) {
+  if (!Array.isArray(output.days) || meals.length >= VALID_MEALS.length) return output;
+  const allowed = new Set(meals);
+  const days = (output.days as Record<string, unknown>[]).map((day) => {
+    if (!Array.isArray(day.meals)) return day;
+    const kept = (day.meals as Record<string, unknown>[]).filter(
+      (m) => allowed.has(String(m.meal_type)),
+    );
+    return { ...day, meals: kept };
+  });
+  return { ...output, days };
 }
 
 // Kurangi pantry user dari shopping list. Pencocokan nama longgar (case-insensitive,

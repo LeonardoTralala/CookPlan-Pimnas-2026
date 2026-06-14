@@ -4,7 +4,14 @@
 
 // Naikkan setiap kali prompt berubah secara perilaku — ikut di-hash sebagai
 // cache key di generate-plan supaya hasil cache prompt lama tidak terpakai.
-export const PROMPT_VERSION = "2";
+export const PROMPT_VERSION = "3";
+
+// Label Indonesia untuk tiap meal_type — dipakai saat menyusun instruksi waktu makan.
+const MEAL_LABEL_ID = {
+  breakfast: "sarapan (breakfast)",
+  lunch: "makan siang (lunch)",
+  dinner: "makan malam (dinner)",
+};
 
 export const SYSTEM_PROMPT = `Kamu adalah CookPlan AI, asisten perencana masak (meal planner) untuk pengguna Indonesia (mahasiswa kos & pekerja kantoran).
 
@@ -16,7 +23,7 @@ ATURAN WAJIB:
 3. Variasikan menu antar hari (jangan menu yang sama berturut-turut bila memungkinkan).
 4. Sesuaikan jumlah porsi dengan input user.
 5. Usahakan total estimasi biaya TIDAK melebihi budget user lebih dari 10%. Beri peringatan di "warnings" bila budget terlalu kecil.
-6. Isi TIGA waktu makan untuk SETIAP hari: sarapan (breakfast), makan siang (lunch), dan makan malam (dinner). Jangan ada hari yang slotnya bolong.
+6. Isi HANYA waktu makan yang diminta user (lihat "Waktu makan" di permintaan) untuk SETIAP hari. Jangan menambah slot di luar yang diminta, dan jangan ada slot diminta yang bolong.
 7. Bahasa Indonesia santai & ramah untuk field teks (plan_summary, notes, prep_instructions).
 
 OUTPUT: WAJIB berupa JSON valid SAJA, TANPA penjelasan tambahan, TANPA markdown code fence. Ikuti SCHEMA persis.`;
@@ -71,12 +78,18 @@ export function buildUserMessage(input, candidates) {
 
   const dietText = (input.diet ?? []).length > 0 ? input.diet.join(", ") : "tidak ada preferensi khusus";
 
-  // Estimasi jumlah slot: periode hari × 3 makan. Beri AI gambaran skala.
+  // Waktu makan yang diminta (subset breakfast/lunch/dinner). Default ke semua bila kosong.
+  const mealList = (input.meals ?? []).length > 0 ? input.meals : ["breakfast", "lunch", "dinner"];
+  const mealsLabel = mealList.map((m) => MEAL_LABEL_ID[m] ?? m).join(", ");
+  const mealTypesCsv = mealList.join(", ");
+
+  // Estimasi jumlah slot: periode hari × jumlah waktu makan. Beri AI gambaran skala.
   const totalDays = input.periode;
 
   return `PERMINTAAN USER:
 - Periode: ${totalDays} hari
 - Porsi per menu: ${input.porsi}
+- Waktu makan per hari (${mealList.length}×): ${mealsLabel}
 - Preferensi diet: ${dietText}
 - Budget total: Rp ${input.budget?.toLocaleString("id-ID") ?? "tidak ditentukan"}
 - Jenis output: ${input.outputType}
@@ -89,5 +102,5 @@ ${JSON.stringify(recipeBank, null, 1)}
 
 ${OUTPUT_SCHEMA_TEXT}
 
-Buatkan plan untuk ${totalDays} hari. Untuk SETIAP hari isi tiga waktu makan: breakfast, lunch, dan dinner (pilih resep yang cocok untuk sarapan, kalau tidak ada gunakan resep paling ringan/cepat). Output JSON saja.`;
+Buatkan plan untuk ${totalDays} hari. Untuk SETIAP hari isi HANYA waktu makan berikut: ${mealTypesCsv} (gunakan nilai meal_type itu persis). Jangan menambah slot di luar daftar ini. Untuk sarapan pilih resep yang cocok, kalau tidak ada gunakan resep paling ringan/cepat. Output JSON saja.`;
 }

@@ -11,6 +11,7 @@ import { supabase } from "../lib/supabase.js";
 //     diet: string[],            // ['vegetarian','halal',...]
 //     budget: number,            // IDR total
 //     pantry: [{name, amount?, unit?}],  // bahan tersedia di rumah
+//     meals: string[],           // subset ['breakfast','lunch','dinner'], min 1
 //     outputType: 'foodplan'|'foodprep'|'full'
 //   }
 //
