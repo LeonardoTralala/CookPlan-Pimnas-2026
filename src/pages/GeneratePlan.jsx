@@ -13,14 +13,12 @@ import { usePlan } from '../hooks/usePlan.js';
 // mingguan (Senin–Minggu) dan validasi server (validateInput).
 const PERIODE_MAX = 7;
 
-// Waktu makan yang bisa user pilih dalam sehari. Nilai = meal_type yang sama
-// dengan MEAL_TYPES di planService (breakfast/lunch/dinner) supaya hasil generate
-// jatuh persis ke slot planner. Urutan = urutan tampil & urutan kanonik.
-const MEAL_OPTIONS = [
-  { value: 'breakfast', icon: 'bakery_dining', label: 'Sarapan' },
-  { value: 'lunch', icon: 'lunch_dining', label: 'Makan Siang' },
-  { value: 'dinner', icon: 'dinner_dining', label: 'Makan Malam' },
-];
+// Variasi menu per hari: berapa RESEP BERBEDA yang dimasak dalam sehari. Setiap
+// hari tetap 3 waktu makan (breakfast/lunch/dinner); bila variasi < 3, resep yang
+// sama dipakai ulang untuk mengisi waktu makan sisanya (konsep foodprep — masak
+// sekali, makan beberapa kali). Maks 3 karena tidak mungkin > jumlah waktu makan.
+const VARIASI_MAX = 3;
+const MEAL_SLOTS_PER_DAY = 3;
 
 // Opsi diet sekarang diambil dinamis dari tabel diet_tags (lihat dietService).
 // Konstanta ini cuma FALLBACK bila fetch gagal / tabel belum di-push, supaya
@@ -50,7 +48,7 @@ export function GeneratePlan() {
   const [step, setStep] = useState(1);
   const [periode, setPeriode] = useState(7);
   const [porsi, setPorsi] = useState(2);
-  const [meals, setMeals] = useState(['breakfast', 'lunch', 'dinner']);
+  const [variasiPerHari, setVariasiPerHari] = useState(1);
   const [diet, setDiet] = useState(['halal']);
   const [budget, setBudget] = useState(200000);
   const [pantry, setPantry] = useState([]);
@@ -82,19 +80,6 @@ export function GeneratePlan() {
     setDiet((prev) => prev.includes(value) ? prev.filter((d) => d !== value) : [...prev, value]);
   };
 
-  // Toggle waktu makan. Pertahankan urutan kanonik (MEAL_OPTIONS) & minimal 1 slot
-  // — kalau cuma sisa satu, klik terakhir diabaikan supaya tidak nol.
-  const toggleMeal = (value) => {
-    setMeals((prev) => {
-      if (prev.includes(value)) {
-        if (prev.length === 1) return prev;
-        return prev.filter((m) => m !== value);
-      }
-      const next = [...prev, value];
-      return MEAL_OPTIONS.map((o) => o.value).filter((v) => next.includes(v));
-    });
-  };
-
   const addPantry = () => {
     const text = pantryInput.trim();
     if (!text) return;
@@ -118,7 +103,7 @@ export function GeneratePlan() {
     try {
       // outputType selalu 'full' — pilihan jenis output dihapus dari wizard;
       // hasil selalu lengkap (menu + belanja + prep), Core Offer tetap tersedia.
-      const result = await generatePlan({ periode, porsi, meals, diet, budget, pantry, notes, outputType: 'full' });
+      const result = await generatePlan({ periode, porsi, variasiPerHari, diet, budget, pantry, notes, outputType: 'full' });
       // Simpan hasil ke sessionStorage agar GenerateResult bisa baca tanpa refetch.
       sessionStorage.setItem(`plan_${result.planId}`, JSON.stringify(result));
       showToast('Plan berhasil dibuat! 🎉');
@@ -175,32 +160,26 @@ export function GeneratePlan() {
             <p className="text-xs text-on-surface-variant mt-2">Maksimal {PERIODE_MAX} hari.</p>
           </Field>
 
-          <Field label="Jumlah porsi per menu">
+          <Field label="Jumlah porsi per jam makan">
             <Stepper value={porsi} onDec={() => setPorsi(Math.max(1, porsi - 1))} onInc={() => setPorsi(porsi + 1)} suffix="Porsi" />
+            <p className="text-xs text-on-surface-variant mt-2">
+              Porsi sekali makan (mis. 2 = buat 2 orang). Total masak otomatis dikali jumlah waktu makan.
+            </p>
           </Field>
 
-          <Field label="Mau masak kapan aja dalam sehari?">
-            <div className="grid grid-cols-3 gap-2">
-              {MEAL_OPTIONS.map((opt) => {
-                const active = meals.includes(opt.value);
-                return (
-                  <button
-                    key={opt.value}
-                    onClick={() => toggleMeal(opt.value)}
-                    aria-pressed={active}
-                    className={`flex flex-col items-center gap-1.5 py-3.5 px-2 rounded-2xl border text-center transition-all cursor-pointer ${active
-                      ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                      : 'border-outline-variant hover:border-primary/50'
-                      }`}
-                  >
-                    <span className={`material-symbols-outlined ${active ? 'text-primary' : 'text-on-surface-variant'}`}>{opt.icon}</span>
-                    <span className={`text-xs font-semibold ${active ? 'text-primary' : 'text-on-surface-variant'}`}>{opt.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+          <Field label="Berapa variasi menu dalam sehari?">
+            <Stepper
+              value={variasiPerHari}
+              onDec={() => setVariasiPerHari(Math.max(1, variasiPerHari - 1))}
+              onInc={() => setVariasiPerHari(Math.min(VARIASI_MAX, variasiPerHari + 1))}
+              suffix="Variasi"
+            />
             <p className="text-xs text-on-surface-variant mt-2">
-              {meals.length}× makan per hari — minimal pilih 1.
+              Tetap {MEAL_SLOTS_PER_DAY}× makan/hari. {variasiPerHari === 1
+                ? 'Masak 1 menu sekali, dimakan pagi–siang–malam (foodprep).'
+                : variasiPerHari >= MEAL_SLOTS_PER_DAY
+                  ? 'Tiap waktu makan menu berbeda.'
+                  : `${variasiPerHari} menu berbeda, dipakai ulang menutup ${MEAL_SLOTS_PER_DAY} waktu makan.`}
             </p>
           </Field>
 
@@ -330,10 +309,11 @@ export function GeneratePlan() {
         <div className="space-y-6 animate-fade-in">
           <div className="bg-surface-container-low rounded-2xl p-6 space-y-3">
             <h3 className="font-headline-md text-headline-md text-primary mb-2">Ringkasan</h3>
-            <SummaryRow label="Periode" value={`${periode} hari × ${porsi} porsi`} />
+            <SummaryRow label="Periode" value={`${periode} hari`} />
+            <SummaryRow label="Porsi per jam makan" value={`${porsi} porsi`} />
             <SummaryRow
-              label="Waktu makan"
-              value={MEAL_OPTIONS.filter((o) => meals.includes(o.value)).map((o) => o.label).join(', ')}
+              label="Variasi menu"
+              value={`${variasiPerHari} variasi/hari${variasiPerHari === 1 ? ' (masak sekali, seharian)' : ''}`}
             />
             <SummaryRow label="Diet" value={diet.length ? diet.join(', ') : 'Tidak ada'} />
             <SummaryRow label="Budget" value={formatRupiah(budget)} />

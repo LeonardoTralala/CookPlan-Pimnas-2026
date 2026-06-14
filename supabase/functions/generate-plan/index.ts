@@ -7,7 +7,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 import { SYSTEM_PROMPT, PROMPT_VERSION, buildUserMessage } from "../_shared/prompt.ts";
 import { callProvider, safeJsonExtract, estimateCost } from "../_shared/aiAdapter.ts";
 import type { AIProvider } from "../_shared/aiAdapter.ts";
-import { validateInput, validateOutput, subtractPantry, filterMeals } from "../_shared/validate.ts";
+import { validateInput, validateOutput, subtractPantry, enforceVariety } from "../_shared/validate.ts";
 
 const RATE_LIMIT_PER_DAY = 20; // generate per user per hari
 
@@ -230,9 +230,9 @@ Deno.serve(async (req) => {
   }
 
   // 10. Post-process di server (bukan delegasi ke AI):
-  //     a. buang slot makan yang tidak diminta user, b. kurangi pantry.
-  const mealFiltered = filterMeals(parsed as Record<string, unknown>, input.meals);
-  const finalOutput = subtractPantry(mealFiltered, input.pantry);
+  //     a. tegakkan variasi/hari + isi 3 slot (foodprep), b. kurangi pantry.
+  const variedOutput = enforceVariety(parsed as Record<string, unknown>, input.variasiPerHari, input.porsi);
+  const finalOutput = subtractPantry(variedOutput, input.pantry);
 
   // 11. Persist
   const cost = estimateCost(aiResult.tokensInput, aiResult.tokensOutput);

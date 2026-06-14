@@ -4,7 +4,7 @@
 
 // Naikkan setiap kali prompt berubah secara perilaku — ikut di-hash sebagai
 // cache key di generate-plan supaya hasil cache prompt lama tidak terpakai.
-export const PROMPT_VERSION = "4";
+export const PROMPT_VERSION = "5";
 
 // Label Indonesia untuk tiap meal_type — dipakai saat menyusun instruksi waktu makan.
 const MEAL_LABEL_ID = {
@@ -21,9 +21,9 @@ ATURAN WAJIB:
 1. HANYA gunakan resep dari BANK RESEP yang diberikan (gunakan recipe_id yang valid). JANGAN mengarang resep di luar bank.
 2. Hormati preferensi diet & alergi user sebagai HARD CONSTRAINT. Jangan pilih resep yang melanggar.
 3. Variasikan menu antar hari (jangan menu yang sama berturut-turut bila memungkinkan).
-4. Sesuaikan jumlah porsi dengan input user.
+4. Setiap waktu makan WAJIB punya "servings" = "Porsi per jam makan" dari user. Pastikan shopping_list & total_estimated_cost mencakup TOTAL semua porsi (3 waktu makan/hari × porsi × jumlah hari).
 5. Usahakan total estimasi biaya TIDAK melebihi budget user lebih dari 10%. Beri peringatan di "warnings" bila budget terlalu kecil.
-6. Isi HANYA waktu makan yang diminta user (lihat "Waktu makan" di permintaan) untuk SETIAP hari. Jangan menambah slot di luar yang diminta, dan jangan ada slot diminta yang bolong.
+6. Setiap hari WAJIB punya 3 waktu makan terisi: breakfast, lunch, dinner (jangan ada yang bolong). TAPI gunakan hanya sebanyak "Variasi menu per hari" resep BERBEDA per hari — bila variasi < 3, PAKAI ULANG recipe_id yang sama untuk mengisi waktu makan sisanya (konsep foodprep: masak sekali, makan beberapa kali). Contoh: variasi=1 → satu recipe_id sama di breakfast, lunch, dinner.
 7. Bahasa Indonesia santai & ramah untuk field teks (plan_summary, notes, prep_instructions).
 
 OUTPUT: WAJIB berupa JSON valid SAJA, TANPA penjelasan tambahan, TANPA markdown code fence. Ikuti SCHEMA persis.`;
@@ -78,10 +78,11 @@ export function buildUserMessage(input, candidates) {
 
   const dietText = (input.diet ?? []).length > 0 ? input.diet.join(", ") : "tidak ada preferensi khusus";
 
-  // Waktu makan yang diminta (subset breakfast/lunch/dinner). Default ke semua bila kosong.
-  const mealList = (input.meals ?? []).length > 0 ? input.meals : ["breakfast", "lunch", "dinner"];
-  const mealsLabel = mealList.map((m) => MEAL_LABEL_ID[m] ?? m).join(", ");
-  const mealTypesCsv = mealList.join(", ");
+  // Setiap hari TETAP 3 waktu makan; variasiPerHari = jumlah resep berbeda per hari.
+  const slotList = ["breakfast", "lunch", "dinner"];
+  const slotsLabel = slotList.map((m) => MEAL_LABEL_ID[m] ?? m).join(", ");
+  const slotTypesCsv = slotList.join(", ");
+  const variasi = Math.min(3, Math.max(1, Math.floor(Number(input.variasiPerHari)) || 1));
 
   // Catatan khusus user — preferensi tambahan/penghalus. PRIORITAS DI BAWAH parameter
   // terstruktur: dibungkus delimiter + framing agar tidak bisa menimpa aturan sistem
@@ -102,8 +103,9 @@ PRIORITAS: Parameter di atas (periode, porsi, waktu makan, diet, budget) WAJIB &
 
   return `PERMINTAAN USER:
 - Periode: ${totalDays} hari
-- Porsi per menu: ${input.porsi}
-- Waktu makan per hari (${mealList.length}×): ${mealsLabel}
+- Porsi per jam makan: ${input.porsi} (servings tiap waktu makan)
+- Waktu makan per hari: 3× (${slotsLabel}) — selalu terisi penuh
+- Variasi menu per hari: ${variasi} resep berbeda (sisanya pakai ulang resep yang sama)
 - Preferensi diet: ${dietText}
 - Budget total: Rp ${input.budget?.toLocaleString("id-ID") ?? "tidak ditentukan"}
 - Jenis output: ${input.outputType}
@@ -116,5 +118,5 @@ ${JSON.stringify(recipeBank, null, 1)}
 
 ${OUTPUT_SCHEMA_TEXT}
 ${notesBlock}
-Buatkan plan untuk ${totalDays} hari. Untuk SETIAP hari isi HANYA waktu makan berikut: ${mealTypesCsv} (gunakan nilai meal_type itu persis). Jangan menambah slot di luar daftar ini. Untuk sarapan pilih resep yang cocok, kalau tidak ada gunakan resep paling ringan/cepat. Output JSON saja.`;
+Buatkan plan untuk ${totalDays} hari. Untuk SETIAP hari isi KETIGA waktu makan: ${slotTypesCsv} (gunakan nilai meal_type itu persis, jangan ada yang bolong). Namun cukup gunakan ${variasi} resep BERBEDA per hari — bila ${variasi} < 3, PAKAI ULANG recipe_id yang sama di waktu makan sisanya (foodprep: masak sekali, makan beberapa kali). Set "servings" setiap slot = ${input.porsi}. shopping_list & total_estimated_cost harus mencakup TOTAL semua porsi (3 waktu makan/hari). Untuk sarapan pilih resep yang cocok, kalau tidak ada gunakan resep paling ringan/cepat. Output JSON saja.`;
 }
