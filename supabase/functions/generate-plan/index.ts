@@ -102,9 +102,10 @@ Deno.serve(async (req) => {
     .select("id, title, calories, price_idr, ready_in_minutes, difficulty, cuisine, tags, badges, ingredients_text, base_servings")
     .eq("is_active", true)
     .limit(40);
-  // Filter diet: resep harus punya minimal satu tag yang cocok (overlap).
+  // Filter diet: resep harus punya minimal satu slug diet yang cocok (overlap).
+  // Pakai kolom `recipes.diet` (controlled vocabulary), bukan `tags` yang nyampur bahan.
   if (input.diet.length > 0) {
-    recipeQuery = recipeQuery.overlaps("tags", input.diet);
+    recipeQuery = recipeQuery.overlaps("diet", input.diet);
   }
   let { data: candidates } = await recipeQuery;
   // Fallback: kalau filter diet menyisakan terlalu sedikit, ambil semua aktif.
@@ -151,7 +152,7 @@ Deno.serve(async (req) => {
     { role: "user", content: buildUserMessage(input, candidates) },
   ];
 
-  // 8. Call AI: coba primary, fallback bila gagal
+  // 8. Call AI: coba tiap provider di chain berurutan, fallback bila gagal
   let aiResult = null;
   let usedProvider: AIProvider | null = null;
   let lastError = "";

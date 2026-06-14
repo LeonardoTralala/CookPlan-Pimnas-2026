@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { generatePlan, getGeneratedHistory, getTodayUsageCount } from '../services/aiService.js';
+import { getActiveDietTags } from '../services/dietService.js';
 import { usePlan } from '../hooks/usePlan.js';
 
 // Fitur 1: Generate Foodplan & Foodprep. Wizard 3 langkah (mobile-first).
@@ -21,7 +22,10 @@ const MEAL_OPTIONS = [
   { value: 'dinner', icon: 'dinner_dining', label: 'Makan Malam' },
 ];
 
-const DIET_OPTIONS = [
+// Opsi diet sekarang diambil dinamis dari tabel diet_tags (lihat dietService).
+// Konstanta ini cuma FALLBACK bila fetch gagal / tabel belum di-push, supaya
+// wizard tidak pernah kosong. Selaras dengan seed migrasi diet_tags.
+const DEFAULT_DIET_OPTIONS = [
   { value: 'vegetarian', label: 'Vegetarian' },
   { value: 'vegan', label: 'Vegan' },
   { value: 'halal', label: 'Halal' },
@@ -56,8 +60,10 @@ export function GeneratePlan() {
   const [error, setError] = useState('');
   const [history, setHistory] = useState([]);
   const [usageCount, setUsageCount] = useState(null);
+  const [dietOptions, setDietOptions] = useState(DEFAULT_DIET_OPTIONS);
 
   // Riwayat generate + kuota harian (info, bukan blocker — server tetap validasi).
+  // Opsi diet di-fetch dari diet_tags; gagal → tetap pakai fallback konstanta.
   useEffect(() => {
     let active = true;
     getGeneratedHistory(5, { successOnly: true })
@@ -66,6 +72,9 @@ export function GeneratePlan() {
     getTodayUsageCount()
       .then((n) => { if (active) setUsageCount(n); })
       .catch(() => { /* idem */ });
+    getActiveDietTags()
+      .then((rows) => { if (active && rows.length) setDietOptions(rows); })
+      .catch(() => { /* pakai DEFAULT_DIET_OPTIONS */ });
     return () => { active = false; };
   }, []);
 
@@ -239,7 +248,7 @@ export function GeneratePlan() {
         <div className="space-y-7 animate-fade-in">
           <Field label="Preferensi diet (boleh pilih >1)">
             <div className="flex flex-wrap gap-2">
-              {DIET_OPTIONS.map((opt) => (
+              {dietOptions.map((opt) => (
                 <Chip key={opt.value} active={diet.includes(opt.value)} onClick={() => toggleDiet(opt.value)}>
                   {opt.label}
                 </Chip>
