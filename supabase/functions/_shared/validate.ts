@@ -8,7 +8,10 @@ export interface GenerateInput {
   pantry: { name: string; amount?: number; unit?: string }[];
   outputType: "foodplan" | "foodprep" | "full";
   meals: string[];        // subset dari ["breakfast","lunch","dinner"], minimal 1
+  notes: string;          // catatan khusus user (opsional, preferensi tambahan), max 300
 }
+
+const NOTES_MAX = 300;
 
 // Periode bebas 1..7 hari (maksimal selaras kapasitas planner mingguan).
 const PERIODE_MIN = 1;
@@ -65,7 +68,10 @@ export function validateInput(raw: unknown): GenerateInput {
   const meals = VALID_MEALS.filter((m) => mealsSet.has(m));
   if (meals.length === 0) meals.push(...VALID_MEALS);
 
-  return { periode, porsi, diet, budget, pantry, meals, outputType: outputType as GenerateInput["outputType"] };
+  // Catatan khusus opsional. Trim + cap panjang (hemat token + batasi abuse).
+  const notes = String(r.notes ?? "").trim().slice(0, NOTES_MAX);
+
+  return { periode, porsi, diet, budget, pantry, meals, notes, outputType: outputType as GenerateInput["outputType"] };
 }
 
 // Validasi output AI secara semantik. Return { ok, errors }.

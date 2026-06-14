@@ -33,6 +33,9 @@ const DIET_OPTIONS = [
 
 const BUDGET_PRESETS = [100000, 200000, 350000, 500000];
 
+// Batas catatan khusus — selaras NOTES_MAX di validateInput (Edge Function).
+const NOTES_MAX = 300;
+
 // Selaras dengan RATE_LIMIT_PER_DAY di Edge Function generate-plan.
 const DAILY_LIMIT = 20;
 
@@ -48,6 +51,7 @@ export function GeneratePlan() {
   const [budget, setBudget] = useState(200000);
   const [pantry, setPantry] = useState([]);
   const [pantryInput, setPantryInput] = useState('');
+  const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [history, setHistory] = useState([]);
@@ -105,7 +109,7 @@ export function GeneratePlan() {
     try {
       // outputType selalu 'full' — pilihan jenis output dihapus dari wizard;
       // hasil selalu lengkap (menu + belanja + prep), Core Offer tetap tersedia.
-      const result = await generatePlan({ periode, porsi, meals, diet, budget, pantry, outputType: 'full' });
+      const result = await generatePlan({ periode, porsi, meals, diet, budget, pantry, notes, outputType: 'full' });
       // Simpan hasil ke sessionStorage agar GenerateResult bisa baca tanpa refetch.
       sessionStorage.setItem(`plan_${result.planId}`, JSON.stringify(result));
       showToast('Plan berhasil dibuat! 🎉');
@@ -175,11 +179,10 @@ export function GeneratePlan() {
                     key={opt.value}
                     onClick={() => toggleMeal(opt.value)}
                     aria-pressed={active}
-                    className={`flex flex-col items-center gap-1.5 py-3.5 px-2 rounded-2xl border text-center transition-all cursor-pointer ${
-                      active
-                        ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                        : 'border-outline-variant hover:border-primary/50'
-                    }`}
+                    className={`flex flex-col items-center gap-1.5 py-3.5 px-2 rounded-2xl border text-center transition-all cursor-pointer ${active
+                      ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                      : 'border-outline-variant hover:border-primary/50'
+                      }`}
                   >
                     <span className={`material-symbols-outlined ${active ? 'text-primary' : 'text-on-surface-variant'}`}>{opt.icon}</span>
                     <span className={`text-xs font-semibold ${active ? 'text-primary' : 'text-on-surface-variant'}`}>{opt.label}</span>
@@ -288,6 +291,20 @@ export function GeneratePlan() {
             )}
           </Field>
 
+          <Field label="Catatan khusus (opsional)">
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value.slice(0, NOTES_MAX))}
+              rows={3}
+              placeholder="mis. hindari pedas, pengen menu serba ayam, alergi seaafood"
+              className="w-full px-4 py-3 rounded-xl bg-white border border-outline-variant text-base resize-none focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+            />
+            <div className="flex items-center justify-between mt-1.5">
+              {/* <p className="text-xs text-on-surface-variant">Sekadar penghalus — parameter di atas tetap yang utama.</p> */}
+              <span className="text-xs text-on-surface-variant/70">{notes.length}/{NOTES_MAX}</span>
+            </div>
+          </Field>
+
           <div className="flex justify-between pt-2">
             <button onClick={() => setStep(1)} className="px-6 py-3 border border-outline-variant text-on-surface-variant rounded-full font-semibold text-sm hover:bg-surface-container-low transition cursor-pointer">
               Kembali
@@ -312,6 +329,7 @@ export function GeneratePlan() {
             <SummaryRow label="Diet" value={diet.length ? diet.join(', ') : 'Tidak ada'} />
             <SummaryRow label="Budget" value={formatRupiah(budget)} />
             <SummaryRow label="Bahan di rumah" value={`${pantry.length} item`} />
+            {notes.trim() && <SummaryRow label="Catatan khusus" value={notes.trim()} />}
           </div>
 
           {error && (
@@ -367,9 +385,8 @@ function Chip({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2.5 rounded-full text-sm font-semibold border transition-all cursor-pointer ${
-        active ? 'bg-primary text-on-primary border-primary' : 'bg-white text-on-surface-variant border-outline-variant hover:border-primary/50'
-      }`}
+      className={`px-4 py-2.5 rounded-full text-sm font-semibold border transition-all cursor-pointer ${active ? 'bg-primary text-on-primary border-primary' : 'bg-white text-on-surface-variant border-outline-variant hover:border-primary/50'
+        }`}
     >
       {children}
     </button>
